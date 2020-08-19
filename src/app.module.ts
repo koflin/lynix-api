@@ -20,7 +20,7 @@ import * as Joi from '@hapi/joi';
         DATABASE_PORT: Joi.string()
       })
     }),
-    /*MongooseModule.forRoot('mongodb://localhost/'),*/
+    MongooseModule.forRoot(`mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}/?authSource=${process.env.DATABASE_AUTH_DB}`),
     CompaniesModule
   ],
   controllers: [AppController],
