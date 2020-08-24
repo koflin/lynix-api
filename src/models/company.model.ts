@@ -1,14 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { CompanyDoc } from "src/schemas/company.schema";
 
 export class Company {
     @ApiProperty()
     id: string;
     @ApiProperty()
     name: string;
-    @ApiProperty({ required: false })
+    @ApiProperty()
     logo: string;
 
-    constructor(company: Partial<Company>) {
-        Object.assign(this, company);
+    constructor(company: CompanyDoc) {
+        this.id = company._id;
+        this.name = company.name;
+        this.logo = company.logo;
     }
 }

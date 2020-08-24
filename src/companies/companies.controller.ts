@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Param, NotFoundException, Patch, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, NotFoundException, Patch, Delete, Put } from '@nestjs/common';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { Company } from 'src/models/company.model';
 import { CompaniesService } from './companies.service';
-import { CreateCompanyDto } from 'src/dto/createCompanyDto';
-import { EditCompanyDto } from 'src/dto/editCompanyDto';
+import { CreateCompanyDto } from 'src/dto/company/createCompanyDto';
+import { EditCompanyDto } from 'src/dto/company/editCompanyDto';
 
 @ApiTags('companies')
 @Controller('companies')
@@ -33,7 +33,7 @@ export class CompaniesController {
     }
 
     @ApiOkResponse({ type: Company })
-    @Patch(':companyId')
+    @Put(':companyId')
     edit(@Param('companyId') companyId: string, @Body() editCompanyDto: EditCompanyDto) {
         let company = this.companyService.edit(companyId, editCompanyDto);
         if (company == null) throw new NotFoundException('Company not found!');

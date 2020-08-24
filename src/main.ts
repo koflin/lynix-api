@@ -8,17 +8,24 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
 
+  const versionFull = config.get('version.full');
+  const versionPrefix = config.get('version.prefix');
+
   const docOptions = new DocumentBuilder()
     .setTitle('Lynix API')
     .setDescription('The Lynix API documentation')
-    .setVersion(config.get('version.full'))
+    .setVersion(versionFull)
+    .addServer("/" + versionPrefix, 'Version ' + versionFull + ' of the API')
+    .addTag('companies')
+    .addTag('users')
+    .addTag('default')
     .build();
 
   const docs = SwaggerModule.createDocument(app, docOptions);
   SwaggerModule.setup('docs', app, docs);
   
   app.enableCors();
-  app.setGlobalPrefix(config.get('version.prefix'));
+  app.setGlobalPrefix(versionPrefix);
 
   await app.listen(config.get('port'));
 }

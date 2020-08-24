@@ -3,8 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CompanyDoc } from 'src/schemas/company.schema';
 import { Model } from 'mongoose';
 import { Company } from 'src/models/company.model';
-import { CreateCompanyDto } from 'src/dto/createCompanyDto';
-import { EditCompanyDto } from 'src/dto/editCompanyDto';
+import { CreateCompanyDto } from 'src/dto/company/createCompanyDto';
+import { EditCompanyDto } from 'src/dto/company/editCompanyDto'
 
 @Injectable()
 export class CompaniesService {
@@ -21,12 +21,15 @@ export class CompaniesService {
         return companyDoc == null ? null : new Company(companyDoc);
     }
 
-    async create(company: CreateCompanyDto): Promise<Company> {
-        return new Company(await this.companyModel.create(company));
+    async create(companyDto: CreateCompanyDto): Promise<Company> {
+        let companyDoc = new this.companyModel(companyDto);
+        return new Company(await companyDoc.save());
     }
 
     async edit(id: string, company: EditCompanyDto): Promise<Company> {
-        let companyDoc = await this.companyModel.findByIdAndUpdate(id, company).exec();
+        let companyDoc = await this.companyModel.findByIdAndUpdate(id, {
+            ...company,
+        }, { new: true }).exec();
         return companyDoc == null ? null : new Company(companyDoc);
     }
 
