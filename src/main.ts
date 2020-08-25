@@ -18,6 +18,7 @@ async function bootstrap() {
     .addServer("/" + versionPrefix, 'Version ' + versionFull + ' of the API')
     .addTag('companies')
     .addTag('users')
+    .addTag('orders')
     .addTag('default')
     .build();
 

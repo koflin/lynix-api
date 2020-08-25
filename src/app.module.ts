@@ -5,6 +5,7 @@ import { CompaniesModule } from './companies/companies.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
+import { OrdersModule } from './orders/orders.module';
 import configuration from './config/configuration';
 import * as Joi from '@hapi/joi';
 
@@ -27,6 +28,7 @@ import * as Joi from '@hapi/joi';
     }),
     CompaniesModule,
     UsersModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
