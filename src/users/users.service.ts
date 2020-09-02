@@ -21,6 +21,11 @@ export class UsersService {
         return userDoc == null ? null : new User(userDoc);
     }
 
+    async getByUsername(username: string): Promise<UserDoc> {
+        let userDoc = await this.userModel.findOne({ username }).exec();
+        return userDoc == null ? null : userDoc;
+    }
+
     async create(userDto: CreateUserDto): Promise<User> {
         let userDoc = new this.userModel(userDto);
         userDoc.passwordEncrypted = "TESTPW";

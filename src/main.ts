@@ -16,6 +16,8 @@ async function bootstrap() {
     .setDescription('The Lynix API documentation')
     .setVersion(versionFull)
     .addServer("/" + versionPrefix, 'Version ' + versionFull + ' of the API')
+    .addBearerAuth()
+    .addTag('authentication')
     .addTag('companies')
     .addTag('users')
     .addTag('orders')

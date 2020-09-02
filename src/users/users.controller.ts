@@ -1,11 +1,14 @@
-import { Controller, Get, Post, Body, Delete, Put, Param, Query, NotFoundException } from '@nestjs/common';
-import { ApiTags, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Delete, Put, Param, Query, NotFoundException, Request, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOkResponse, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { User } from 'src/models/user.model';
 import { CreateUserDto } from 'src/dto/user/createUserDto';
 import { EditUserDto } from 'src/dto/user/editUserDto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiTags('users')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
     constructor(private usersService: UsersService) {
@@ -22,6 +25,12 @@ export class UsersController {
     @Post()
     create(@Body() creatUserDto: CreateUserDto) {
         return this.usersService.create(creatUserDto);
+    }
+
+    @ApiOkResponse({ type: [User] })
+    @Get('me')
+    getMe(@Request() req: { user: User }) {
+        return req.user;
     }
 
     @ApiOkResponse({ type: User })
