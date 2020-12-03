@@ -11,8 +11,4 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
-
-  getDev(): string {
-    return this.config.get<string>('port');
-  }
 }

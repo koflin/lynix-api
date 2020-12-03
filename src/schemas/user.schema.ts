@@ -7,6 +7,7 @@ export class UserDoc extends Document {
     id: string;
     @Prop()
     companyId: string;
+    
     @Prop()
     username: string;
     @Prop()

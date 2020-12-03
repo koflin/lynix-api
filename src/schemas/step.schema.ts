@@ -1,13 +1,19 @@
 import { Schema, SchemaFactory, Prop } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
 @Schema()
-export class StepDoc {
+export class StepDoc extends Document {
+    @Prop()
+    id: string;
+    @Prop()
+    companyId: string;
+
     @Prop()
     title: string;
     @Prop([String])
     materials: string[];
     @Prop([String])
-    tools: string[];
+    toolIds: string[];
     @Prop()
     keyMessage: string;
     @Prop()
@@ -16,6 +22,9 @@ export class StepDoc {
     pictureUris: string[];
     @Prop([String])
     videoUris: string[];
+    @Prop()
+    estimatedTime: number;
+
     @Prop()
     timeTaken: number;
 }

@@ -12,7 +12,7 @@ export class CompaniesController {
     constructor(private companyService: CompaniesService) {
     }
 
-    @ApiOkResponse({ type: Company })
+    @ApiOkResponse({ type: [Company] })
     @Get()
     getAll() {
         return this.companyService.getAll();

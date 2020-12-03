@@ -3,11 +3,16 @@ import { StepDoc } from "src/schemas/step.schema";
 
 export class Step {
     @ApiProperty()
+    id: string;
+    @ApiProperty()
+    companyId: string;
+    
+    @ApiProperty()
     title: string;
     @ApiProperty()
     materials: string[];
     @ApiProperty()
-    tools: string[];
+    toolIds: string[];
     @ApiProperty()
     keyMessage: string;
     @ApiProperty()
@@ -17,12 +22,14 @@ export class Step {
     @ApiProperty()
     videoUris: string[];
     @ApiProperty()
+    estimatedTime: number;
+    
+    @ApiProperty()
     timeTaken: number;
 
     constructor(step: StepDoc) {
         this.title = step.title;
         this.materials = step.materials;
-        this.tools = step.tools;
         this.keyMessage = step.keyMessage;
         this.tasks = step.tasks;
         this.pictureUris = step.pictureUris;

@@ -6,6 +6,7 @@ export class User {
     id: string;
     @ApiProperty()
     companyId: string;
+    
     @ApiProperty()
     username: string;
     @ApiProperty()

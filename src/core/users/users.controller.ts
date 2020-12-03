@@ -4,7 +4,7 @@ import { UsersService } from './users.service';
 import { User } from 'src/models/user.model';
 import { CreateUserDto } from 'src/dto/user/createUserDto';
 import { EditUserDto } from 'src/dto/user/editUserDto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
 
 @ApiTags('users')
 @ApiBearerAuth()

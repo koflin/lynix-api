@@ -1,14 +1,16 @@
+import { ToolsModule } from './core/tools/tools.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CompaniesModule } from './companies/companies.module';
+import { CompaniesModule } from './core/companies/companies.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from './users/users.module';
-import { OrdersModule } from './orders/orders.module';
-import { AuthModule } from './auth/auth.module';
+import { OrdersModule } from './core/orders/orders.module';
+import { AuthModule } from './core/auth/auth.module';
 import configuration from './config/configuration';
 import * as Joi from '@hapi/joi';
+import { UsersModule } from './core/users/users.module';
+import { DevModule } from './core/dev/dev.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import * as Joi from '@hapi/joi';
     UsersModule,
     OrdersModule,
     AuthModule,
+    ToolsModule,
+    DevModule
   ],
   controllers: [AppController],
   providers: [AppService],
