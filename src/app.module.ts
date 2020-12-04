@@ -11,6 +11,8 @@ import configuration from './config/configuration';
 import * as Joi from '@hapi/joi';
 import { UsersModule } from './core/users/users.module';
 import { DevModule } from './core/dev/dev.module';
+import { ProcessTemplatesModule } from './core/templates/process-templates/process-templates.module';
+import { ProductTemplatesModule } from './core/templates/product-templates/product-templates.module';
 
 @Module({
   imports: [
@@ -34,7 +36,9 @@ import { DevModule } from './core/dev/dev.module';
     OrdersModule,
     AuthModule,
     ToolsModule,
-    DevModule
+    DevModule,
+    ProcessTemplatesModule,
+    ProductTemplatesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
