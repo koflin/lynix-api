@@ -8,7 +8,7 @@ import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
 
 @ApiTags('users')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+//@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
     constructor(private usersService: UsersService) {
@@ -17,7 +17,11 @@ export class UsersController {
     @ApiOkResponse({ type: [User] })
     @ApiQuery({ name: 'companyId', required: false })
     @Get()
-    getAll(@Query() filter: { companyId: string }) {
+    getAll(@Query() filter: { companyId: string, username: string, permissions: string[] }) {
+        if (filter.username) {
+            return this.usersService.getByUsername(filter.username);
+        }
+
         return this.usersService.getAll(filter);
     }
 

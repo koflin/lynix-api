@@ -27,7 +27,7 @@ export class ToolsService {
     async edit(id: string, dto: any): Promise<Tool> {
         let toolDoc = await this.toolModel.findByIdAndUpdate(id, {
             ...dto,
-        }, { new: true }).exec();
+        }, { new: true, omitUndefined: true }).exec();
         return toolDoc == null ? null : new Tool(toolDoc);
     }
 

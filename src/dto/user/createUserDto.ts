@@ -5,8 +5,6 @@ export class CreateUserDto {
     companyId: string;
     @ApiProperty()
     username: string;
-    @ApiProperty()
-    password: string;
     @ApiPropertyOptional()
     firstName?: string;
     @ApiPropertyOptional()

@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { json } from 'body-parser';
 import dotenv from 'dotenv';
 
 async function bootstrap() {
@@ -27,6 +28,7 @@ async function bootstrap() {
   const docs = SwaggerModule.createDocument(app, docOptions);
   SwaggerModule.setup('docs', app, docs);
   
+  app.use(json({ limit: '50mb' }));
   app.enableCors();
   app.setGlobalPrefix(versionPrefix);
 

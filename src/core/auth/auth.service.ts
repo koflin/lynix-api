@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/models/user.model';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
+import { use } from 'passport';
 
 @Injectable()
 export class AuthService {
@@ -28,8 +29,12 @@ export class AuthService {
             sub: user.id,
             // Issued at
             iat: new Date().getTime(),
-            companyId: user.companyId,
-            user: user
+
+            user: {
+                id: user.id,
+                companyId: user.companyId,
+                username: user.username
+            }
         };
 
         return {

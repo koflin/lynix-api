@@ -28,15 +28,14 @@ export class UsersService {
 
     async create(userDto: CreateUserDto): Promise<User> {
         let userDoc = new this.userModel(userDto);
-        userDoc.passwordEncrypted = "TESTPW";
+        // Encryp password here later
         return new User(await userDoc.save());
     }
 
     async edit(id: string, userDto: EditUserDto): Promise<User> {
         let userDoc = await this.userModel.findByIdAndUpdate(id, {
             ...userDto,
-            passwordEncrypted: "TESTCHANGEPW"
-        }, { new: true });
+        }, { new: true, omitUndefined: true });
         
         return userDoc == null ? null : new User(await userDoc.save());
     }

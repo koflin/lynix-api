@@ -8,7 +8,7 @@ import { UserDoc, UserSchema } from 'src/schemas/user.schema';
   imports: [
     HttpModule,
     MongooseModule.forFeature([{
-      name: UserDoc.name, schema: UserSchema, collection: 'users'
+      name: UserDoc.name, schema: UserSchema, collection: 'users',
     }]),
   ],
   exports: [UsersService],

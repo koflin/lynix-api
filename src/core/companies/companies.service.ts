@@ -29,7 +29,7 @@ export class CompaniesService {
     async edit(id: string, company: EditCompanyDto): Promise<Company> {
         let companyDoc = await this.companyModel.findByIdAndUpdate(id, {
             ...company,
-        }, { new: true }).exec();
+        }, { new: true, omitUndefined: true }).exec();
         return companyDoc == null ? null : new Company(companyDoc);
     }
 
