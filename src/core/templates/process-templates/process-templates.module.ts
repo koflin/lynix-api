@@ -12,6 +12,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     }]),
   ],
   providers: [ProcessTemplatesService],
-  controllers: [ProcessTemplatesController]
+  controllers: [ProcessTemplatesController],
+  exports: [ProcessTemplatesService]
 })
 export class ProcessTemplatesModule {}

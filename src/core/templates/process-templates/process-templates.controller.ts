@@ -26,25 +26,25 @@ export class ProcessTemplatesController {
     }
 
     @ApiOkResponse({ type: ProcessTemplate })
-    @Get(':processTemplateId')
-    getById(@Param('processTemplateId') processTemplateId: string) {
-        let processTemplate = this.processService.getById(processTemplateId);
+    @Get(':templateId')
+    getById(@Param('templateId') templateId: string) {
+        let processTemplate = this.processService.getById(templateId);
         if (processTemplate == null) throw new NotFoundException('Process template not found!');
         return processTemplate;
     }
 
     @ApiOkResponse({ type: ProcessTemplate })
-    @Put(':processTemplateId')
-    edit(@Param('processTemplateId') processTemplateId: string, @Body() editProcessTemplateDto: EditProcessTemplateDto) {
-        let processTemplate = this.processService.edit(processTemplateId, editProcessTemplateDto);
+    @Put(':templateId')
+    edit(@Param('templateId') templateId: string, @Body() editProcessTemplateDto: EditProcessTemplateDto) {
+        let processTemplate = this.processService.edit(templateId, editProcessTemplateDto);
         if (processTemplate == null) throw new NotFoundException('Process template not found!');
         return processTemplate;
     }
 
     @ApiOkResponse()
-    @Delete(':processTemplateId')
-    delete(@Param('processTemplateId') processTemplateId: string) {
-        let processTemplate = this.processService.delete(processTemplateId);
+    @Delete(':templateId')
+    delete(@Param('templateId') templateId: string) {
+        let processTemplate = this.processService.delete(templateId);
         if (processTemplate == null) throw new NotFoundException('Process template not found!');
         return processTemplate;
     }

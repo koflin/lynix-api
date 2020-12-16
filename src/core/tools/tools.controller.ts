@@ -1,8 +1,10 @@
 import { ToolsService } from './tools.service';
 import { Tool } from './../../models/tool.model';
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('tools')
+@ApiBearerAuth()
 @Controller('tools')
 export class ToolsController {
     constructor(private toolsService: ToolsService) {

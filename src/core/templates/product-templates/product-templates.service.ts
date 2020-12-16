@@ -21,16 +21,21 @@ export class ProductTemplatesService {
     async getAll(filter: { companyId?: string }): Promise<ProductTemplate[]> {
         let productIds = await this.productModel.find(filter, '_id').exec();
         return Promise.all(productIds.map( async (doc) => {
-            return this.getById(doc.id);
+            return this.getById(doc._id);
         }));
     }
 
     async getById(id: string): Promise<ProductTemplate> {
         let productDoc = await this.productModel.findById(id).exec();
-        let processDocs = await Promise.all(productDoc.processes.map((process) => {
-            return this.processTemplatesService.getById(process.templateId);
-        }));
-        return productDoc == null ? null : new ProductTemplate(productDoc, processDocs);
+
+        if (productDoc) {
+            let processDocs = await Promise.all(productDoc.processes.map((process) => {
+                return this.processTemplatesService.getById(process.templateId);
+            }));
+            return new ProductTemplate(productDoc, processDocs);
+        }
+
+        return null;
     }
 
     async create(productDto: EditProductTemplateDto): Promise<ProductTemplate> {
@@ -39,7 +44,7 @@ export class ProductTemplatesService {
         return this.getById(productDoc.id);
     }
 
-    async edit(id: string, productDto: EditUserDto): Promise<ProductTemplate> {
+    async edit(id: string, productDto: EditProductTemplateDto): Promise<ProductTemplate> {
         let productDoc = await this.productModel.findByIdAndUpdate(id, {
             ...productDto,
         }, { new: true, omitUndefined: true });

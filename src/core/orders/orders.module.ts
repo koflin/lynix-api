@@ -3,6 +3,7 @@ import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { OrderDoc, OrderSchema } from 'src/schemas/order.schema';
+import { ProductTemplatesModule } from '../templates/product-templates/product-templates.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { OrderDoc, OrderSchema } from 'src/schemas/order.schema';
     MongooseModule.forFeature([{
       name: OrderDoc.name, schema: OrderSchema, collection: 'orders'
     }]),
+    ProductTemplatesModule
   ],
   controllers: [OrdersController],
   providers: [OrdersService]

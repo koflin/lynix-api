@@ -22,6 +22,10 @@ async function bootstrap() {
     .addTag('companies')
     .addTag('users')
     .addTag('orders')
+    //.addTag('processes')
+    .addTag('product-templates')
+    .addTag('process-templates')
+    .addTag('tools')
     .addTag('default')
     .build();
 

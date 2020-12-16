@@ -12,7 +12,7 @@ export class EditOrderDto extends EditBaseDto {
 
     @ApiProperty()
     products: {
-        template: undefined;
+        templateId: string;
         quantity: number;
     }[];
 }

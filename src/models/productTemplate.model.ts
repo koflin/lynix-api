@@ -23,7 +23,7 @@ export class ProductTemplate {
 
     constructor(product: ProductTemplateDoc, processes: ProcessTemplate[]) {
         this.id = product.id;
-        this.companyId = product.id;
+        this.companyId = product.companyId;
         this.name = product.name;
         
         this.processes = processes.map((process, index) => {

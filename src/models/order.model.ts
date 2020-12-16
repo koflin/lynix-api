@@ -21,10 +21,17 @@ export class Order {
         quantity: number;
     }[];
 
-    constructor(order: OrderDoc) {
+    constructor(order: OrderDoc, productTemplates: ProductTemplate[]) {
         this.id = order.id;
         this.companyId = order.companyId;
         this.name = order.name;
         this.description = order.description;
+
+        this.products = productTemplates.map((template, index) => {
+            return {
+                template: template,
+                quantity: order.products[index].quantity
+            };
+        });
     }
 }
