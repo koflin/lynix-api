@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
+/**
+ * Represents a product template document
+ */
 @Schema()
 export class ProductTemplateDoc extends Document {
     @Prop()

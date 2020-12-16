@@ -13,6 +13,7 @@ import { UsersModule } from './core/users/users.module';
 import { DevModule } from './core/dev/dev.module';
 import { ProcessTemplatesModule } from './core/templates/process-templates/process-templates.module';
 import { ProductTemplatesModule } from './core/templates/product-templates/product-templates.module';
+import { ProcessesModule } from './core/processes/processes.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ProductTemplatesModule } from './core/templates/product-templates/produ
     DevModule,
     ProcessTemplatesModule,
     ProductTemplatesModule,
+    ProcessesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

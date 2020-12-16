@@ -2,7 +2,11 @@ import { ProcessTemplateDoc } from './processTemplate.schema';
 import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
 import { StepDoc } from "./step.schema";
 import { Document } from "mongoose";
+import { ProcessTemplate } from 'src/models/processTemplate';
 
+/**
+ * Represents a process document
+ */
 @Schema()
 export class ProcessDoc extends Document {
     @Prop()
@@ -29,7 +33,7 @@ export class ProcessDoc extends Document {
     @Prop()
     currentStepIndex: number;
     @Prop()
-    status: string;
+    status: 'in_preparation' | 'released' | 'in_progress' | 'completed' | 'assistance_required';
     @Prop()
     isOccupied: boolean;
     @Prop()

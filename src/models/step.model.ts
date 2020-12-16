@@ -1,10 +1,11 @@
+import { StepDoc } from './../schemas/step.schema';
 import { ApiProduces, ApiProperty } from "@nestjs/swagger";
 
 export class Step {
     /*@ApiProperty()
     id: string;
     @ApiProperty()
-    companyId: string;
+    companyId: string;*/
     
     @ApiProperty()
     title: string;
@@ -33,6 +34,7 @@ export class Step {
         this.tasks = step.tasks;
         this.pictureUris = step.pictureUris;
         this.videoUris = step.videoUris;
+        
         this.timeTaken = step.timeTaken;
-    }*/
+    }
 }
