@@ -1,11 +1,12 @@
 import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
-import { StepDoc } from "./step.schema";
 import { Document } from "mongoose";
+import { StepTemplateDoc } from "./stepTemplate.schema";
 
+/**
+ * Represents a process template document
+ */
 @Schema()
 export class ProcessTemplateDoc extends Document {
-    @Prop()
-    id: string;
     @Prop()
     companyId: string;
 
@@ -26,16 +27,7 @@ export class ProcessTemplateDoc extends Document {
         videoUris: { type: [String] },
         estimatedTime: { type: Number }
     }])
-    stepTemplates: {
-        title: string;
-        materials: string[];
-        toolIds: string[];
-        keyMessage: string;
-        tasks: string;
-        pictureUris?: string[];
-        videoUris?: string[];
-        estimatedTime: number;
-    }[];
+    stepTemplates: StepTemplateDoc[];
 }
 
 export const ProcessTemplateSchema = SchemaFactory.createForClass(ProcessTemplateDoc);

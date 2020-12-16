@@ -4,8 +4,6 @@ import { Document } from "mongoose";
 @Schema()
 export class ProductTemplateDoc extends Document {
     @Prop()
-    id: string;
-    @Prop()
     companyId: string;
 
     @Prop()
@@ -18,7 +16,7 @@ export class ProductTemplateDoc extends Document {
     processes: {
         templateId: string;
         quantity: number;
-    }
+    }[]
 }
 
 export const ProductTemplateSchema = SchemaFactory.createForClass(ProductTemplateDoc);

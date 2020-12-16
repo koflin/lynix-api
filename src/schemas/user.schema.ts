@@ -4,8 +4,6 @@ import { Document } from 'mongoose';
 @Schema()
 export class UserDoc extends Document {
     @Prop()
-    id: string;
-    @Prop()
     companyId: string;
     
     @Prop()

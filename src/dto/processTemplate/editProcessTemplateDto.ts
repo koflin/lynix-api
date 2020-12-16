@@ -1,12 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { EditStepTemplateDto } from '../stepTemplate/editStepTemplateDto';
 import { EditBaseDto } from './../base/editBase';
 
-export class ProcessTemplate extends EditBaseDto {
-    @ApiProperty()
-    id: string;
-    @ApiProperty()
-    companyId: string;
-    
+export class EditProcessTemplateDto extends EditBaseDto {
     @ApiProperty()
     name: string;
     @ApiProperty()
@@ -15,5 +11,5 @@ export class ProcessTemplate extends EditBaseDto {
     previousComments?: string[];
 
     @ApiProperty()
-    stepTemplates: undefined[];
+    stepTemplates: EditStepTemplateDto[];
 }

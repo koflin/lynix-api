@@ -1,11 +1,13 @@
-import { StepDoc } from 'src/schemas/step.schema';
 import { ApiProperty } from "@nestjs/swagger";
+import { ProcessTemplateDoc } from "src/schemas/processTemplate.schema";
+import { StepTemplateDoc } from "src/schemas/stepTemplate.schema";
 
 export class StepTemplate {
-    @ApiProperty()
+
+    /*@ApiProperty()
     id: string;
     @ApiProperty()
-    companyId: string;
+    companyId: string;*/
     
     @ApiProperty()
     title: string;
@@ -24,16 +26,14 @@ export class StepTemplate {
     @ApiProperty()
     estimatedTime: number;
 
-    constructor(step: StepDoc) {
-        this.id = step.id;
-        this.companyId = step.companyId;
-        this.title = step.title;
-        this.materials = step.materials;
-        this.toolIds = step.toolIds;
-        this.keyMessage = step.keyMessage;
-        this.tasks = step.tasks;
-        this.pictureUris = step.pictureUris;
-        this.videoUris = step.videoUris;
-        this.estimatedTime = step.estimatedTime;
+    constructor(stepDoc: StepTemplateDoc) {
+        this.title = stepDoc.title;
+        this.materials = stepDoc.materials;
+        this.toolIds = stepDoc.toolIds;
+        this.keyMessage = stepDoc.keyMessage;
+        this.tasks = stepDoc.tasks;
+        this.pictureUris = stepDoc.pictureUris;
+        this.videoUris = stepDoc.videoUris;
+        this.estimatedTime = stepDoc.estimatedTime;
     }
 }

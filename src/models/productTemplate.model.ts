@@ -4,6 +4,9 @@ import { ProductTemplateDoc } from './../schemas/productTemplate.schema';
 import { ApiProperty } from "@nestjs/swagger";
 import { ProcessTemplate } from "./processTemplate";
 
+/**
+ * Represents a Product Template object
+ */
 export class ProductTemplate {
     @ApiProperty()
     id: string;
@@ -26,7 +29,7 @@ export class ProductTemplate {
         this.processes = processes.map((process, index) => {
             return {
                 template: process,
-                quantity: product.processes[index]
+                quantity: product.processes[index].quantity
             };
         });
     }
