@@ -10,10 +10,45 @@ import { ProcessTemplatesService } from '../templates/process-templates/process-
 export class ProcessesService {
     constructor(
         @InjectModel(ProcessDoc.name) private processModle: Model<ProcessDoc>,
+        @InjectModel(ProcessDoc.name) private orderModel: Model<ProcessDoc>
+        @InjectModel(ProcessDoc.name) private productTemplateModel: Model<ProcessDoc>
         private processTemplatesService: ProcessTemplatesService
     ) { }
 
-    async getAll(filter: { companyId?: string }): Promise<Process[]> {
+    async start(id: string, userId: string) {
+        let processDoc = await this.processModle.findById(id).exec();
+
+        processDoc.status = 'in_progress';
+        processDoc.isOccupied = true;
+        processDoc.save();
+        return;
+    }
+
+    async stop(id: string) {
+        let processDoc = await this.processModle.findById(id).exec();
+
+        processDoc.isOccupied = false;
+        processDoc.save();
+        return;
+    }
+
+    async assign(id: string, assignedId: string) {
+        let processDoc = await this.processModle.findById(id).exec();
+
+        processDoc.assignedUserId = assignedId;
+        processDoc.save();
+        return;
+    }
+
+    async finish(id: string, assignedId: string) {
+        let processDoc = await this.processModle.findById(id).exec();
+
+        processDoc.status = 'completed';
+        processDoc.save();
+        return;
+    }
+
+    async getAll(filter: { companyId?: string, assignedUserId?: string, orderId?: string }): Promise<Process[]> {
         let processIds = await this.processModle.find(filter, '_id').exec();
         return Promise.all(processIds.map( async (doc) => {
             return this.getById(doc._id);
@@ -30,8 +65,8 @@ export class ProcessesService {
         return null;
     }
 
-    async create(processDto: EditProcessDto): Promise<Process> {
-        let processDoc = new this.processModle(processDto);
+    async createForOrder(orderId: string): Promise<Process> {
+        let orderDoc = await this.
         await processDoc.save();
         return this.getById(processDoc.id);
     }

@@ -15,8 +15,10 @@ export class ProcessesController {
 
     @ApiOkResponse({ type: [Process] })
     @ApiQuery({ name: 'companyId', required: false })
+    @ApiQuery({ name: 'assignedUserId', required: false })
+    @ApiQuery({ name: 'orderId', required: false })
     @Get()
-    getAll(@Query() filter: { companyId: string }) {
+    getAll(@Query() filter: { companyId: string, assignedUserId: string, orderId: string }) {
         return this.processesService.getAll(filter);
     }
 
