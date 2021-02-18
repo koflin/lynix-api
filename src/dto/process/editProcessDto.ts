@@ -1,7 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BaseDto } from "../base/baseDto";
 import { EditBaseDto } from "../base/editBase";
-import { EditStepDto } from "../step/editStepDto";
 
 export class EditProcessDto extends EditBaseDto {
     @ApiProperty()
@@ -17,7 +15,4 @@ export class EditProcessDto extends EditBaseDto {
 
     @ApiProperty()
     assignedUserId: string;
-
-    @ApiProperty()
-    steps: EditStepDto[];
 }

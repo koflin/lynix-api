@@ -3,12 +3,6 @@ import { ProcessTemplateDoc } from "src/schemas/processTemplate.schema";
 import { StepTemplateDoc } from "src/schemas/stepTemplate.schema";
 
 export class StepTemplate {
-
-    /*@ApiProperty()
-    id: string;
-    @ApiProperty()
-    companyId: string;*/
-    
     @ApiProperty()
     title: string;
     @ApiProperty()
@@ -26,14 +20,14 @@ export class StepTemplate {
     @ApiProperty()
     estimatedTime: number;
 
-    constructor(stepDoc: StepTemplateDoc) {
-        this.title = stepDoc.title;
-        this.materials = stepDoc.materials;
-        this.toolIds = stepDoc.toolIds;
-        this.keyMessage = stepDoc.keyMessage;
-        this.tasks = stepDoc.tasks;
-        this.pictureUris = stepDoc.pictureUris;
-        this.videoUris = stepDoc.videoUris;
-        this.estimatedTime = stepDoc.estimatedTime;
+    constructor(stepTemplate: StepTemplate) {
+        this.title = stepTemplate.title;
+        this.materials = stepTemplate.materials;
+        this.toolIds = stepTemplate.toolIds;
+        this.keyMessage = stepTemplate.keyMessage;
+        this.tasks = stepTemplate.tasks;
+        this.pictureUris = stepTemplate.pictureUris;
+        this.videoUris = stepTemplate.videoUris;
+        this.estimatedTime = stepTemplate.estimatedTime;
     }
 }

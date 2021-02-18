@@ -13,6 +13,7 @@ import { ProcessTemplatesModule } from '../templates/process-templates/process-t
     ProcessTemplatesModule
   ],
   providers: [ProcessesService],
-  controllers: [ProcessesController]
+  controllers: [ProcessesController],
+  exports: [ProcessesService]
 })
 export class ProcessesModule {}

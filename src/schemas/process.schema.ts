@@ -17,6 +17,8 @@ export class ProcessDoc extends Document {
     @Prop()
     orderId: string;
     @Prop()
+    templateId: string;
+    @Prop()
     template: ProcessTemplateDoc;
 
     @Prop()

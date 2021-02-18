@@ -12,8 +12,8 @@ export class Process {
 
     @ApiProperty()
     orderId: string;
-    //@ApiProperty()
-    //template: ProcessTemplate;
+    @ApiProperty()
+    templateId: string;
 
     @ApiProperty()
     name: string;
@@ -44,6 +44,7 @@ export class Process {
     constructor(process: ProcessDoc) {
         this.id = process._id;
         this.companyId = process.companyId;
+        this.templateId = process.templateId;
 
         this.name = process.name;
         this.mainTasks = process.mainTasks;

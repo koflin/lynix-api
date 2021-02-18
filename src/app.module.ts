@@ -14,6 +14,8 @@ import { DevModule } from './core/dev/dev.module';
 import { ProcessTemplatesModule } from './core/templates/process-templates/process-templates.module';
 import { ProductTemplatesModule } from './core/templates/product-templates/product-templates.module';
 import { ProcessesModule } from './core/processes/processes.module';
+import { TasksModule } from './core/tasks/tasks.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -32,6 +34,7 @@ import { ProcessesModule } from './core/processes/processes.module';
     MongooseModule.forRoot(`mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}/${process.env.DATABASE_DB}?authSource=${process.env.DATABASE_AUTH_DB}`, {
       useFindAndModify: false,
     }),
+    ScheduleModule.forRoot(),
     CompaniesModule,
     UsersModule,
     OrdersModule,
@@ -41,6 +44,7 @@ import { ProcessesModule } from './core/processes/processes.module';
     ProcessTemplatesModule,
     ProductTemplatesModule,
     ProcessesModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,3 +1,4 @@
+import { StepTemplate } from 'src/models/stepTemplate.model';
 import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 import { StepTemplateDoc } from "./stepTemplate.schema";
@@ -27,7 +28,7 @@ export class ProcessTemplateDoc extends Document {
         videoUris: { type: [String] },
         estimatedTime: { type: Number }
     }])
-    stepTemplates: StepTemplateDoc[];
+    stepTemplates: StepTemplate[];
 }
 
 export const ProcessTemplateSchema = SchemaFactory.createForClass(ProcessTemplateDoc);

@@ -34,6 +34,7 @@ export class Step {
         this.tasks = step.tasks;
         this.pictureUris = step.pictureUris;
         this.videoUris = step.videoUris;
+        this.estimatedTime = step.estimatedTime;
         
         this.timeTaken = step.timeTaken;
     }

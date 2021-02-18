@@ -1,6 +1,7 @@
+import { EditProcessDto } from './../../dto/process/editProcessDto';
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
-import { EditProcessDto } from 'src/dto/process/editProcessDto';
+import { CreateProcessDto } from 'src/dto/process/createProcessDto';
 import { Process } from 'src/models/process.model';
 import { ProcessesService } from './processes.service';
 
@@ -23,12 +24,6 @@ export class ProcessesController {
     }
 
     @ApiOkResponse({ type: Process })
-    @Post()
-    create(@Body() editProcessDto: EditProcessDto) {
-        return this.processesService.create(editProcessDto);
-    }
-
-    @ApiOkResponse({ type: Process })
     @Get(':processId')
     getById(@Param('processId') processId: string) {
         let process = this.processesService.getById(processId);
@@ -37,19 +32,54 @@ export class ProcessesController {
     }
 
     @ApiOkResponse({ type: Process })
+    @Post()
+    async create(@Body() createProcessDto: CreateProcessDto) {
+        let process = await this.processesService.create(createProcessDto);
+        if (process == null) throw new NotFoundException('Template not found!');
+        return process;
+    }
+
+    @ApiOkResponse({ type: Process })
     @Put(':processId')
-    edit(@Param('processId') processId: string, @Body() editProcessDto: EditProcessDto) {
-        let process = this.processesService.edit(processId, editProcessDto);
-        if (process == null) throw new NotFoundException('Process not found!');
+    async edit(@Param('processId') processId: string, @Body() editProcessDto: EditProcessDto) {
+        if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
+        let process = await this.processesService.edit(processId, editProcessDto);
         return process;
     }
 
     @ApiOkResponse()
     @Delete(':processId')
-    delete(@Param('processId') processId: string) {
-        let process = this.processesService.delete(processId);
-        if (process == null) throw new NotFoundException('Process not found!');
-        return process;
+    async delete(@Param('processId') processId: string) {
+        if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
+        return this.processesService.delete(processId);
+    }
+
+    @ApiOkResponse()
+    @Put(':processId/start')
+    async start(@Param('processId') processId: string, @Body('userId') userId: string) {
+        if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
+        return this.processesService.start(processId, userId);
+    }
+
+    @ApiOkResponse()
+    @Put(':processId/stop')
+    async stop(@Param('processId') processId: string) {
+        if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
+        return this.processesService.stop(processId);
+    }
+
+    @ApiOkResponse()
+    @Put(':processId/assign')
+    async assign(@Param('processId') processId: string, @Body('assigneeId') assigneeId: string) {
+        if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
+        return this.processesService.assign(processId, assigneeId);
+    }
+
+    @ApiOkResponse()
+    @Put(':processId/finish')
+    async finish(@Param('processId') processId: string) {
+        if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
+        return this.processesService.finish(processId, undefined);
     }
 }
 
