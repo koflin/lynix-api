@@ -17,7 +17,9 @@ export class OrderDoc extends Document {
     @Prop()
     name: string;
     @Prop()
-    description?: string;
+    description?: object;
+    @Prop()
+    deliveryDate: Date;
 
     @Prop([raw({
         templateId: { type: String },

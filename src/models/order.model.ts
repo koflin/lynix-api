@@ -13,7 +13,9 @@ export class Order {
     @ApiProperty()
     name: string;
     @ApiProperty()
-    description: string;
+    description: object;
+    @ApiProperty()
+    deliveryDate: Date;
 
     @ApiProperty()
     products: {
@@ -26,6 +28,7 @@ export class Order {
         this.companyId = order.companyId;
         this.name = order.name;
         this.description = order.description;
+        this.deliveryDate = order.deliveryDate;
 
         this.products = productTemplates.map((template, index) => {
             return {

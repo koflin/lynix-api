@@ -8,7 +8,7 @@ export class EditOrderDto extends EditBaseDto {
     @ApiProperty()
     name: string;
     @ApiProperty()
-    description: string;
+    description: object;
 
     @ApiProperty()
     products: {
