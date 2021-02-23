@@ -5,8 +5,6 @@ import { Document } from "mongoose";
 @Schema()
 export class RoleDoc extends Document {
     @Prop()
-    id: string;
-    @Prop()
     companyId: string;
 
     @Prop()

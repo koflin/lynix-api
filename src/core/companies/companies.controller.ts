@@ -1,11 +1,14 @@
-import { Controller, Get, Post, Body, Param, NotFoundException, Patch, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, NotFoundException, Patch, Delete, Put, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { Company } from 'src/models/company.model';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from 'src/dto/company/createCompanyDto';
 import { EditCompanyDto } from 'src/dto/company/editCompanyDto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
 
 @ApiTags('companies')
+@UseGuards(JwtAuthGuard)
 @Controller('companies')
 export class CompaniesController {
 
@@ -26,7 +29,7 @@ export class CompaniesController {
 
     @ApiOkResponse({ type: Company })
     @Get(':companyId')
-    getById(@Param('companyId') companyId: string) {
+    getById(@Param('companyId', new ParseIdPipe()) companyId: string) {
         let company = this.companyService.getById(companyId);
         if (company == null) throw new NotFoundException('Company not found!');
         return company;
@@ -34,7 +37,7 @@ export class CompaniesController {
 
     @ApiOkResponse({ type: Company })
     @Put(':companyId')
-    edit(@Param('companyId') companyId: string, @Body() editCompanyDto: EditCompanyDto) {
+    edit(@Param('companyId', new ParseIdPipe()) companyId: string, @Body() editCompanyDto: EditCompanyDto) {
         let company = this.companyService.edit(companyId, editCompanyDto);
         if (company == null) throw new NotFoundException('Company not found!');
         return company;
@@ -42,7 +45,7 @@ export class CompaniesController {
 
     @ApiOkResponse()
     @Delete(':companyId')
-    delete(@Param('companyId') companyId: string) {
+    delete(@Param('companyId', new ParseIdPipe()) companyId: string) {
         let company = this.companyService.delete(companyId);
         if (company == null) throw new NotFoundException('Company not found!');
         return company;

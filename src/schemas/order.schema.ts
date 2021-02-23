@@ -8,12 +8,10 @@ import { string } from "@hapi/joi";
 @Schema()
 export class OrderDoc extends Document {
     @Prop()
-    id: string;
-    @Prop()
     companyId: string;
 
     @Prop()
-    status: string;
+    status: 'in_preparation' | 'released' | 'in_progress' | 'completed';
     @Prop()
     name: string;
     @Prop()
@@ -21,10 +19,7 @@ export class OrderDoc extends Document {
     @Prop()
     deliveryDate: Date;
 
-    @Prop([raw({
-        templateId: { type: String },
-        quantity: { type: Number }
-    })])
+    @Prop()
     products: {
         templateId: string;
         quantity: number;

@@ -1,11 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BaseDto } from "../base/baseDto";
-import { EditBaseDto } from "../base/editBase";
-import { EditStepDto } from "../step/editStepDto";
+import { IsMongoId, IsNotEmpty } from "class-validator";
 
-export class CreateProcessDto extends EditBaseDto {
+export class CreateProcessDto {
     @ApiProperty()
+    @IsNotEmpty()
+    @IsMongoId()
     orderId: string;
     @ApiProperty()
+    @IsNotEmpty()
+    @IsMongoId()
     templateId: string;
 }

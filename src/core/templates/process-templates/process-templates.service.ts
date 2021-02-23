@@ -1,3 +1,4 @@
+import { User } from './../../../models/user.model';
 import { EditProcessTemplateDto } from './../../../dto/processTemplate/editProcessTemplateDto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -24,9 +25,11 @@ export class ProcessTemplatesService {
         return processDoc == null ? null : new ProcessTemplate(processDoc);
     }
 
-    async create(processDto: EditProcessTemplateDto): Promise<ProcessTemplate> {
+    async create(processDto: EditProcessTemplateDto, user: User): Promise<ProcessTemplate> {
         let processDoc = new this.processTemplateModel(processDto);
-        return new ProcessTemplate(await processDoc.save());
+        processDoc.companyId = user.companyId;
+        await processDoc.save();
+        return this.getById(processDoc._id);
     }
 
     async edit(id: string, processDto: EditProcessTemplateDto): Promise<ProcessTemplate> {

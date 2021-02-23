@@ -18,16 +18,7 @@ export class ProcessTemplateDoc extends Document {
     @Prop([String])
     previousComments?: string[];
 
-    @Prop([{
-        title: { type: String },
-        materials: { type: [String] },
-        toolIds: { type: [String]  },
-        keyMessage: { type: String },
-        tasks: { type: String },
-        pictureUris: { type: [String] },
-        videoUris: { type: [String] },
-        estimatedTime: { type: Number }
-    }])
+    @Prop()
     stepTemplates: StepTemplate[];
 }
 

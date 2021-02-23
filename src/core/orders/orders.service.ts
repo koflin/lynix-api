@@ -36,12 +36,12 @@ export class OrdersService {
     async create(orderDto: EditOrderDto): Promise<Order> {
         let orderDoc = new this.orderModel(orderDto);
         await orderDoc.save();
-        return this.getById(orderDoc.id);
+        return this.getById(orderDoc._id);
     }
 
     async edit(id: string, orderDto: EditOrderDto): Promise<Order> {
         let orderDoc = await this.orderModel.findByIdAndUpdate(id, {
-            ...orderDto,
+            ...orderDto
         }, { new: true, omitUndefined: true });
 
         await orderDoc.save();

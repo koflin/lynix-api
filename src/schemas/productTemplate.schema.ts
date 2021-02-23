@@ -12,10 +12,7 @@ export class ProductTemplateDoc extends Document {
     @Prop()
     name: string;
 
-    @Prop([{
-        templateId: { type: String },
-        quantity: { type: Number }
-    }])
+    @Prop()
     processes: {
         templateId: string;
         quantity: number;

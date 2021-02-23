@@ -5,10 +5,11 @@ import { User } from 'src/models/user.model';
 import { CreateUserDto } from 'src/dto/user/createUserDto';
 import { EditUserDto } from 'src/dto/user/editUserDto';
 import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
+import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
 
 @ApiTags('users')
 @ApiBearerAuth()
-//@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
     constructor(private usersService: UsersService) {
@@ -27,7 +28,8 @@ export class UsersController {
 
     @ApiOkResponse({ type: User })
     @Post()
-    create(@Body() creatUserDto: CreateUserDto) {
+    create(@Request() req: { user: User }, @Body() creatUserDto: CreateUserDto) {
+        creatUserDto.companyId = req.user.companyId;
         return this.usersService.create(creatUserDto);
     }
 
@@ -39,7 +41,7 @@ export class UsersController {
 
     @ApiOkResponse({ type: User })
     @Get(':userId')
-    getById(@Param('userId') userId: string) {
+    getById(@Param('userId', new ParseIdPipe()) userId: string) {
         let user = this.usersService.getById(userId);
         if (user == null) throw new NotFoundException('User not found!');
         return user;
@@ -47,7 +49,7 @@ export class UsersController {
 
     @ApiOkResponse({ type: User })
     @Put(':userId')
-    edit(@Param('userId') userId: string, @Body() editUserDto: EditUserDto) {
+    edit(@Param('userId', new ParseIdPipe()) userId: string, @Body() editUserDto: EditUserDto) {
         let user = this.usersService.edit(userId, editUserDto);
         if (user == null) throw new NotFoundException('User not found!');
         return user;
@@ -55,7 +57,7 @@ export class UsersController {
 
     @ApiOkResponse()
     @Delete(':userId')
-    delete(@Param('userId') userId: string) {
+    delete(@Param('userId', new ParseIdPipe()) userId: string) {
         let user = this.usersService.delete(userId);
         if (user == null) throw new NotFoundException('User not found!');
         return user;

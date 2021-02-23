@@ -10,8 +10,6 @@ import { ProcessTemplate } from 'src/models/processTemplate';
 @Schema()
 export class ProcessDoc extends Document {
     @Prop()
-    id: string;
-    @Prop()
     companyId: string;
 
     @Prop()
@@ -44,7 +42,7 @@ export class ProcessDoc extends Document {
     @Prop()
     assignedUserId: string;
 
-    @Prop([StepDoc])
+    @Prop()
     steps: StepDoc[];
 }
 

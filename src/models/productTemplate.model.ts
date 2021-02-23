@@ -22,14 +22,14 @@ export class ProductTemplate {
     }[];
 
     constructor(product: ProductTemplateDoc, processes: ProcessTemplate[]) {
-        this.id = product.id;
+        this.id = product._id;
         this.companyId = product.companyId;
         this.name = product.name;
         
-        this.processes = processes.map((process, index) => {
+        this.processes = product.processes.map((process, index) => {
             return {
-                template: process,
-                quantity: product.processes[index].quantity
+                template: processes[index],
+                quantity: process.quantity
             };
         });
     }

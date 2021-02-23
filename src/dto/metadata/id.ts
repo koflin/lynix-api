@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BaseDto } from "./baseDto";
+import { IsMongoId } from "class-validator";
 
-export class EditBaseDto extends BaseDto {
+export class Id {
     @ApiProperty()
+    @IsMongoId()
     id: string;
 }

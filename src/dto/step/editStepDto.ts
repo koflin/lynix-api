@@ -1,7 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { EditBaseDto } from "../base/editBase";
+import { IsNotEmpty, IsNumber } from "class-validator";
 
-export class EditStepDto extends EditBaseDto {
+export class EditStepDto {
     @ApiProperty()
+    @IsNotEmpty()
+    @IsNumber()
     timeTaken: number;
 }

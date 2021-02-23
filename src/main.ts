@@ -4,6 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { json } from 'body-parser';
 import dotenv from 'dotenv';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -35,6 +36,10 @@ async function bootstrap() {
   app.use(json({ limit: '50mb' }));
   app.enableCors();
   app.setGlobalPrefix(versionPrefix);
+
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+  }));
 
   await app.listen(config.get('port'));
 }

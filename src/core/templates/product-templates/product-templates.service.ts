@@ -38,10 +38,11 @@ export class ProductTemplatesService {
         return null;
     }
 
-    async create(productDto: EditProductTemplateDto): Promise<ProductTemplate> {
+    async create(productDto: EditProductTemplateDto, user: User): Promise<ProductTemplate> {
         let productDoc = new this.productModel(productDto);
+        productDoc.companyId = user.companyId;
         await productDoc.save();
-        return this.getById(productDoc.id);
+        return this.getById(productDoc._id);
     }
 
     async edit(id: string, productDto: EditProductTemplateDto): Promise<ProductTemplate> {
@@ -50,7 +51,7 @@ export class ProductTemplatesService {
         }, { new: true, omitUndefined: true });
 
         await productDoc.save();
-        return this.getById(productDoc.id);
+        return this.getById(productDoc._id);
     }
 
     async delete(id: string): Promise<void> {

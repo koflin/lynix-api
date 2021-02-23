@@ -10,7 +10,7 @@ export class Tool {
     name: string;
 
     constructor(tool: ToolDoc) {
-        this.id = tool.id;
+        this.id = tool._id;
         this.companyId = tool.companyId;
         this.name = tool.name;
     }

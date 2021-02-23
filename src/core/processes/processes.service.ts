@@ -8,6 +8,7 @@ import { CreateProcessDto } from 'src/dto/process/createProcessDto';
 import { Process } from 'src/models/process.model';
 import { ProcessDoc } from 'src/schemas/process.schema';
 import { ProcessTemplatesService } from '../templates/process-templates/process-templates.service';
+import { User } from 'src/models/user.model';
 
 @Injectable()
 export class ProcessesService {
@@ -70,15 +71,15 @@ export class ProcessesService {
         return null;
     }
 
-    async create(processDto: CreateProcessDto): Promise<Process> {
+    async create(processDto: CreateProcessDto, user: User): Promise<Process> {
         let processDoc = new this.processModel(processDto);
         let templateDoc = await this.processTemplatesService.getById(processDoc.templateId);
 
         if (templateDoc == null) {
             return null;
         }
-        
-        processDoc.companyId = templateDoc.companyId;
+
+        processDoc.companyId = user.companyId;
 
         processDoc.status = 'released';
         processDoc.estimatedTime = templateDoc.stepTemplates.reduce((total, step) => total + (step.estimatedTime ? step.estimatedTime : 0), 0);

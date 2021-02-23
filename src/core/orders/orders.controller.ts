@@ -1,12 +1,16 @@
-import { Controller, Post, Body, Delete, Get, NotFoundException, Param, Put, Query } from '@nestjs/common';
+import { ParseIdPipe } from './../../pipes/parse-id.pipe';
+import { Controller, Post, Body, Delete, Get, NotFoundException, Param, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { Order } from 'src/models/order.model';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { EditOrderDto } from 'src/dto/order/editOrderDto';
+import { User } from 'src/models/user.model';
+import { Id } from 'src/dto/metadata/id';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('orders')
 @ApiBearerAuth()
-//@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('orders')
 export class OrdersController {
     constructor(
@@ -28,7 +32,7 @@ export class OrdersController {
 
     @ApiOkResponse({ type: Order })
     @Get(':orderId')
-    getById(@Param('orderId') orderId: string) {
+    getById(@Param('orderId', new ParseIdPipe()) orderId: string) {
         let order = this.ordersService.getById(orderId);
         if (order == null) throw new NotFoundException('Order not found!');
         return order;
@@ -36,7 +40,7 @@ export class OrdersController {
 
     @ApiOkResponse({ type: Order })
     @Put(':orderId')
-    edit(@Param('orderId') orderId: string, @Body() editOrderDto: EditOrderDto) {
+    edit(@Param('orderId', new ParseIdPipe()) orderId: string, @Body() editOrderDto: EditOrderDto) {
         let order = this.ordersService.edit(orderId, editOrderDto);
         if (order == null) throw new NotFoundException('Order not found!');
         return order;
@@ -44,7 +48,7 @@ export class OrdersController {
 
     @ApiOkResponse()
     @Delete(':orderId')
-    delete(@Param('orderId') orderId: string) {
+    delete(@Param('orderId', new ParseIdPipe()) orderId: string) {
         let order = this.ordersService.delete(orderId);
         if (order == null) throw new NotFoundException('Order not found!');
         return order;
