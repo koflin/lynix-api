@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsNumber, IsOptional, IsString, IsUrl, ValidateNested } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString, IsUrl, ValidateNested, IsObject } from 'class-validator';
 
 export class EditStepTemplateDto {
     @ApiProperty()
@@ -17,12 +17,12 @@ export class EditStepTemplateDto {
     toolIds: string[];
     @ApiProperty()
     @IsOptional()
-    @IsString()
-    keyMessage: string;
+    @IsObject()
+    keyMessage: object;
     @ApiProperty()
     @IsOptional()
-    @IsString()
-    tasks: string;
+    @IsObject()
+    tasks: object;
     @ApiProperty()
     @IsOptional()
     @IsUrl({}, { each: true })

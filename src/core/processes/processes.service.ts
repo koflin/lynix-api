@@ -20,14 +20,30 @@ export class ProcessesService {
     async start(id: string, userId: string) {
         let processDoc = await this.processModel.findById(id).exec();
 
-        processDoc.status = 'in_progress';
-        processDoc.isOccupied = true;
         processDoc.isRunning = true;
         processDoc.save();
         return;
     }
 
     async stop(id: string) {
+        let processDoc = await this.processModel.findById(id).exec();
+
+        processDoc.isRunning = false;
+        processDoc.save();
+        return;
+    }
+
+    async enter(id: string) {
+        let processDoc = await this.processModel.findById(id).exec();
+
+        processDoc.status = 'in_progress';
+        processDoc.isOccupied = true;
+        processDoc.isRunning = false;
+        processDoc.save();
+        return;
+    }
+
+    async exit(id: string) {
         let processDoc = await this.processModel.findById(id).exec();
 
         processDoc.isOccupied = false;
@@ -120,9 +136,10 @@ export class ProcessesService {
     }
 
     async updateRunning(): Promise<void> {
-        await this.processModel.find({ isRunning: true }, (err, doc) => {
+        await this.processModel.find({ isRunning: true, currentStepIndex: { $ne: null }}, (err, doc) => {
             doc.forEach((doc) => {
                 doc.timeTaken += 1;
+                doc.steps[doc.currentStepIndex].timeTaken += 1;
                 doc.save();
             });
         });

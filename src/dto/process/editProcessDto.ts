@@ -5,10 +5,6 @@ export class EditProcessDto {
     @ApiProperty()
     @IsOptional()
     @IsNumber()
-    timeTaken: number;
-    @ApiProperty()
-    @IsOptional()
-    @IsNumber()
     currentStepIndex: number;
     @ApiProperty()
     @IsOptional()

@@ -56,6 +56,19 @@ export class ProcessesController {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
         return this.processesService.delete(processId);
     }
+    @ApiOkResponse()
+    @Put(':processId/enter')
+    async enter(@Param('processId', new ParseIdPipe()) processId: string) {
+        if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
+        return this.processesService.enter(processId);
+    }
+
+    @ApiOkResponse()
+    @Put(':processId/exit')
+    async exit(@Param('processId', new ParseIdPipe()) processId: string) {
+        if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
+        return this.processesService.exit(processId);
+    }
 
     @ApiOkResponse()
     @Put(':processId/start')

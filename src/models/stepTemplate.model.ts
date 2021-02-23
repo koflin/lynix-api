@@ -10,9 +10,9 @@ export class StepTemplate {
     @ApiProperty()
     toolIds: string[];
     @ApiProperty()
-    keyMessage: string;
+    keyMessage: object;
     @ApiProperty()
-    tasks: string;
+    tasks: object;
     @ApiProperty()
     pictureUris?: string[];
     @ApiProperty()

@@ -42,7 +42,7 @@ export class ProcessDoc extends Document {
     @Prop()
     assignedUserId: string;
 
-    @Prop()
+    @Prop([StepDoc])
     steps: StepDoc[];
 }
 

@@ -49,8 +49,6 @@ export class OrdersController {
     @ApiOkResponse()
     @Delete(':orderId')
     delete(@Param('orderId', new ParseIdPipe()) orderId: string) {
-        let order = this.ordersService.delete(orderId);
-        if (order == null) throw new NotFoundException('Order not found!');
-        return order;
+        return this.ordersService.delete(orderId);
     }
 }

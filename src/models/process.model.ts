@@ -44,6 +44,7 @@ export class Process {
     constructor(process: ProcessDoc) {
         this.id = process._id;
         this.companyId = process.companyId;
+        this.orderId = process.orderId;
         this.templateId = process.templateId;
 
         this.name = process.name;
