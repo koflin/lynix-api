@@ -1,3 +1,4 @@
+import { OrdersModule } from './../orders/orders.module';
 import { Module } from '@nestjs/common';
 import { ProcessesService } from './processes.service';
 import { ProcessesController } from './processes.controller';
@@ -10,7 +11,8 @@ import { ProcessTemplatesModule } from '../templates/process-templates/process-t
     MongooseModule.forFeature([{
       name: ProcessDoc.name, schema: ProcessSchema, collection: 'processes'
     }]),
-    ProcessTemplatesModule
+    ProcessTemplatesModule,
+    OrdersModule
   ],
   providers: [ProcessesService],
   controllers: [ProcessesController],

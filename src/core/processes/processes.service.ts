@@ -9,12 +9,14 @@ import { Process } from 'src/models/process.model';
 import { ProcessDoc } from 'src/schemas/process.schema';
 import { ProcessTemplatesService } from '../templates/process-templates/process-templates.service';
 import { User } from 'src/models/user.model';
+import { OrdersService } from '../orders/orders.service';
 
 @Injectable()
 export class ProcessesService {
     constructor(
         @InjectModel(ProcessDoc.name) private processModel: Model<ProcessDoc>,
-        private processTemplatesService: ProcessTemplatesService
+        private processTemplatesService: ProcessTemplatesService,
+        private orderService: OrdersService
     ) { }
 
     async start(id: string, userId: string) {
@@ -79,9 +81,10 @@ export class ProcessesService {
 
     async getById(id: string): Promise<Process> {
         let processDoc = await this.processModel.findById(id).exec();
+        let order = await this.orderService.getById(processDoc.orderId);
         
         if (processDoc) {
-            return new Process(processDoc);
+            return new Process(processDoc, order);
         }
 
         return null;
@@ -90,6 +93,7 @@ export class ProcessesService {
     async create(processDto: CreateProcessDto, user: User): Promise<Process> {
         let processDoc = new this.processModel(processDto);
         let templateDoc = await this.processTemplatesService.getById(processDoc.templateId);
+        let order = await this.orderService.getById(processDoc.orderId);
 
         if (templateDoc == null) {
             return null;
@@ -115,7 +119,7 @@ export class ProcessesService {
         processDoc.isOccupied = false;
         processDoc.isRunning = false;
 
-        return new Process(await processDoc.save());
+        return new Process(await processDoc.save(), order);
     }
 
     async edit(id: string, processDto: EditProcessDto): Promise<Process> {

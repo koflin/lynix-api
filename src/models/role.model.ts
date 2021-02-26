@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { RoleDoc } from "src/schemas/role.schema";
 
 export class Role {
     @ApiProperty()
@@ -9,7 +10,19 @@ export class Role {
     @ApiProperty()
     name: string;
     @ApiProperty()
-    premissions: Permission[];
+    permissions: Permission[];
+
+    constructor(doc: RoleDoc) {
+        this.id = doc.id;
+        this.companyId = doc.companyId;
+        this.name = doc.name;
+        this.permissions = doc.permissions;
+    }
 }
 
-export type Permission = 'view' | 'execute' | 'edit' | 'assign';
+export enum Permission {
+    VIEW = 'view',
+    EXECUTE = 'execute',
+    EDIT = 'edit',
+    ASSIGN = 'assign'
+}

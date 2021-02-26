@@ -1,6 +1,8 @@
+import { OrderDoc } from './../schemas/order.schema';
 import { ApiProperty } from "@nestjs/swagger";
 import { ProcessDoc } from "src/schemas/process.schema";
 import { StepDoc } from "src/schemas/step.schema";
+import { Order } from "./order.model";
 import { ProcessTemplate } from "./processTemplate";
 import { Step } from "./step.model";
 
@@ -11,7 +13,7 @@ export class Process {
     companyId: string;
 
     @ApiProperty()
-    orderId: string;
+    order: Order;
     @ApiProperty()
     templateId: string;
 
@@ -41,10 +43,10 @@ export class Process {
     @ApiProperty()
     steps: Step[];
 
-    constructor(process: ProcessDoc) {
+    constructor(process: ProcessDoc, order: Order) {
         this.id = process._id;
         this.companyId = process.companyId;
-        this.orderId = process.orderId;
+        this.order = order;
         this.templateId = process.templateId;
 
         this.name = process.name;

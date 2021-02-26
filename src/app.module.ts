@@ -16,6 +16,7 @@ import { ProductTemplatesModule } from './core/templates/product-templates/produ
 import { ProcessesModule } from './core/processes/processes.module';
 import { TasksModule } from './core/tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { RolesModule } from './core/roles/roles.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     ProductTemplatesModule,
     ProcessesModule,
     TasksModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

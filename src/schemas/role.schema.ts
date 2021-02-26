@@ -1,3 +1,4 @@
+import { Permission } from './../models/role.model';
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
@@ -10,7 +11,7 @@ export class RoleDoc extends Document {
     @Prop()
     name: string;
     @Prop([String])
-    permissions: string[];
+    permissions: Permission[];
 }
 
 export const RoleSchema = SchemaFactory.createForClass(RoleDoc);

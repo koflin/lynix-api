@@ -15,7 +15,7 @@ export class AuthService {
 
         // Change to encrypted
         if (user && user.passwordEncrypted === password) {
-            return new User(user);
+            return this.usersService.getById(user.id);
         }
 
         return null;
