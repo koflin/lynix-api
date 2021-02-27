@@ -7,6 +7,8 @@ import { EditOrderDto } from 'src/dto/order/editOrderDto';
 import { User } from 'src/models/user.model';
 import { Id } from 'src/dto/metadata/id';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Permissions } from '../auth/permissions.decorator';
+import { Permission } from 'src/models/role.model';
 
 @ApiTags('orders')
 @ApiBearerAuth()
@@ -19,18 +21,21 @@ export class OrdersController {
 
     @ApiOkResponse({ type: [Order] })
     @ApiQuery({ name: 'companyId', required: false })
+    @Permissions(Permission.VIEW)
     @Get()
     getAll(@Query() filter: { companyId: string }) {
         return this.ordersService.getAll(filter);
     }
 
     @ApiOkResponse({ type: Order })
+    @Permissions(Permission.EDIT)
     @Post()
     create(@Body() editOrderDto: EditOrderDto) {
         return this.ordersService.create(editOrderDto);
     }
 
     @ApiOkResponse({ type: Order })
+    @Permissions(Permission.VIEW)
     @Get(':orderId')
     getById(@Param('orderId', new ParseIdPipe()) orderId: string) {
         let order = this.ordersService.getById(orderId);
@@ -39,6 +44,7 @@ export class OrdersController {
     }
 
     @ApiOkResponse({ type: Order })
+    @Permissions(Permission.EDIT)
     @Put(':orderId')
     edit(@Param('orderId', new ParseIdPipe()) orderId: string, @Body() editOrderDto: EditOrderDto) {
         let order = this.ordersService.edit(orderId, editOrderDto);
@@ -47,6 +53,7 @@ export class OrdersController {
     }
 
     @ApiOkResponse()
+    @Permissions(Permission.EDIT)
     @Delete(':orderId')
     delete(@Param('orderId', new ParseIdPipe()) orderId: string) {
         return this.ordersService.delete(orderId);

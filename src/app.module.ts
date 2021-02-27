@@ -34,6 +34,7 @@ import { RolesModule } from './core/roles/roles.module';
     }),
     MongooseModule.forRoot(`mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}/${process.env.DATABASE_DB}?authSource=${process.env.DATABASE_AUTH_DB}`, {
       useFindAndModify: false,
+      
     }),
     ScheduleModule.forRoot(),
     CompaniesModule,

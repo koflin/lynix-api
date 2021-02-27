@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/models/user.model';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { use } from 'passport';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +32,8 @@ export class AuthService {
             user: {
                 id: user.id,
                 companyId: user.companyId,
-                username: user.username
+                username: user.username,
+                permissions: user.role.permissions
             }
         };
 
