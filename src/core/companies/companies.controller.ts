@@ -6,9 +6,10 @@ import { CreateCompanyDto } from 'src/dto/company/createCompanyDto';
 import { EditCompanyDto } from 'src/dto/company/editCompanyDto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
+import { PermissionsGuard } from '../auth/permissions.guard';
 
 @ApiTags('companies')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller('companies')
 export class CompaniesController {
 

@@ -6,10 +6,14 @@ import { CreateUserDto } from 'src/dto/user/createUserDto';
 import { EditUserDto } from 'src/dto/user/editUserDto';
 import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
+import { CompaniesGuard } from '../companies/companies.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
+import { Permission } from 'src/models/role.model';
 
 @ApiTags('users')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
 @Controller('users')
 export class UsersController {
     constructor(private usersService: UsersService) {
@@ -17,6 +21,7 @@ export class UsersController {
 
     @ApiOkResponse({ type: [User] })
     @ApiQuery({ name: 'companyId', required: false })
+    @Permissions(Permission.VIEW)
     @Get()
     getAll(@Query() filter: { companyId: string, username: string, permissions: string[] }) {
         if (filter.username) {
@@ -27,6 +32,7 @@ export class UsersController {
     }
 
     @ApiOkResponse({ type: User })
+    @Permissions(Permission.EDIT)
     @Post()
     create(@Request() req: { user: User }, @Body() creatUserDto: CreateUserDto) {
         creatUserDto.companyId = req.user.companyId;
@@ -40,6 +46,7 @@ export class UsersController {
     }
 
     @ApiOkResponse({ type: User })
+    @Permissions(Permission.VIEW)
     @Get(':userId')
     getById(@Param('userId', new ParseIdPipe()) userId: string) {
         let user = this.usersService.getById(userId);
@@ -48,6 +55,7 @@ export class UsersController {
     }
 
     @ApiOkResponse({ type: User })
+    @Permissions(Permission.EDIT)
     @Put(':userId')
     edit(@Param('userId', new ParseIdPipe()) userId: string, @Body() editUserDto: EditUserDto) {
         let user = this.usersService.edit(userId, editUserDto);
@@ -56,6 +64,7 @@ export class UsersController {
     }
 
     @ApiOkResponse()
+    @Permissions(Permission.EDIT)
     @Delete(':userId')
     delete(@Param('userId', new ParseIdPipe()) userId: string) {
         let user = this.usersService.delete(userId);

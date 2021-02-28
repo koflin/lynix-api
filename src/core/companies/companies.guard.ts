@@ -1,8 +1,9 @@
 import { User } from 'src/models/user.model';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Collection, Connection } from 'mongoose';
+import * as mongoose from 'mongoose';
 
 @Injectable()
 export class CompaniesGuard implements CanActivate {
@@ -16,7 +17,8 @@ export class CompaniesGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const id = context.switchToHttp().getRequest().params[0];
+    const params = context.switchToHttp().getRequest().params;
+    const id = params[Object.keys(params)[0]];
 
     if (!id) {
       return true;
@@ -24,8 +26,19 @@ export class CompaniesGuard implements CanActivate {
 
     const user: User = context.switchToHttp().getRequest().user;
 
-    return Promise.all(
-      this.connecti
-    )
+    return new Promise(async (resolve) => {
+      const collections = await this.connection.db.collections();
+      
+      for (let col of collections) {
+        let result = await col.findOne({ "_id": new mongoose.Types.ObjectId(id) });
+
+        if (result && result.companyId == user.companyId) {
+          resolve(true);
+          return;
+        }
+      }
+
+      resolve(false);
+    });
   }
 }

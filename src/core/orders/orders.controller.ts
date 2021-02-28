@@ -9,10 +9,12 @@ import { Id } from 'src/dto/metadata/id';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Permissions } from '../auth/permissions.decorator';
 import { Permission } from 'src/models/role.model';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { CompaniesGuard } from '../companies/companies.guard';
 
 @ApiTags('orders')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
 @Controller('orders')
 export class OrdersController {
     constructor(
@@ -21,7 +23,7 @@ export class OrdersController {
 
     @ApiOkResponse({ type: [Order] })
     @ApiQuery({ name: 'companyId', required: false })
-    @Permissions(Permission.VIEW)
+    @Permissions(Permission.VIEW, Permission.EXECUTE, Permission.EDIT, Permission.ASSIGN)
     @Get()
     getAll(@Query() filter: { companyId: string }) {
         return this.ordersService.getAll(filter);
@@ -30,8 +32,8 @@ export class OrdersController {
     @ApiOkResponse({ type: Order })
     @Permissions(Permission.EDIT)
     @Post()
-    create(@Body() editOrderDto: EditOrderDto) {
-        return this.ordersService.create(editOrderDto);
+    create(@Request() req: { user: User }, @Body() editOrderDto: EditOrderDto) {
+        return this.ordersService.create(editOrderDto, req.user);
     }
 
     @ApiOkResponse({ type: Order })

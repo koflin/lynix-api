@@ -1,15 +1,19 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
+import { Permissions } from 'src/core/auth/permissions.decorator';
+import { PermissionsGuard } from 'src/core/auth/permissions.guard';
+import { CompaniesGuard } from 'src/core/companies/companies.guard';
 import { EditProcessTemplateDto } from 'src/dto/processTemplate/editProcessTemplateDto';
 import { ProcessTemplate } from 'src/models/processTemplate';
+import { Permission } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
 import { ProcessTemplatesService } from './process-templates.service';
 
 @ApiTags('process-templates')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
 @Controller('templates/process')
 export class ProcessTemplatesController {
     constructor(private processService: ProcessTemplatesService) {
@@ -17,18 +21,21 @@ export class ProcessTemplatesController {
 
     @ApiOkResponse({ type: [ProcessTemplate] })
     @ApiQuery({ name: 'companyId', required: false })
+    @Permissions(Permission.VIEW)
     @Get()
     getAll(@Query() filter: { companyId: string }) {
         return this.processService.getAll(filter);
     }
 
     @ApiOkResponse({ type: ProcessTemplate })
+    @Permissions(Permission.EDIT)
     @Post()
     create(@Request() req: { user: User }, @Body() editProcessDto: EditProcessTemplateDto) {
         return this.processService.create(editProcessDto, req.user);
     }
 
     @ApiOkResponse({ type: ProcessTemplate })
+    @Permissions(Permission.VIEW)
     @Get(':templateId')
     getById(@Param('templateId', new ParseIdPipe()) templateId: string) {
         let processTemplate = this.processService.getById(templateId);
@@ -37,6 +44,7 @@ export class ProcessTemplatesController {
     }
 
     @ApiOkResponse({ type: ProcessTemplate })
+    @Permissions(Permission.EDIT)
     @Put(':templateId')
     edit(@Param('templateId', new ParseIdPipe()) templateId: string, @Body() editProcessTemplateDto: EditProcessTemplateDto) {
         let processTemplate = this.processService.edit(templateId, editProcessTemplateDto);
@@ -45,6 +53,7 @@ export class ProcessTemplatesController {
     }
 
     @ApiOkResponse()
+    @Permissions(Permission.EDIT)
     @Delete(':templateId')
     delete(@Param('templateId', new ParseIdPipe()) templateId: string) {
         let processTemplate = this.processService.delete(templateId);

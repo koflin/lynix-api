@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { Order } from 'src/models/order.model';
 import { ProductTemplatesService } from '../templates/product-templates/product-templates.service';
 import { EditOrderDto } from 'src/dto/order/editOrderDto';
+import { User } from 'src/models/user.model';
 
 @Injectable()
 export class OrdersService {
@@ -33,8 +34,9 @@ export class OrdersService {
         return null;
     }
 
-    async create(orderDto: EditOrderDto): Promise<Order> {
+    async create(orderDto: EditOrderDto, user: User): Promise<Order> {
         let orderDoc = new this.orderModel(orderDto);
+        orderDoc.companyId = user.companyId;
         await orderDoc.save();
         return this.getById(orderDoc._id);
     }

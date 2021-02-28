@@ -29,8 +29,11 @@
     "@nestjs/mongoose": "^7.0.2",
     "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.0.0",
+    "@nestjs/platform-socket.io": "^7.6.13",
+    "@nestjs/platform-ws": "^7.6.13",
     "@nestjs/schedule": "^0.4.2",
     "@nestjs/swagger": "^4.7.13",
+    "@nestjs/websockets": "^7.6.13",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^8.2.0",
@@ -42,6 +45,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
+    "socket.io": "^3.1.2",
     "swagger-ui-express": "^4.1.4"
   },
   "devDependencies": {
@@ -56,6 +60,7 @@
     "@types/node": "^13.9.1",
     "@types/passport-jwt": "^3.0.3",
     "@types/passport-local": "^1.0.33",
+    "@types/socket.io": "^2.1.13",
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "3.0.2",
     "@typescript-eslint/parser": "3.0.2",

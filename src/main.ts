@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { json } from 'body-parser';
 import dotenv from 'dotenv';
 import { ValidationPipe } from '@nestjs/common';
+import { SocketIoAdapter } from './socket-io.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -40,6 +41,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
   }));
+
+  app.useWebSocketAdapter(new SocketIoAdapter(app, ["http://localhost:4200"]));
 
   await app.listen(config.get('port'));
 }

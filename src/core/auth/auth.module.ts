@@ -8,6 +8,7 @@ import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersModule } from '../users/users.module';
 import { PermissionsGuard } from './permissions.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { PermissionsGuard } from './permissions.guard';
     })
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, PermissionsGuard]
+  providers: [AuthService, LocalStrategy, JwtStrategy]
 })
 export class AuthModule {}

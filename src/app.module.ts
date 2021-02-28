@@ -17,6 +17,7 @@ import { ProcessesModule } from './core/processes/processes.module';
 import { TasksModule } from './core/tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RolesModule } from './core/roles/roles.module';
+import { EventGateway } from './core/events/event.gateway';
 
 @Module({
   imports: [
@@ -34,7 +35,6 @@ import { RolesModule } from './core/roles/roles.module';
     }),
     MongooseModule.forRoot(`mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}/${process.env.DATABASE_DB}?authSource=${process.env.DATABASE_AUTH_DB}`, {
       useFindAndModify: false,
-      
     }),
     ScheduleModule.forRoot(),
     CompaniesModule,
@@ -50,6 +50,6 @@ import { RolesModule } from './core/roles/roles.module';
     RolesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, EventGateway],
 })
 export class AppModule {}
