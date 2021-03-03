@@ -1,10 +1,10 @@
-import { RoleDoc } from 'src/schemas/role.schema';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { EditRoleDto } from 'src/dto/role/editRoleDto';
 import { Model } from 'mongoose';
+import { EditRoleDto } from 'src/dto/role/editRoleDto';
 import { Role } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
+import { RoleDoc } from 'src/schemas/role.schema';
 
 @Injectable()
 export class RolesService {

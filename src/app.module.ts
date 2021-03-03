@@ -1,23 +1,23 @@
-import { ToolsModule } from './core/tools/tools.module';
+import * as Joi from '@hapi/joi';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CompaniesModule } from './core/companies/companies.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
-import { OrdersModule } from './core/orders/orders.module';
-import { AuthModule } from './core/auth/auth.module';
 import configuration from './config/configuration';
-import * as Joi from '@hapi/joi';
-import { UsersModule } from './core/users/users.module';
+import { AuthModule } from './core/auth/auth.module';
+import { CompaniesModule } from './core/companies/companies.module';
 import { DevModule } from './core/dev/dev.module';
+import { OrdersModule } from './core/orders/orders.module';
+import { ProcessesModule } from './core/processes/processes.module';
+import { RolesModule } from './core/roles/roles.module';
+import { TasksModule } from './core/tasks/tasks.module';
 import { ProcessTemplatesModule } from './core/templates/process-templates/process-templates.module';
 import { ProductTemplatesModule } from './core/templates/product-templates/product-templates.module';
-import { ProcessesModule } from './core/processes/processes.module';
-import { TasksModule } from './core/tasks/tasks.module';
-import { ScheduleModule } from '@nestjs/schedule';
-import { RolesModule } from './core/roles/roles.module';
-import { EventGateway } from './core/events/event.gateway';
+import { ToolsModule } from './core/tools/tools.module';
+import { UsersModule } from './core/users/users.module';
 
 @Module({
   imports: [
@@ -50,6 +50,6 @@ import { EventGateway } from './core/events/event.gateway';
     RolesModule,
   ],
   controllers: [AppController],
-  providers: [AppService, EventGateway],
+  providers: [AppService],
 })
 export class AppModule {}

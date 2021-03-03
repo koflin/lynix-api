@@ -1,22 +1,23 @@
-import { EditProcessDto } from './../../dto/process/editProcessDto';
-import { ProductTemplateDoc } from 'src/schemas/productTemplate.schema';
-import { OrderDoc } from './../../schemas/order.schema';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateProcessDto } from 'src/dto/process/createProcessDto';
 import { Process } from 'src/models/process.model';
-import { ProcessDoc } from 'src/schemas/process.schema';
-import { ProcessTemplatesService } from '../templates/process-templates/process-templates.service';
 import { User } from 'src/models/user.model';
+import { ProcessDoc } from 'src/schemas/process.schema';
+
+import { EventGateway } from '../event/event.gateway';
 import { OrdersService } from '../orders/orders.service';
+import { ProcessTemplatesService } from '../templates/process-templates/process-templates.service';
+import { EditProcessDto } from './../../dto/process/editProcessDto';
 
 @Injectable()
 export class ProcessesService {
     constructor(
         @InjectModel(ProcessDoc.name) private processModel: Model<ProcessDoc>,
         private processTemplatesService: ProcessTemplatesService,
-        private orderService: OrdersService
+        private orderService: OrdersService,
+        private events: EventGateway
     ) { }
 
     async start(id: string, userId: string) {

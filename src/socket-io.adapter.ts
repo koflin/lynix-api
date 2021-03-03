@@ -1,9 +1,6 @@
 import { INestApplicationContext } from '@nestjs/common';
 import { isFunction, isNil } from '@nestjs/common/utils/shared.utils';
-import {
-  AbstractWsAdapter,
-  MessageMappingProperties,
-} from '@nestjs/websockets';
+import { AbstractWsAdapter, MessageMappingProperties } from '@nestjs/websockets';
 import { DISCONNECT_EVENT } from '@nestjs/websockets/constants';
 import { fromEvent, Observable } from 'rxjs';
 import { filter, first, map, mergeMap, share, takeUntil } from 'rxjs/operators';
@@ -21,7 +18,7 @@ export class SocketIoAdapter extends AbstractWsAdapter {
     port: number,
     options?: any & { namespace?: string; server?: any },
   ): any {
-    if (!options || options == {}) {
+    if (!options) {
       return this.createIOServer(port);
     }
     const { namespace, server, ...opt } = options;
@@ -32,29 +29,28 @@ export class SocketIoAdapter extends AbstractWsAdapter {
       : this.createIOServer(port, opt);
   }
 
-  public createIOServer(port: number, options?: any): any {
+  public createIOServer(port: number, options?: any): any {     
+    options = {
+      ...options,
+      cors: {
+        origin: this.corsOrigins,
+        methods: ['GET', 'POST'],
+        credentials: true,
+      },
+      cookie: {
+        httpOnly: true,
+        path: '/',
+      },
+      // Allow 1MB of data per request.
+      maxHttpBufferSize: 1e6,
+    };
+    
     if (this.httpServer && port === 0) {
-      const s = new Server(this.httpServer, {
-        cors: {
-          origin: this.corsOrigins,
-          methods: ['GET', 'POST'],
-          credentials: true,
-        },
-        // Allow 1MB of data per request.
-        maxHttpBufferSize: 1e6,
-      });
+      const s = new Server(this.httpServer, options);
 
       return s;
     }
-    return new Server(port, {
-        cors: {
-          origin: this.corsOrigins,
-          methods: ['GET', 'POST'],
-          credentials: true,
-        },
-        // Allow 1MB of data per request.
-        maxHttpBufferSize: 1e6,
-      });
+    return new Server(port, options);
   }
 
   public bindMessageHandlers(
