@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { CreateProcessDto } from 'src/dto/process/createProcessDto';
 import { Process } from 'src/models/process.model';
 import { User } from 'src/models/user.model';
 import { ProcessDoc } from 'src/schemas/process.schema';
 
 import { EventGateway } from '../event/event.gateway';
+import { Event } from '../event/event.model';
 import { OrdersService } from '../orders/orders.service';
 import { ProcessTemplatesService } from '../templates/process-templates/process-templates.service';
+import { UsersService } from '../users/users.service';
 import { EditProcessDto } from './../../dto/process/editProcessDto';
 
 @Injectable()
@@ -17,6 +19,7 @@ export class ProcessesService {
         @InjectModel(ProcessDoc.name) private processModel: Model<ProcessDoc>,
         private processTemplatesService: ProcessTemplatesService,
         private orderService: OrdersService,
+        private usersService: UsersService,
         private events: EventGateway
     ) { }
 
@@ -25,7 +28,7 @@ export class ProcessesService {
 
         processDoc.isRunning = true;
         processDoc.save();
-        return;
+        return processDoc;
     }
 
     async stop(id: string) {
@@ -33,7 +36,7 @@ export class ProcessesService {
 
         processDoc.isRunning = false;
         processDoc.save();
-        return;
+        return processDoc;
     }
 
     async enter(id: string) {
@@ -43,7 +46,7 @@ export class ProcessesService {
         processDoc.isOccupied = true;
         processDoc.isRunning = false;
         processDoc.save();
-        return;
+        return processDoc;
     }
 
     async exit(id: string) {
@@ -52,7 +55,7 @@ export class ProcessesService {
         processDoc.isOccupied = false;
         processDoc.isRunning = false;
         processDoc.save();
-        return;
+        return processDoc;
     }
 
     async assign(id: string, assignedId: string) {
@@ -60,7 +63,7 @@ export class ProcessesService {
 
         processDoc.assignedUserId = assignedId;
         processDoc.save();
-        return;
+        return processDoc;
     }
 
     async finish(id: string, assignedId: string) {
@@ -70,7 +73,7 @@ export class ProcessesService {
         processDoc.isOccupied = false;
         processDoc.isRunning = false;
         processDoc.save();
-        return;
+        return processDoc;
     }
 
     async getAll(filter: { companyId?: string, assignedUserId?: string, orderId?: string }): Promise<Process[]> {
@@ -143,8 +146,18 @@ export class ProcessesService {
     async updateRunning(): Promise<void> {
         await this.processModel.find({ isRunning: true, currentStepIndex: { $ne: null }}, (err, doc) => {
             doc.forEach((doc) => {
-                doc.timeTaken += 1;
-                doc.steps[doc.currentStepIndex].timeTaken += 1;
+                if (this.usersService.isActive(doc.assignedUserId)) {
+                    doc.timeTaken += 1;
+                    doc.steps[doc.currentStepIndex].timeTaken += 1;
+
+                    this.events.trigger(Event.PROCESS_GUIDE_TICK, doc.assignedUserId);
+                } else {
+                    doc.isRunning = false;
+                    doc.isOccupied  = false;
+
+                    this.events.triggerFor(Event.PROCESS_GUIDE_EXIT, { companyId: doc.companyId });
+                }
+
                 doc.save();
             });
         });

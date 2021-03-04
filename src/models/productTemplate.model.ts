@@ -1,8 +1,8 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { ProductTemplateDoc } from './../schemas/productTemplate.schema';
+import { ProcessTemplate } from './processTemplate';
 
-
-import { ApiProperty } from "@nestjs/swagger";
-import { ProcessTemplate } from "./processTemplate";
 
 /**
  * Represents a Product Template object
@@ -22,7 +22,7 @@ export class ProductTemplate {
     }[];
 
     constructor(product: ProductTemplateDoc, processes: ProcessTemplate[]) {
-        this.id = product._id;
+        this.id = product.id;
         this.companyId = product.companyId;
         this.name = product.name;
         

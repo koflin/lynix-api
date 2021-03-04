@@ -1,6 +1,7 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { UserDoc } from 'src/schemas/user.schema';
+
 import { Role } from './role.model';
-import { ApiProperty } from "@nestjs/swagger";
-import { UserDoc } from "src/schemas/user.schema";
 
 export class User {
     @ApiProperty()
@@ -20,7 +21,7 @@ export class User {
     avatar?: string;
 
     constructor(user: UserDoc, role: Role) {
-        this.id = user._id;
+        this.id = user.id;
         this.companyId = user.companyId;
         this.username = user.username;
         this.firstName = user.firstName;

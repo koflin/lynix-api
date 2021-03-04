@@ -3,6 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { AuthModule } from '../auth/auth.module';
 import { jwtConstants } from '../auth/constants';
+import { UsersModule } from './../users/users.module';
 import { EventGateway } from './event.gateway';
 
 @Module({
@@ -10,8 +11,11 @@ import { EventGateway } from './event.gateway';
     AuthModule,
     JwtModule.register({
       secret: jwtConstants.secret
-    })],
+    }),
+    UsersModule
+  ],
   providers: [EventGateway],
-  exports: [EventGateway]
+  exports: [EventGateway],
+  controllers: []
 })
 export class EventModule {}

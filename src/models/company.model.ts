@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { CompanyDoc } from "src/schemas/company.schema";
+import { ApiProperty } from '@nestjs/swagger';
+import { CompanyDoc } from 'src/schemas/company.schema';
 
 export class Company {
     @ApiProperty()
@@ -10,7 +10,7 @@ export class Company {
     logo: string;
 
     constructor(company: CompanyDoc) {
-        this.id = company._id;
+        this.id = company.id;
         this.name = company.name;
         this.logo = company.logo;
     }

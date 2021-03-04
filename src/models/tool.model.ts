@@ -1,5 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { ToolDoc } from 'src/schemas/tool.schema';
-import { ApiProperty } from "@nestjs/swagger";
 
 export class Tool {
     @ApiProperty()
@@ -10,7 +10,7 @@ export class Tool {
     name: string;
 
     constructor(tool: ToolDoc) {
-        this.id = tool._id;
+        this.id = tool.id;
         this.companyId = tool.companyId;
         this.name = tool.name;
     }

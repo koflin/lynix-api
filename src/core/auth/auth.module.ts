@@ -9,7 +9,6 @@ import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 import { WsJwtAuthGuard } from './ws-jwt-auth.guard';
-import { WsJwtStrategy } from './ws-jwt.strategy';
 
 @Module({
   imports: [
@@ -23,6 +22,7 @@ import { WsJwtStrategy } from './ws-jwt.strategy';
     })
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, WsJwtAuthGuard, WsJwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, WsJwtAuthGuard],
+  exports: [WsJwtAuthGuard]
 })
 export class AuthModule {}

@@ -1,16 +1,28 @@
-import { ParseIdPipe } from './../../pipes/parse-id.pipe';
-import { Controller, Post, Body, Delete, Get, NotFoundException, Param, Put, Query, Request, UseGuards } from '@nestjs/common';
-import { Order } from 'src/models/order.model';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
+    Put,
+    Query,
+    Request,
+    UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { OrdersService } from './orders.service';
 import { EditOrderDto } from 'src/dto/order/editOrderDto';
+import { Order } from 'src/models/order.model';
+import { Permission } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
-import { Id } from 'src/dto/metadata/id';
+
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Permissions } from '../auth/permissions.decorator';
-import { Permission } from 'src/models/role.model';
 import { PermissionsGuard } from '../auth/permissions.guard';
 import { CompaniesGuard } from '../companies/companies.guard';
+import { ParseIdPipe } from './../../pipes/parse-id.pipe';
+import { OrdersService } from './orders.service';
 
 @ApiTags('orders')
 @ApiBearerAuth()
@@ -23,7 +35,7 @@ export class OrdersController {
 
     @ApiOkResponse({ type: [Order] })
     @ApiQuery({ name: 'companyId', required: false })
-    @Permissions(Permission.VIEW, Permission.EXECUTE, Permission.EDIT, Permission.ASSIGN)
+    @Permissions(Permission.VIEW)
     @Get()
     getAll(@Query() filter: { companyId: string }) {
         return this.ordersService.getAll(filter);

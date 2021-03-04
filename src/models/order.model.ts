@@ -1,7 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { OrderDoc } from "src/schemas/order.schema";
-import { ProductTemplate } from "./productTemplate.model";
-import * as moment from 'moment';
+import { ApiProperty } from '@nestjs/swagger';
+import { OrderDoc } from 'src/schemas/order.schema';
+
+import { ProductTemplate } from './productTemplate.model';
 
 export class Order {
     @ApiProperty()
@@ -25,7 +25,7 @@ export class Order {
     }[];
 
     constructor(order: OrderDoc, productTemplates: ProductTemplate[]) {
-        this.id = order._id;
+        this.id = order.id;
         this.companyId = order.companyId;
         this.status = order.status;
         this.name = order.name;

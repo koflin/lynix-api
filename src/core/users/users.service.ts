@@ -1,10 +1,14 @@
-import { Injectable, HttpService } from '@nestjs/common';
-import { UserDoc } from 'src/schemas/user.schema';
-import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from 'src/models/user.model';
+import { Model } from 'mongoose';
+import { Socket } from 'socket.io';
 import { CreateUserDto } from 'src/dto/user/createUserDto';
 import { EditUserDto } from 'src/dto/user/editUserDto';
+import { ActiveUser } from 'src/models/activeUser.model';
+import { LocalUser } from 'src/models/localUser.model';
+import { User } from 'src/models/user.model';
+import { UserDoc } from 'src/schemas/user.schema';
+
 import { RolesService } from '../roles/roles.service';
 
 @Injectable()
@@ -13,6 +17,8 @@ export class UsersService {
         private roleService: RolesService
     ) {
     }
+
+    private activeUsers = new Map<string, ActiveUser>();
 
     async getAll(filter: { companyId?: string }): Promise<User[]> {
         let userIds = await this.userModel.find(filter, '_id').exec();
@@ -49,5 +55,37 @@ export class UsersService {
     async delete(id: string): Promise<void> {
         await this.userModel.findByIdAndDelete(id).exec();
         return;
+    }
+
+    setActive(user: LocalUser, client: Socket) {
+        this.activeUsers.set(user.id, { user, client });
+    }
+
+    setInactive(client: Socket) {
+        for (let [id, activeUser] of this.activeUsers) {
+            if (activeUser.client.id == client.id) {
+                this.activeUsers.delete(id);
+            }
+        }
+    }
+
+    getActive(user: User | string): ActiveUser {
+        let id: string;
+
+        if (user instanceof User) {
+            id = user.id;
+        } else {
+            id = user;
+        }
+
+        if (this.activeUsers.has(id)) {
+            return this.activeUsers.get(id);
+        }
+
+        return null;
+    }
+
+    isActive(userId: string) {
+        return this.activeUsers.has(userId);
     }
 }

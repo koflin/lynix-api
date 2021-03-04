@@ -1,5 +1,45 @@
 export enum Event {
-    PROCESS_CREATE = 'process_create',
-    PROCESS_UPDATE = 'process_update',
-    PROCESS_DELETE = 'process_delete',
+    COMPANIES = 100,
+        COMPANY_CREATE = 101,
+        COMPANY_UPDATE = 102,
+        COMPANY_DELETE = 103,
+
+    USERS = 200,
+        USER_CREATE = 201,
+        USER_UPDATE = 202,
+        USER_DELETE = 203,
+
+    ROLES = 300,
+        ROLE_CREATE = 301,
+        ROLE_UPDATE = 302,
+        ROLE_DELETE = 303,
+
+    TEMPLATE_PRODUCTS = 400,
+        TEMPLATE_PRODUCT_CREATE = 401,
+        TEMPLATE_PRODUCT_UPDATE = 402,
+        TEMPLATE_PRODUCT_DELETE = 403,
+
+    TEMPLATE_PROCESSES = 500,
+        TEMPLATE_PROCESS_CREATE = 501,
+        TEMPLATE_PROCESS_UPDATE = 502,
+        TEMPLATE_PROCESS_DELETE = 503,
+
+    ORDERS = 600,
+        ORDER_CREATE = 601,
+        ORDER_UPDATE = 602,
+        ORDER_DELETE = 603,
+    
+    PROCESSES = 700,
+        PROCESS_CREATE = 701,
+        PROCESS_UPDATE = 702,
+        PROCESS_DELETE = 703,
+        PROCESS_ASSIGN = 715,
+        PROCESS_FINISH = 715,
+
+    PROCESS_GUIDE = 800,
+        PROCESS_GUIDE_ENTER = 801,
+        PROCESS_GUIDE_EXIT = 802,
+        PROCESS_GUIDE_START = 803,
+        PROCESS_GUIDE_STOP = 804,
+        PROCESS_GUIDE_TICK = 805,
 }

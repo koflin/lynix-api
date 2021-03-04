@@ -1,17 +1,25 @@
 import { INestApplicationContext } from '@nestjs/common';
 import { isFunction, isNil } from '@nestjs/common/utils/shared.utils';
+import { JwtService } from '@nestjs/jwt';
 import { AbstractWsAdapter, MessageMappingProperties } from '@nestjs/websockets';
 import { DISCONNECT_EVENT } from '@nestjs/websockets/constants';
 import { fromEvent, Observable } from 'rxjs';
 import { filter, first, map, mergeMap, share, takeUntil } from 'rxjs/operators';
 import { Server } from 'socket.io';
 
+import { WsJwtAuthGuard } from './core/auth/ws-jwt-auth.guard';
+
 export class SocketIoAdapter extends AbstractWsAdapter {
+  private readonly jwtService: JwtService;
+  private readonly wsJwtAuthGuard: WsJwtAuthGuard;
+  
   constructor(
-    appOrHttpServer?: INestApplicationContext | any,
+    private appOrHttpServer?: INestApplicationContext | any,
     private readonly corsOrigins = [],
   ) {
     super(appOrHttpServer);
+    this.jwtService = this.appOrHttpServer.get(JwtService);
+    this.wsJwtAuthGuard = this.appOrHttpServer.get(WsJwtAuthGuard);
   }
 
   public create(
@@ -44,6 +52,7 @@ export class SocketIoAdapter extends AbstractWsAdapter {
       // Allow 1MB of data per request.
       maxHttpBufferSize: 1e6,
     };
+
     
     if (this.httpServer && port === 0) {
       const s = new Server(this.httpServer, options);
