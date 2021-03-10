@@ -42,4 +42,7 @@ export enum Event {
         PROCESS_GUIDE_START = 803,
         PROCESS_GUIDE_STOP = 804,
         PROCESS_GUIDE_TICK = 805,
+
+    ACTIVITY = 900,
+        ACTIVITY_CHANGE = 901,
 }

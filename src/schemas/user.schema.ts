@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { UserActivity, UserStatus } from 'src/models/user.model';
 
 /**
  * Represents a user document
@@ -21,6 +22,13 @@ export class UserDoc extends Document {
     roleId?: string;
     @Prop()
     avatar?: string;
+
+    @Prop()
+    lastSeen: Date;
+    @Prop()
+    activity: UserActivity;
+    @Prop()
+    status: UserStatus;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDoc);

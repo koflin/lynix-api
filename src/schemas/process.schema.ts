@@ -1,8 +1,8 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
 import { ProcessTemplateDoc } from './processTemplate.schema';
-import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
-import { StepDoc } from "./step.schema";
-import { Document } from "mongoose";
-import { ProcessTemplate } from 'src/models/processTemplate';
+import { StepDoc } from './step.schema';
 
 /**
  * Represents a process document
@@ -35,7 +35,9 @@ export class ProcessDoc extends Document {
     @Prop()
     status: 'in_preparation' | 'released' | 'in_progress' | 'completed' | 'assistance_required';
     @Prop()
-    isOccupied: boolean;
+    occupiedBy: string;
+    @Prop()
+    lastHeartbeat: Date;
     @Prop()
     isRunning: boolean;
 

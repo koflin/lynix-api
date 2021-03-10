@@ -39,11 +39,11 @@ export class ProcessesService {
         return processDoc;
     }
 
-    async enter(id: string) {
+    async enter(id: string, user: User) {
         let processDoc = await this.processModel.findById(id).exec();
 
         processDoc.status = 'in_progress';
-        processDoc.isOccupied = true;
+        processDoc.occupiedBy = user.id;
         processDoc.isRunning = false;
         processDoc.save();
         return processDoc;
@@ -52,7 +52,7 @@ export class ProcessesService {
     async exit(id: string) {
         let processDoc = await this.processModel.findById(id).exec();
 
-        processDoc.isOccupied = false;
+        processDoc.occupiedBy = null;
         processDoc.isRunning = false;
         processDoc.save();
         return processDoc;
@@ -70,8 +70,16 @@ export class ProcessesService {
         let processDoc = await this.processModel.findById(id).exec();
 
         processDoc.status = 'completed';
-        processDoc.isOccupied = false;
+        processDoc.occupiedBy = null;
         processDoc.isRunning = false;
+        processDoc.save();
+        return processDoc;
+    }
+
+    async switch(id: string, stepIndex: number) {
+        let processDoc = await this.processModel.findById(id).exec();
+
+        processDoc.currentStepIndex = stepIndex;
         processDoc.save();
         return processDoc;
     }
@@ -120,8 +128,9 @@ export class ProcessesService {
         processDoc.timeTaken = 0;
         processDoc.currentStepIndex = null;
         processDoc.assignedUserId = null;
-        processDoc.isOccupied = false;
+        processDoc.occupiedBy = null;
         processDoc.isRunning = false;
+        processDoc.lastHeartbeat = new Date();
 
         return new Process(await processDoc.save(), order);
     }
@@ -143,22 +152,28 @@ export class ProcessesService {
         return this.processModel.exists({ _id: id });
     }
 
-    async updateRunning(): Promise<void> {
-        await this.processModel.find({ isRunning: true, currentStepIndex: { $ne: null }}, (err, doc) => {
-            doc.forEach((doc) => {
-                if (this.usersService.isActive(doc.assignedUserId)) {
-                    doc.timeTaken += 1;
-                    doc.steps[doc.currentStepIndex].timeTaken += 1;
+    async updateOccupied(): Promise<void> {
+        await this.processModel.find({ occupiedBy: { $ne: null }}, (err, doc) => {
+            doc.forEach(async (doc) => {
+                this.usersService.getActivity(doc.occupiedBy).then((activity) => {
 
-                    this.events.trigger(Event.PROCESS_GUIDE_TICK, doc.assignedUserId);
-                } else {
-                    doc.isRunning = false;
-                    doc.isOccupied  = false;
+                    if (activity.status == 'online' && activity.activity == 'guide') {
+                        // Running
+                        if (doc.isRunning && doc.currentStepIndex != null) {
+                            doc.timeTaken += 1;
+                            doc.steps[doc.currentStepIndex].timeTaken += 1;
+                            this.events.trigger(Event.PROCESS_GUIDE_TICK, doc.occupiedBy, { processId: doc.id, timeTaken: doc.timeTaken, stepIndex: doc.currentStepIndex, stepTime: doc.steps[doc.currentStepIndex].timeTaken });
+                        }
+                    } else {
+                        // Force terminate
+                        doc.isRunning = false;
+                        doc.occupiedBy = null;
 
-                    this.events.triggerFor(Event.PROCESS_GUIDE_EXIT, { companyId: doc.companyId });
-                }
+                        this.events.trigger(Event.PROCESS_GUIDE_EXIT, doc.occupiedBy);
+                    }
 
-                doc.save();
+                    doc.save();
+                });
             });
         });
         return;

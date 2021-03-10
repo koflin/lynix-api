@@ -63,7 +63,7 @@ export class ProcessesController {
     async create(@Request() req: { user: User }, @Body() createProcessDto: CreateProcessDto) {
         let process = await this.processesService.create(createProcessDto, req.user);
         if (process == null) throw new NotFoundException('Template not found!');
-        this.event.trigger(Event.PROCESS_CREATE, req.user, process);
+        this.event.triggerOther(Event.PROCESS_CREATE, req.user, process);
         return process;
     }
 
@@ -73,7 +73,7 @@ export class ProcessesController {
     async edit(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string, @Body() editProcessDto: EditProcessDto) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
         let process = await this.processesService.edit(processId, editProcessDto);
-        this.event.trigger(Event.PROCESS_UPDATE, req.user, process);
+        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
         return process;
     }
 
@@ -82,7 +82,7 @@ export class ProcessesController {
     @Delete(':processId')
     async delete(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
-        this.event.trigger(Event.PROCESS_DELETE, req.user, processId);
+        this.event.triggerOther(Event.PROCESS_DELETE, req.user, processId);
         return this.processesService.delete(processId);
     }
     @ApiOkResponse()
@@ -90,8 +90,8 @@ export class ProcessesController {
     @Patch(':processId/enter')
     async enter(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
-        let process =  this.processesService.enter(processId);
-        this.event.trigger(Event.PROCESS_UPDATE, req.user, process);
+        let process = await this.processesService.enter(processId, req.user);
+        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
         return process;
     }
 
@@ -100,8 +100,8 @@ export class ProcessesController {
     @Patch(':processId/exit')
     async exit(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
-        let process = this.processesService.exit(processId);
-        this.event.trigger(Event.PROCESS_UPDATE, req.user, process);
+        let process = await this.processesService.exit(processId);
+        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
         return process;
     }
 
@@ -110,8 +110,8 @@ export class ProcessesController {
     @Patch(':processId/start')
     async start(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string, @Body('userId') userId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
-        let process = this.processesService.start(processId, userId);
-        this.event.trigger(Event.PROCESS_UPDATE, req.user, process);
+        let process = await this.processesService.start(processId, userId);
+        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
         return process;
     }
 
@@ -120,8 +120,8 @@ export class ProcessesController {
     @Patch(':processId/stop')
     async stop(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
-        let process = this.processesService.stop(processId);
-        this.event.trigger(Event.PROCESS_UPDATE, req.user, process);
+        let process = await this.processesService.stop(processId);
+        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
         return process;
     }
 
@@ -130,8 +130,8 @@ export class ProcessesController {
     @Patch(':processId/assign')
     async assign(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string, @Body('assigneeId') assigneeId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
-        let process = this.processesService.assign(processId, assigneeId);
-        this.event.trigger(Event.PROCESS_UPDATE, req.user, process);
+        let process = await this.processesService.assign(processId, assigneeId);
+        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
         return process;
     }
 
@@ -140,8 +140,18 @@ export class ProcessesController {
     @Patch(':processId/finish')
     async finish(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
-        let process = this.processesService.finish(processId, undefined);
-        this.event.trigger(Event.PROCESS_UPDATE, req.user, process);
+        let process = await this.processesService.finish(processId, undefined);
+        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
+        return process;
+    }
+
+    @ApiOkResponse()
+    @Permissions(Permission.EXECUTE)
+    @Patch(':processId/switch')
+    async switch(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string, @Body('stepIndex') stepIndex: number) {
+        if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
+        let process = await this.processesService.switch(processId, stepIndex);
+        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
         return process;
     }
 }

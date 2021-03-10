@@ -30,3 +30,6 @@ export class User {
         this.avatar = user.avatar;
     }
 }
+
+export type UserStatus = 'online' | 'offline';
+export type UserActivity = 'idle' | 'guide';

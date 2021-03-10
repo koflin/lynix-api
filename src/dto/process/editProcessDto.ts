@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsIn, IsMongoId, IsNumber, IsOptional } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsBoolean, IsIn, IsMongoId, IsNumber, IsOptional } from 'class-validator';
 
 export class EditProcessDto {
     @ApiProperty()

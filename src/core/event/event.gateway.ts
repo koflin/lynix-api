@@ -4,6 +4,7 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
+  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
@@ -30,11 +31,11 @@ export class EventGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
   afterInit(server: Server) {
   }
   
-  handleConnection(client: Socket, ...args: any[]) {
+  async handleConnection(client: Socket, ...args: any[]) {
     // Get user
     const user = this.wsJwtAuthGuard.verify(client);
 
-    console.log("Connected " + client.id + " (" + (user ? user.username + ":" + user.id : "Unknown") + ")");
+    //console.log("Connected " + client.id + " (" + (user ? user.username + ":" + user.id : "Unknown") + ")");
 
     if (!user) {
       client.disconnect(true);
@@ -44,26 +45,35 @@ export class EventGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     // Join company room
     client.join(user.companyId);
 
-    this.usersService.setActive(user, client);
+    this.usersService.setConnected(user, client);
   }
   
   handleDisconnect(client: Socket) {
-    console.log("Disonnected " + client.id);
+    //console.log("Disonnected " + client.id);
 
-    this.usersService.setInactive(client);
+
+    this.usersService.setDisconnected(client);
   }
 
+  @SubscribeMessage(Event.ACTIVITY_CHANGE)
+  handleGuideTick(client: Socket, data: any) {
+    this.usersService.setActivity(this.usersService.getIdFromSocket(client), data);
+  }
+
+
   trigger(event: Event, user: User | string, data?: any) {
-    let activeUser = this.usersService.getActive(user);
+    let activeUser = this.usersService.getConnected(user); 
 
     if (activeUser) {
-      activeUser.client.broadcast.to(activeUser.user.companyId).emit(event.toString(), data);
-    } else {
-      throw new Error("USER NOT ACTIVELY REGISTERED");
+      this.server.in(activeUser.user.companyId).emit(event.valueOf().toString(), data);
     }
   }
 
-  triggerFor(event: Event, filter: { companyId: string }, data?: any) {
-    this.server.to(filter.companyId).emit(event.toString(), data);
+  triggerOther(event: Event, user: User | string, data?: any) {
+    let activeUser = this.usersService.getConnected(user);
+
+    if (activeUser) {
+      activeUser.client.broadcast.to(activeUser.user.companyId).emit(event.toString(), data);
+    }
   }
 }

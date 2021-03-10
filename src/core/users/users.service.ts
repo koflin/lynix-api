@@ -6,13 +6,15 @@ import { CreateUserDto } from 'src/dto/user/createUserDto';
 import { EditUserDto } from 'src/dto/user/editUserDto';
 import { ActiveUser } from 'src/models/activeUser.model';
 import { LocalUser } from 'src/models/localUser.model';
-import { User } from 'src/models/user.model';
+import { User, UserActivity, UserStatus } from 'src/models/user.model';
 import { UserDoc } from 'src/schemas/user.schema';
 
 import { RolesService } from '../roles/roles.service';
 
 @Injectable()
 export class UsersService {
+    private readonly offlineAfter = 5000;
+
     constructor(@InjectModel(UserDoc.name) private userModel: Model<UserDoc>,
         private roleService: RolesService
     ) {
@@ -47,7 +49,7 @@ export class UsersService {
     async edit(id: string, userDto: EditUserDto): Promise<User> {
         let userDoc = await this.userModel.findByIdAndUpdate(id, {
             ...userDto,
-        }, { new: true, omitUndefined: true });
+        }, { new: true, omitUndefined: true }).exec();
         
         return this.getById(userDoc.id);
     }
@@ -57,19 +59,61 @@ export class UsersService {
         return;
     }
 
-    setActive(user: LocalUser, client: Socket) {
-        this.activeUsers.set(user.id, { user, client });
+    async getActivity(id: string): Promise<{ activity: UserActivity, status: UserStatus }> {
+        return this.userModel.findById(id, 'activity status').exec();
     }
 
-    setInactive(client: Socket) {
+    setActivity(id: string, activity: UserActivity) {
+        console.log(id + " activity changed to: " + activity);
+
+        return this.userModel.findByIdAndUpdate(id, {
+            activity
+        }, { new: true, omitUndefined: true }).exec();
+    }
+
+    // Manage offline users
+    updateActivities() {
+        this.userModel.find({ lastSeen: { $ne: null } }).exec().then((users) => {
+            users.forEach((user) => {
+                if (user.status == 'online' && Date.now() - user.lastSeen.valueOf() > this.offlineAfter) {
+                    user.status = 'offline';
+                    user.activity = 'idle';
+                    user.save();
+
+                    console.log('Offline: ' + user.username);
+                }
+            });
+        });
+    }
+ 
+    setConnected(user: LocalUser, client: Socket) {
+        this.activeUsers.set(user.id, { user, client });
+
+        this.userModel.findById(user.id, (err, user) => {
+            if (user.status == 'offline') {
+                console.log('Now online: ' + user.username + " (" + client.id + ")");
+            }
+        });
+
+        this.userModel.findByIdAndUpdate(user.id, {
+            lastSeen: null,
+            status: 'online'
+        }, { new: true, omitUndefined: true }).exec();
+    }
+
+    setDisconnected(client: Socket) {
         for (let [id, activeUser] of this.activeUsers) {
             if (activeUser.client.id == client.id) {
                 this.activeUsers.delete(id);
+
+                this.userModel.findByIdAndUpdate(id, {
+                    lastSeen: new Date()
+                }, { new: true, omitUndefined: true }).exec();
             }
         }
     }
 
-    getActive(user: User | string): ActiveUser {
+    getConnected(user: User | string): ActiveUser {
         let id: string;
 
         if (user instanceof User) {
@@ -85,7 +129,17 @@ export class UsersService {
         return null;
     }
 
-    isActive(userId: string) {
+    isConnected(userId: string) {
         return this.activeUsers.has(userId);
+    }
+
+    getIdFromSocket(client: Socket) {
+        for (let [id, activeUser] of this.activeUsers) {
+            if (activeUser.client.id == client.id) {
+                return id;
+            }
+        }
+
+        return null;
     }
 }

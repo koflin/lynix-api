@@ -31,7 +31,7 @@ export class Process {
     @ApiProperty()
     status: 'in_preparation' | 'released' | 'in_progress' | 'completed' | 'assistance_required';
     @ApiProperty()
-    isOccupied: boolean;
+    occupiedBy: string;
     @ApiProperty()
     isRunning: boolean;
 
@@ -55,7 +55,7 @@ export class Process {
         this.timeTaken = process.timeTaken;
         this.currentStepIndex = process.currentStepIndex;
         this.status = process.status;
-        this.isOccupied = process.isOccupied;
+        this.occupiedBy = process.occupiedBy;
         this.isRunning = process.isRunning;
 
         this.assignedUserId = process.assignedUserId;
