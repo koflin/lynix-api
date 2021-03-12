@@ -1,9 +1,9 @@
-import { User } from 'src/models/user.model';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { from, Observable } from 'rxjs';
 import { InjectConnection } from '@nestjs/mongoose';
-import { Collection, Connection } from 'mongoose';
+import { Connection } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { Observable } from 'rxjs';
+import { User } from 'src/models/user.model';
 
 @Injectable()
 export class CompaniesGuard implements CanActivate {

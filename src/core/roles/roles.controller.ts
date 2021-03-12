@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { EditRoleDto } from 'src/dto/role/editRoleDto';
 import { Permission, Role } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
+
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Permissions } from '../auth/permissions.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
@@ -19,11 +20,10 @@ export class RolesController {
     }
 
     @ApiOkResponse({ type: [Role] })
-    @ApiQuery({ name: 'companyId', required: false })
     @Permissions(Permission.VIEW)
     @Get()
-    getAll(@Query() filter: { companyId: string }) {
-        return this.rolesService.getAll(filter);
+    getAll(@Request() req: { user: User }) {
+        return this.rolesService.getAll(req.user.companyId);
     }
 
     @ApiOkResponse({ type: Role })

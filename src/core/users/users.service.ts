@@ -10,6 +10,7 @@ import { User, UserActivity, UserStatus } from 'src/models/user.model';
 import { UserDoc } from 'src/schemas/user.schema';
 
 import { RolesService } from '../roles/roles.service';
+import { Role } from './../../models/role.model';
 
 @Injectable()
 export class UsersService {
@@ -22,8 +23,11 @@ export class UsersService {
 
     private activeUsers = new Map<string, ActiveUser>();
 
-    async getAll(filter: { companyId?: string }): Promise<User[]> {
-        let userIds = await this.userModel.find(filter, '_id').exec();
+    async getAll(companyId?: string, roles?: Role[]): Promise<User[]> {
+        let userIds = await this.userModel.find({
+            companyId,
+            roleId: roles ? { $in: roles.map(role => role.id) } : undefined
+        }, '_id').exec();
         return Promise.all(userIds.map( async (doc) => {
             return this.getById(doc.id);
         }));
@@ -64,7 +68,7 @@ export class UsersService {
     }
 
     setActivity(id: string, activity: UserActivity) {
-        console.log(id + " activity changed to: " + activity);
+        //console.log(id + " activity changed to: " + activity);
 
         return this.userModel.findByIdAndUpdate(id, {
             activity

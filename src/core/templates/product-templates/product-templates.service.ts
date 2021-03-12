@@ -1,14 +1,12 @@
-import { ProcessTemplatesService } from './../process-templates/process-templates.service';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateUserDto } from 'src/dto/user/createUserDto';
-import { EditUserDto } from 'src/dto/user/editUserDto';
+import { EditProductTemplateDto } from 'src/dto/productTemplate/editProductTemplateDto';
 import { ProductTemplate } from 'src/models/productTemplate.model';
 import { User } from 'src/models/user.model';
 import { ProductTemplateDoc } from 'src/schemas/productTemplate.schema';
-import { UserDoc } from 'src/schemas/user.schema';
-import { EditProductTemplateDto } from 'src/dto/productTemplate/editProductTemplateDto';
+
+import { ProcessTemplatesService } from './../process-templates/process-templates.service';
 
 @Injectable()
 export class ProductTemplatesService {
@@ -21,7 +19,7 @@ export class ProductTemplatesService {
     async getAll(filter: { companyId?: string }): Promise<ProductTemplate[]> {
         let productIds = await this.productModel.find(filter, '_id').exec();
         return Promise.all(productIds.map( async (doc) => {
-            return this.getById(doc._id);
+            return this.getById(doc.id);
         }));
     }
 
@@ -42,7 +40,7 @@ export class ProductTemplatesService {
         let productDoc = new this.productModel(productDto);
         productDoc.companyId = user.companyId;
         await productDoc.save();
-        return this.getById(productDoc._id);
+        return this.getById(productDoc.id);
     }
 
     async edit(id: string, productDto: EditProductTemplateDto): Promise<ProductTemplate> {
@@ -51,7 +49,7 @@ export class ProductTemplatesService {
         }, { new: true, omitUndefined: true });
 
         await productDoc.save();
-        return this.getById(productDoc._id);
+        return this.getById(productDoc.id);
     }
 
     async delete(id: string): Promise<void> {

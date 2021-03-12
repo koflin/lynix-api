@@ -1,34 +1,56 @@
-import { Controller, Get, Post, Body, Delete, Put, Param, Query, NotFoundException, Request, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOkResponse, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
-import { UsersService } from './users.service';
-import { User } from 'src/models/user.model';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
+    Put,
+    Query,
+    Request,
+    UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { filter } from 'rxjs/operators';
+import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
 import { CreateUserDto } from 'src/dto/user/createUserDto';
 import { EditUserDto } from 'src/dto/user/editUserDto';
-import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
-import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
-import { CompaniesGuard } from '../companies/companies.guard';
-import { PermissionsGuard } from '../auth/permissions.guard';
-import { Permissions } from '../auth/permissions.decorator';
 import { Permission } from 'src/models/role.model';
+import { User } from 'src/models/user.model';
+import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
+
+import { Permissions } from '../auth/permissions.decorator';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { CompaniesGuard } from '../companies/companies.guard';
+import { RolesService } from '../roles/roles.service';
+import { Requestor } from './requestor.decorator';
+import { UsersService } from './users.service';
 
 @ApiTags('users')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
 @Controller('users')
 export class UsersController {
-    constructor(private usersService: UsersService) {
+    constructor(
+        private usersService: UsersService,
+        private rolesService: RolesService
+    ) {
     }
 
     @ApiOkResponse({ type: [User] })
-    @ApiQuery({ name: 'companyId', required: false })
     @Permissions(Permission.VIEW)
     @Get()
-    getAll(@Query() filter: { companyId: string, username: string, permissions: string[] }) {
-        if (filter.username) {
-            return this.usersService.getByUsername(filter.username);
+    async getAll(@Requestor() user: User, @Query() filter: { username: string, permissions: Permission[] }) {
+        const { username, permissions } = filter;
+        const { companyId } = user;
+
+        if (permissions) {
+            const roles = await this.rolesService.getAll(companyId, permissions);
+            return this.usersService.getAll(companyId, roles);
         }
 
-        return this.usersService.getAll(filter);
+        return this.usersService.getAll(companyId);
     }
 
     @ApiOkResponse({ type: User })

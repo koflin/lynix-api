@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { EditRoleDto } from 'src/dto/role/editRoleDto';
-import { Role } from 'src/models/role.model';
+import { Permission, Role } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 import { RoleDoc } from 'src/schemas/role.schema';
 
@@ -12,8 +12,8 @@ export class RolesService {
     constructor(@InjectModel(RoleDoc.name) private roleModel: Model<RoleDoc>) {
     }
 
-    async getAll(filter: { companyId: string; }) {
-        let roleDoc = await this.roleModel.find(filter).exec();
+    async getAll(companyId?: string, permissions?: Permission[]) {
+        let roleDoc = await this.roleModel.find({ companyId, permissions }).exec();
         return roleDoc.map(doc => new Role(doc));
     }
 

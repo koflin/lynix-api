@@ -28,7 +28,7 @@ export class ProcessesService {
 
         processDoc.isRunning = true;
         processDoc.save();
-        return processDoc;
+        return this.getById(processDoc.id);
     }
 
     async stop(id: string) {
@@ -36,7 +36,7 @@ export class ProcessesService {
 
         processDoc.isRunning = false;
         processDoc.save();
-        return processDoc;
+        return this.getById(processDoc.id);
     }
 
     async enter(id: string, user: User) {
@@ -46,7 +46,7 @@ export class ProcessesService {
         processDoc.occupiedBy = user.id;
         processDoc.isRunning = false;
         processDoc.save();
-        return processDoc;
+        return this.getById(processDoc.id);
     }
 
     async exit(id: string) {
@@ -55,7 +55,7 @@ export class ProcessesService {
         processDoc.occupiedBy = null;
         processDoc.isRunning = false;
         processDoc.save();
-        return processDoc;
+        return this.getById(processDoc.id);
     }
 
     async assign(id: string, assignedId: string) {
@@ -63,7 +63,7 @@ export class ProcessesService {
 
         processDoc.assignedUserId = assignedId;
         processDoc.save();
-        return processDoc;
+        return this.getById(processDoc.id);
     }
 
     async finish(id: string, assignedId: string) {
@@ -73,7 +73,7 @@ export class ProcessesService {
         processDoc.occupiedBy = null;
         processDoc.isRunning = false;
         processDoc.save();
-        return processDoc;
+        return this.getById(processDoc.id);
     }
 
     async switch(id: string, stepIndex: number) {
@@ -81,7 +81,7 @@ export class ProcessesService {
 
         processDoc.currentStepIndex = stepIndex;
         processDoc.save();
-        return processDoc;
+        return this.getById(processDoc.id);
     }
 
     async getAll(filter: { companyId?: string, assignedUserId?: string, orderId?: string }): Promise<Process[]> {
@@ -132,7 +132,8 @@ export class ProcessesService {
         processDoc.isRunning = false;
         processDoc.lastHeartbeat = new Date();
 
-        return new Process(await processDoc.save(), order);
+        await processDoc.save();
+        return this.getById(processDoc.id);
     }
 
     async edit(id: string, processDto: EditProcessDto): Promise<Process> {
