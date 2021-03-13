@@ -45,7 +45,7 @@ export class ProcessesController {
     @Permissions(Permission.VIEW)
     @Get()
     getAll(@Query() filter: { companyId: string, assignedUserId: string, orderId: string }) {
-        return this.processesService.getAll(filter);
+        return this.processesService.getAll(filter.companyId, filter.assignedUserId, filter.orderId);
     }
 
     @ApiOkResponse({ type: Process })

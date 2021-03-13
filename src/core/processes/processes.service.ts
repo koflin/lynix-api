@@ -84,8 +84,8 @@ export class ProcessesService {
         return this.getById(processDoc.id);
     }
 
-    async getAll(filter: { companyId?: string, assignedUserId?: string, orderId?: string }): Promise<Process[]> {
-        let processIds = await this.processModel.find(filter, '_id').exec();
+    async getAll(companyId?: string, assignedUserId?: string, orderId?: string): Promise<Process[]> {
+        let processIds = await this.processModel.find({ companyId, assignedUserId, orderId, }, '_id').exec();
         return Promise.all(processIds.map( async (doc) => {
             return this.getById(doc._id);
         }));
