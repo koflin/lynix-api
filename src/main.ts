@@ -42,7 +42,7 @@ async function bootstrap() {
     whitelist: true,
   }));
 
-  app.useWebSocketAdapter(new SocketIoAdapter(app, ["http://localhost:4200"]));
+  app.useWebSocketAdapter(new SocketIoAdapter(app, ["https://testing.lynix.ch"]));
 
   await app.listen(config.get('port'));
 }

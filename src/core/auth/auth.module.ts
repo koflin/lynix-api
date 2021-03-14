@@ -18,7 +18,7 @@ import { WsJwtAuthGuard } from './ws-jwt-auth.guard';
     }),
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '3600s' },
+      signOptions: { expiresIn: '3600s' }
     })
   ],
   controllers: [AuthController],
