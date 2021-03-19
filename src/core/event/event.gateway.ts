@@ -35,8 +35,6 @@ export class EventGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     // Get user
     const user = this.wsJwtAuthGuard.verify(client);
 
-    //console.log("Connected " + client.id + " (" + (user ? user.username + ":" + user.id : "Unknown") + ")");
-
     if (!user) {
       client.disconnect(true);
       return;

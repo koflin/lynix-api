@@ -15,7 +15,7 @@ export class SocketIoAdapter extends AbstractWsAdapter {
   
   constructor(
     private appOrHttpServer?: INestApplicationContext | any,
-    private readonly corsOrigins = [],
+    private readonly corsOrigins = []
   ) {
     super(appOrHttpServer);
     this.jwtService = this.appOrHttpServer.get(JwtService);

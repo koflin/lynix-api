@@ -21,7 +21,8 @@ export class ProcessesService {
         private orderService: OrdersService,
         private usersService: UsersService,
         private events: EventGateway
-    ) { }
+    ) {
+    }
 
     async start(id: string, userId: string) {
         let processDoc = await this.processModel.findById(id).exec();
@@ -115,6 +116,7 @@ export class ProcessesService {
 
         processDoc.status = 'released';
         processDoc.estimatedTime = templateDoc.stepTemplates.reduce((total, step) => total + (step.estimatedTime ? step.estimatedTime : 0), 0);
+        processDoc.deliveryDate = order.deliveryDate;
         processDoc.mainTasks = templateDoc.mainTasks;
         processDoc.name = templateDoc.name;
         processDoc.previousComments = templateDoc.previousComments;
@@ -125,12 +127,12 @@ export class ProcessesService {
             };
         });
 
+
         processDoc.timeTaken = 0;
         processDoc.currentStepIndex = null;
         processDoc.assignedUserId = null;
         processDoc.occupiedBy = null;
         processDoc.isRunning = false;
-        processDoc.lastHeartbeat = new Date();
 
         await processDoc.save();
         return this.getById(processDoc.id);

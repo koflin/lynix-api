@@ -7,7 +7,6 @@ import { LocalUser } from 'src/models/localUser.model';
 @Injectable()
 export class WsJwtAuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {
-
   }
 
   canActivate(
