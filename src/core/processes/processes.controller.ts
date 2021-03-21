@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Delete,
+    ForbiddenException,
     Get,
     NotFoundException,
     Param,
@@ -129,8 +130,11 @@ export class ProcessesController {
     @Permissions(Permission.ASSIGN)
     @Patch(':processId/assign')
     async assign(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string, @Body('assigneeId') assigneeId: string) {
-        if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
-        let process = await this.processesService.assign(processId, assigneeId);
+        let process = await this.processesService.getById(processId);
+        if (!process) throw new NotFoundException('Process not found!');
+        if (process.occupiedBy) throw new ForbiddenException('Process occupied!');
+
+        process = await this.processesService.assign(processId, assigneeId);
         this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
         return process;
     }
