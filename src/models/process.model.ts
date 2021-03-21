@@ -23,6 +23,8 @@ export class Process {
     previousComments: string[];
     @ApiProperty()
     estimatedTime: number;
+    @ApiProperty()
+    deliveryDate: Date;
 
     @ApiProperty()
     timeTaken: number;
@@ -51,6 +53,7 @@ export class Process {
         this.mainTasks = process.mainTasks;
         this.previousComments = process.previousComments;
         this.estimatedTime = process.estimatedTime;
+        this.deliveryDate = process.deliveryDate;
 
         this.timeTaken = process.timeTaken;
         this.currentStepIndex = process.currentStepIndex;

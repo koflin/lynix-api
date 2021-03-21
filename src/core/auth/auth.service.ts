@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/models/user.model';
 
@@ -6,8 +7,11 @@ import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
-    constructor(private usersService: UsersService, private jwtService: JwtService) {
-
+    constructor(
+        private usersService: UsersService,
+        private jwtService: JwtService,
+        private config: ConfigService
+    ) {
     }
 
     async validateUser(username: string, password: string) {
@@ -24,7 +28,7 @@ export class AuthService {
     async login(user: User) {
         let payload = {
             // Issuer
-            iss: 'api.lynix.ch',
+            iss: this.config.get('jwt.issuer'),
             // Subject
             sub: user.id,
             // Issued at

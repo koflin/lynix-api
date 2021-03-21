@@ -1,6 +1,6 @@
 import * as Joi from '@hapi/joi';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 
@@ -10,6 +10,7 @@ import configuration from './config/configuration';
 import { AuthModule } from './core/auth/auth.module';
 import { CompaniesModule } from './core/companies/companies.module';
 import { DevModule } from './core/dev/dev.module';
+import { EventModule } from './core/event/event.module';
 import { OrdersModule } from './core/orders/orders.module';
 import { ProcessesModule } from './core/processes/processes.module';
 import { RolesModule } from './core/roles/roles.module';
@@ -25,23 +26,41 @@ import { UsersModule } from './core/users/users.module';
       isGlobal: true,
       load: [configuration],
       validationSchema: Joi.object({
-        API_PORT: Joi.number().default(3000),
+        API_PORT: Joi.number().required(),
+
+        GATEWAY_PORT: Joi.number().required(),
+
+        CLIENT_HOST: Joi.string().required(),
+
         VERSION_PREFIX: Joi.string().required(),
         VERSION_FULL: Joi.string().required(),
+
         DATABASE_HOST: Joi.string().required(),
-        DATABASE_PORT: Joi.string().required(),
-        DATABASE_DB: Joi.string().required()
-      })
+        DATABASE_PORT: Joi.number().required(),
+        DATABASE_USER: Joi.string().required(),
+        DATABASE_PASSWORD: Joi.string().required(),
+        DATABASE_AUTH_DB: Joi.string().required(),
+        DATABASE_DB: Joi.string().required(),
+
+        JWT_ISSUER: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRATION: Joi.string().required(),
+      }),
     }),
-    MongooseModule.forRoot(`mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}/${process.env.DATABASE_DB}?authSource=${process.env.DATABASE_AUTH_DB}`, {
-      useFindAndModify: false,
-      ignoreUndefined: true
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        uri: `mongodb://${config.get('database.user')}:${config.get('database.password')}@${config.get('database.host')}:${config.get('database.port')}/${config.get('database.db')}?authSource=${config.get('database.authDb')}`,
+        useFindAndModify: false,
+        ignoreUndefined: true
+      }),
     }),
     ScheduleModule.forRoot(),
     CompaniesModule,
     UsersModule,
     OrdersModule,
     AuthModule,
+    EventModule,
     ToolsModule,
     DevModule,
     ProcessTemplatesModule,
@@ -53,4 +72,5 @@ import { UsersModule } from './core/users/users.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+}

@@ -27,6 +27,8 @@ export class ProcessDoc extends Document {
     previousComments: string[];
     @Prop()
     estimatedTime: number;
+    @Prop()
+    deliveryDate: Date;
 
     @Prop()
     timeTaken: number;
@@ -36,8 +38,6 @@ export class ProcessDoc extends Document {
     status: 'in_preparation' | 'released' | 'in_progress' | 'completed' | 'assistance_required';
     @Prop()
     occupiedBy: string;
-    @Prop()
-    lastHeartbeat: Date;
     @Prop()
     isRunning: boolean;
 

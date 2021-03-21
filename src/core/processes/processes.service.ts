@@ -21,13 +21,14 @@ export class ProcessesService {
         private orderService: OrdersService,
         private usersService: UsersService,
         private events: EventGateway
-    ) { }
+    ) {
+    }
 
     async start(id: string, userId: string) {
         let processDoc = await this.processModel.findById(id).exec();
 
         processDoc.isRunning = true;
-        processDoc.save();
+        await processDoc.save();
         return this.getById(processDoc.id);
     }
 
@@ -35,7 +36,7 @@ export class ProcessesService {
         let processDoc = await this.processModel.findById(id).exec();
 
         processDoc.isRunning = false;
-        processDoc.save();
+        await processDoc.save();
         return this.getById(processDoc.id);
     }
 
@@ -45,7 +46,7 @@ export class ProcessesService {
         processDoc.status = 'in_progress';
         processDoc.occupiedBy = user.id;
         processDoc.isRunning = false;
-        processDoc.save();
+        await processDoc.save();
         return this.getById(processDoc.id);
     }
 
@@ -54,7 +55,7 @@ export class ProcessesService {
 
         processDoc.occupiedBy = null;
         processDoc.isRunning = false;
-        processDoc.save();
+        await processDoc.save();
         return this.getById(processDoc.id);
     }
 
@@ -62,7 +63,7 @@ export class ProcessesService {
         let processDoc = await this.processModel.findById(id).exec();
 
         processDoc.assignedUserId = assignedId;
-        processDoc.save();
+        await processDoc.save();
         return this.getById(processDoc.id);
     }
 
@@ -72,7 +73,7 @@ export class ProcessesService {
         processDoc.status = 'completed';
         processDoc.occupiedBy = null;
         processDoc.isRunning = false;
-        processDoc.save();
+        await processDoc.save();
         return this.getById(processDoc.id);
     }
 
@@ -80,7 +81,7 @@ export class ProcessesService {
         let processDoc = await this.processModel.findById(id).exec();
 
         processDoc.currentStepIndex = stepIndex;
-        processDoc.save();
+        await processDoc.save();
         return this.getById(processDoc.id);
     }
 
@@ -115,6 +116,7 @@ export class ProcessesService {
 
         processDoc.status = 'released';
         processDoc.estimatedTime = templateDoc.stepTemplates.reduce((total, step) => total + (step.estimatedTime ? step.estimatedTime : 0), 0);
+        processDoc.deliveryDate = order.deliveryDate;
         processDoc.mainTasks = templateDoc.mainTasks;
         processDoc.name = templateDoc.name;
         processDoc.previousComments = templateDoc.previousComments;
@@ -125,12 +127,12 @@ export class ProcessesService {
             };
         });
 
+
         processDoc.timeTaken = 0;
         processDoc.currentStepIndex = null;
         processDoc.assignedUserId = null;
         processDoc.occupiedBy = null;
         processDoc.isRunning = false;
-        processDoc.lastHeartbeat = new Date();
 
         await processDoc.save();
         return this.getById(processDoc.id);

@@ -42,8 +42,8 @@ async function bootstrap() {
     whitelist: true,
   }));
 
-  app.useWebSocketAdapter(new SocketIoAdapter(app, ["https://testing.lynix.ch"]));
+  app.useWebSocketAdapter(new SocketIoAdapter(app, [config.get('client.host')]));
 
-  await app.listen(config.get('port'));
+  await app.listen(config.get('api.port'));
 }
 bootstrap();

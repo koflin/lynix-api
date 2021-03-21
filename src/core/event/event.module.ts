@@ -1,16 +1,19 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
 import { AuthModule } from '../auth/auth.module';
-import { jwtConstants } from '../auth/constants';
 import { UsersModule } from './../users/users.module';
 import { EventGateway } from './event.gateway';
 
 @Module({
   imports: [
     AuthModule,
-    JwtModule.register({
-      secret: jwtConstants.secret
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get('jwt.secret')
+      })
     }),
     UsersModule
   ],

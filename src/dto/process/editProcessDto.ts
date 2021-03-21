@@ -1,7 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsIn, IsMongoId, IsNumber, IsOptional } from 'class-validator';
+import { IsBoolean, IsIn, IsISO8601, IsMongoId, IsNumber, IsOptional } from 'class-validator';
 
 export class EditProcessDto {
+    @ApiProperty()
+    @IsOptional()
+    @IsISO8601()
+    deliveryDate: Date;
+    
     @ApiProperty()
     @IsOptional()
     @IsNumber()
