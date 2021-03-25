@@ -19,8 +19,7 @@ import { WsJwtAuthGuard } from './ws-jwt-auth.guard';
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        secret: config.get('jwt.secret'),
-        signOptions: { expiresIn: config.get('jwt.expiration') }
+        secret: config.get('jwt.secret')
       })
     })
   ],

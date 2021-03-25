@@ -25,6 +25,7 @@ export default () => ({
     jwt: {
       issuer: env.JWT_ISSUER,
       secret: env.JWT_SECRET,
-      expiration: env.JWT_EXPIRATION + 's'
+      tokenExpiration: env.JWT_TOKEN_EXPIRATION,
+      refreshTokenExpiration: env.JWT_REFRESH_TOKEN_EXPIRATION
     }
 });

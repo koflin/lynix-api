@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { json } from 'body-parser';
+import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 import { SocketIoAdapter } from './socket-io.adapter';
@@ -35,6 +36,8 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, docs);
   
   app.use(json({ limit: '50mb' }));
+  app.use(cookieParser());
+
   app.enableCors();
   app.setGlobalPrefix(versionPrefix);
 
