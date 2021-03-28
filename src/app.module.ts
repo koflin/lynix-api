@@ -11,6 +11,7 @@ import { AuthModule } from './core/auth/auth.module';
 import { CompaniesModule } from './core/companies/companies.module';
 import { DevModule } from './core/dev/dev.module';
 import { EventModule } from './core/event/event.module';
+import { MediaModule } from './core/media/media.module';
 import { OrdersModule } from './core/orders/orders.module';
 import { ProcessesModule } from './core/processes/processes.module';
 import { RolesModule } from './core/roles/roles.module';
@@ -69,6 +70,7 @@ import { UsersModule } from './core/users/users.module';
     ProcessesModule,
     TasksModule,
     RolesModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

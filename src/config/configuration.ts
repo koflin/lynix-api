@@ -3,6 +3,7 @@ const env = process.env;
 export default () => ({
     api: {
       port: parseInt(env.API_PORT, 10),
+      url: env.API_HOST + '/' + env.VERSION_PREFIX,
     },
     gateway: {
       port: parseInt(env.GATEWAY_PORT, 10),

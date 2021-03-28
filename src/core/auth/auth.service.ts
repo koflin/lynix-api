@@ -25,7 +25,7 @@ export class AuthService {
         return null;
     }
 
-    async token(user: User) {
+    async tokenFromUser(user: User) {
         const payloadToken = {
             // Issuer
             iss: this.config.get('jwt.issuer'),
@@ -62,9 +62,8 @@ export class AuthService {
         };
     }
 
-    async refresh(refreshToken: string) {
-
-        if (!refreshToken || this.jwtService.verify(refreshToken)) {
+    async tokenFromRefresh(refreshToken: string) {
+        if (!refreshToken || !this.jwtService.verify(refreshToken)) {
             return null;
         }
 
@@ -80,6 +79,6 @@ export class AuthService {
             return null;
         }
 
-        return this.token(user);
+        return this.tokenFromUser(user);
     }
 }

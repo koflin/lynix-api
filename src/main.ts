@@ -35,10 +35,16 @@ async function bootstrap() {
   const docs = SwaggerModule.createDocument(app, docOptions);
   SwaggerModule.setup('docs', app, docs);
   
-  app.use(json({ limit: '50mb' }));
+  app.use(json({ limit: '50mb'}));
   app.use(cookieParser());
 
-  app.enableCors();
+  console.log(config.get('client.host'));
+
+  app.enableCors({
+    credentials: true,
+    origin: config.get('client.host') 
+  });
+  
   app.setGlobalPrefix(versionPrefix);
 
   app.useGlobalPipes(new ValidationPipe({

@@ -24,6 +24,10 @@ export class CompaniesGuard implements CanActivate {
       return true;
     }
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return true;
+    }
+
     const user: User = context.switchToHttp().getRequest().user;
 
     return new Promise(async (resolve) => {
