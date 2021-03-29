@@ -18,14 +18,15 @@ export class MediaService {
         media.companyId = companyId;
         media.uploadedBy = userId;
         media.uploadedAt = new Date();
-        media.url = this.config.get('api.url') + '/media/' + media.id;
-        media.internalId = fileName;
+        media.url = this.config.get('api.url') + '/media/' + media.id + '/' + fileName;
+        media.fileName = fileName;
         await media.save();
 
         return new Media(media);
     }
 
     async get(id: string) {
-        return (await this.mediaModel.findById(id).exec()).internalId;
+        const { fileName, } = await this.mediaModel.findById(id).exec();
+        return fileName;
     }
 }

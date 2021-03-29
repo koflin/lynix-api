@@ -15,7 +15,7 @@ export class MediaDoc extends Document {
     url: string;
 
     @Prop()
-    internalId: string;
+    fileName: string;
 }
 
 export const MediaSchema =  SchemaFactory.createForClass(MediaDoc);
