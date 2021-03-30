@@ -28,5 +28,10 @@ export default () => ({
       secret: env.JWT_SECRET,
       tokenExpiration: env.JWT_TOKEN_EXPIRATION,
       refreshTokenExpiration: env.JWT_REFRESH_TOKEN_EXPIRATION
+    },
+    cookies: {
+      domain: env.COOKIES_DOMAIN,
+      secure: new Boolean(env.COOKIES_SECURE),
+      sameSite: env.COOKIES_SAME_SITE,
     }
 });
