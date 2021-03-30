@@ -59,24 +59,27 @@ export class AuthController {
         res.cookie('refresh_token', refreshToken, {
             httpOnly: true,
             path: '/' + this.config.get('version.prefix') + '/auth/token',
-            /*secure: true,
-            sameSite: 'strict',*/
+            domain: this.config.get('cookies.domain'),
+            secure: this.config.get('cookies.secure'),
+            sameSite: this.config.get('cookies.sameSite'),
             expires: new Date(refreshExpiration)
         });
 
         res.cookie('access_token', accessToken, {
             httpOnly: true,
             path: '/',
-            /*secure: true,
-            sameSite: 'strict',*/
+            domain: this.config.get('cookies.domain'),
+            secure: this.config.get('cookies.secure'),
+            sameSite: this.config.get('cookies.sameSite'),
             expires: new Date(refreshExpiration)
         });
 
         res.cookie('logged_in_until', refreshExpiration, {
             httpOnly: false,
             path: '/',
-            /*secure: true,
-            sameSite: 'strict',*/
+            domain: this.config.get('cookies.domain'),
+            secure: this.config.get('cookies.secure'),
+            sameSite: this.config.get('cookies.sameSite'),
             expires: new Date(refreshExpiration)
         });
     }
