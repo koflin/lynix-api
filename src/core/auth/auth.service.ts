@@ -25,8 +25,8 @@ export class AuthService {
         return null;
     }
 
-    async login(user: User) {
-        let payload = {
+    async tokenFromUser(user: User) {
+        const payloadToken = {
             // Issuer
             iss: this.config.get('jwt.issuer'),
             // Subject
@@ -42,9 +42,43 @@ export class AuthService {
             }
         };
 
+        const payloadRefreshToken = {
+            // Issuer
+            iss: this.config.get('jwt.issuer'),
+            // Subject
+            sub: user.id,
+            // Issued at
+            iat: new Date().getTime(),
+        }
+
+        const accessToken = this.jwtService.sign(payloadToken, { expiresIn: this.config.get<number>('jwt.tokenExpiration') * 1000 });
+        const refreshToken = this.jwtService.sign(payloadRefreshToken, { expiresIn: this.config.get<number>('jwt.refreshTokenExpiration') * 1000 });
+
         return {
-            access_token: this.jwtService.sign(payload),
-            user
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            user: payloadToken.user,
+            refresh_expiration : this.jwtService.decode(refreshToken)['exp'],
         };
+    }
+
+    async tokenFromRefresh(refreshToken: string) {
+        if (!refreshToken || !this.jwtService.verify(refreshToken)) {
+            return null;
+        }
+
+        const id = this.jwtService.decode(refreshToken).sub;
+
+        if (!id) {
+            return null;
+        }
+
+        const user = await this.usersService.getById(id);
+
+        if (!user) {
+            return null;
+        }
+
+        return this.tokenFromUser(user);
     }
 }

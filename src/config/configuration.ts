@@ -3,6 +3,7 @@ const env = process.env;
 export default () => ({
     api: {
       port: parseInt(env.API_PORT, 10),
+      url: env.API_HOST + '/' + env.VERSION_PREFIX,
     },
     gateway: {
       port: parseInt(env.GATEWAY_PORT, 10),
@@ -25,6 +26,7 @@ export default () => ({
     jwt: {
       issuer: env.JWT_ISSUER,
       secret: env.JWT_SECRET,
-      expiration: env.JWT_EXPIRATION + 's'
+      tokenExpiration: env.JWT_TOKEN_EXPIRATION,
+      refreshTokenExpiration: env.JWT_REFRESH_TOKEN_EXPIRATION
     }
 });

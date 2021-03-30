@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsArray, IsNumber, IsOptional, IsString, IsUrl, ValidateNested, IsObject } from 'class-validator';
+import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
 
 export class EditStepTemplateDto {
     @ApiProperty()
@@ -25,11 +24,13 @@ export class EditStepTemplateDto {
     tasks: object;
     @ApiProperty()
     @IsOptional()
-    @IsUrl({}, { each: true })
+    @IsString({ each: true })
+    //@IsUrl({}, { each: true })
     pictureUris?: string[];
     @ApiProperty()
     @IsOptional()
-    @IsUrl({}, { each: true })
+    @IsString({ each: true })
+    //@IsUrl({}, { each: true })
     videoUris?: string[];
     @ApiProperty()
     @IsOptional()

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Strategy } from 'passport-jwt';
 
 import { UsersService } from '../users/users.service';
 
@@ -12,9 +12,18 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         private config: ConfigService
     ) {
         super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            //ingoreExpiration: false,
-            ingoreExpiration: true,
+            jwtFromRequest: (req: any) => {
+                const accessToken = req.cookies['access_token'];
+                let loggedIn = req.cookies['logged_in_until'];
+                loggedIn = loggedIn ? parseInt(loggedIn) : 0;
+
+                if (loggedIn < Date.now()) {
+                    return null;
+                }
+
+                return accessToken;
+            },
+            ingoreExpiration: false,
             secretOrKey: config.get('jwt.secret')
         });
     }
