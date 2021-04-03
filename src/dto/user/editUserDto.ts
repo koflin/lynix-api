@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsBase64, IsMongoId, IsOptional, IsString, IsUrl } from "class-validator";
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsMongoId, IsOptional, IsString } from 'class-validator';
 
 export class EditUserDto {
     @ApiPropertyOptional()
@@ -20,6 +20,6 @@ export class EditUserDto {
     roleId?: string;
     @ApiPropertyOptional()
     @IsOptional()
-    @IsUrl()
+    @IsString()
     avatar?: string;
 }
