@@ -13,10 +13,13 @@ export class ProductTemplateDoc extends Document {
     name: string;
 
     @Prop()
+    description?: object;
+
+    @Prop()
     processes: {
         templateId: string;
         quantity: number;
-    }[]
+    }[];
 
     @Prop()
     deletedAt: Date;

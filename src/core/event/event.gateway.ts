@@ -47,9 +47,6 @@ export class EventGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
   }
   
   handleDisconnect(client: Socket) {
-    //console.log("Disonnected " + client.id);
-
-
     this.usersService.setDisconnected(client);
   }
 

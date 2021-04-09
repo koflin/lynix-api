@@ -36,7 +36,7 @@ export class MediaController {
     @Post()
     @UseInterceptors(FileInterceptor('file', { 
         fileFilter: (req: Request, file, callback) => {
-            const ext = path.extname(file.originalname);
+            const ext = path.extname(file.originalname).toLowerCase();
 
             if (!allowedFileTypes.includes(ext)) {
                 return callback(new Error('Media type "' + ext + '" not allowed. Try one of' + allowedFileTypes.join(', ')), false);
@@ -47,7 +47,7 @@ export class MediaController {
         storage: diskStorage({
             filename: (req, file, cb) => {
                 const id = uuidv4();
-                return cb(null, id + path.extname(file.originalname));
+                return cb(null, id + path.extname(file.originalname).toLowerCase());
             },
             destination: './media'
         })

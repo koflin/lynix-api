@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as moment from 'moment';
 import { Model } from 'mongoose';
 import { Socket } from 'socket.io';
 import { CreateUserDto } from 'src/dto/user/createUserDto';
@@ -68,8 +69,6 @@ export class UsersService {
     }
 
     setActivity(id: string, activity: UserActivity) {
-        //console.log(id + " activity changed to: " + activity);
-
         return this.userModel.findByIdAndUpdate(id, {
             activity
         }, { new: true, omitUndefined: true }).exec();
@@ -84,7 +83,7 @@ export class UsersService {
                     user.activity = 'idle';
                     user.save();
 
-                    console.log('Offline: ' + user.username);
+                    console.log('[' + moment().format('HH:mm:ss') + '] Offline: ' + user.username);
                 }
             });
         });
@@ -95,7 +94,7 @@ export class UsersService {
 
         this.userModel.findById(user.id, (err, user) => {
             if (user.status == 'offline') {
-                console.log('Now online: ' + user.username + " (" + client.id + ")");
+                console.log('[' + moment().format('HH:mm:ss') + '] Now online: ' + user.username + " (" + client.id + ")");
             }
         });
 
