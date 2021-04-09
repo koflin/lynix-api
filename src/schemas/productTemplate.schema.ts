@@ -1,5 +1,5 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 /**
  * Represents a product template document
@@ -13,10 +13,16 @@ export class ProductTemplateDoc extends Document {
     name: string;
 
     @Prop()
+    description?: object;
+
+    @Prop()
     processes: {
         templateId: string;
         quantity: number;
-    }[]
+    }[];
+
+    @Prop()
+    deletedAt: Date;
 }
 
 export const ProductTemplateSchema = SchemaFactory.createForClass(ProductTemplateDoc);

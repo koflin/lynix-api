@@ -17,7 +17,7 @@ export class ProductTemplatesService {
     }
 
     async getAll(filter: { companyId?: string }): Promise<ProductTemplate[]> {
-        let productIds = await this.productModel.find(filter, '_id').exec();
+        let productIds = await this.productModel.find({ ...filter, deletedAt: null}, '_id').exec();
         return Promise.all(productIds.map( async (doc) => {
             return this.getById(doc.id);
         }));
@@ -53,7 +53,7 @@ export class ProductTemplatesService {
     }
 
     async delete(id: string): Promise<void> {
-        await this.productModel.findByIdAndDelete(id).exec();
+        await this.productModel.findByIdAndUpdate(id, { $currentDate: { deletedAt: true } }).exec();
         return;
     }
 }

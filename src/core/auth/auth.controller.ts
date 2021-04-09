@@ -1,10 +1,12 @@
-import { Controller, HttpStatus, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Controller, Delete, HttpStatus, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { User } from 'src/models/user.model';
 
+import { Requestor } from '../users/requestor.decorator';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 
 @ApiTags('authentication')
@@ -28,15 +30,22 @@ export class AuthController {
         res.status(HttpStatus.OK).json({ access_token, user, refresh_expiration });
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Delete('logout')
+    async logout(@Requestor() user, @Req() req: Request, @Res() res: Response) { 
+        if (!user) {
+            res.status(HttpStatus.NOT_FOUND).send();
+            return;
+        }
+
+        this.unsetCookies(req, res);
+
+        res.status(HttpStatus.ACCEPTED).send();
+    }
+
     @Post('token')
     async token(@Req() req, @Res() res: Response) {
         const refreshToken = req.cookies['refresh_token'];
-        let loggedIn = req.cookies['logged_in_until'];
-        loggedIn = loggedIn ? parseInt(loggedIn) : 0;
-
-        if (loggedIn < Date.now()) {
-            throw new UnauthorizedException('Invalid refresh token!');
-        }
 
         if (!refreshToken) {
             throw new UnauthorizedException('No refresh token provided!');
@@ -58,7 +67,7 @@ export class AuthController {
     private setCookies(res: Response, refreshToken: string, accessToken: string, refreshExpiration: number) {
         res.cookie('refresh_token', refreshToken, {
             httpOnly: true,
-            path: '/' + this.config.get('version.prefix') + '/auth/token',
+            path: '/' + this.config.get('version.prefix') + '/auth',
             domain: this.config.get('cookies.domain'),
             secure: this.config.get('cookies.secure'),
             sameSite: this.config.get('cookies.sameSite'),
@@ -73,14 +82,28 @@ export class AuthController {
             sameSite: this.config.get('cookies.sameSite'),
             expires: new Date(refreshExpiration)
         });
+    }
 
-        res.cookie('logged_in_until', refreshExpiration, {
-            httpOnly: false,
+    private unsetCookies(req: Request, res: Response) {
+        const refreshToken = req.cookies['refresh_token'];
+        const accessToken = req.cookies['access_token'];
+
+        res.clearCookie('refresh_token', {
+            httpOnly: true,
+            path: '/' + this.config.get('version.prefix') + '/auth',
+            domain: this.config.get('cookies.domain'),
+            secure: this.config.get('cookies.secure'),
+            sameSite: this.config.get('cookies.sameSite'),
+            expires: new Date(this.authService.getExpirationDate(refreshToken))
+        });
+
+        res.clearCookie('access_token', {
+            httpOnly: true,
             path: '/',
             domain: this.config.get('cookies.domain'),
             secure: this.config.get('cookies.secure'),
             sameSite: this.config.get('cookies.sameSite'),
-            expires: new Date(refreshExpiration)
+            expires: new Date(this.authService.getExpirationDate(accessToken))
         });
     }
 }

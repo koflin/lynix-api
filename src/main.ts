@@ -38,8 +38,6 @@ async function bootstrap() {
   app.use(json({ limit: '50mb'}));
   app.use(cookieParser());
 
-  console.log(config.get('client.host'));
-
   app.enableCors({
     credentials: true,
     origin: config.get('client.host') 
