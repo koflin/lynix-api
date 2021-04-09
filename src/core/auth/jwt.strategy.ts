@@ -14,12 +14,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         super({
             jwtFromRequest: (req: any) => {
                 const accessToken = req.cookies['access_token'];
-                let loggedIn = req.cookies['logged_in_until'];
-                loggedIn = loggedIn ? parseInt(loggedIn) : 0;
-
-                if (loggedIn < Date.now()) {
-                    return null;
-                }
 
                 return accessToken;
             },

@@ -1,7 +1,6 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 import { StepTemplate } from 'src/models/stepTemplate.model';
-import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
-import { StepTemplateDoc } from "./stepTemplate.schema";
 
 /**
  * Represents a process template document
@@ -20,6 +19,9 @@ export class ProcessTemplateDoc extends Document {
 
     @Prop()
     stepTemplates: StepTemplate[];
+
+    @Prop()
+    deletedAt: Date;
 }
 
 export const ProcessTemplateSchema = SchemaFactory.createForClass(ProcessTemplateDoc);

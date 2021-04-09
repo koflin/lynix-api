@@ -1,12 +1,11 @@
-import { User } from './../../../models/user.model';
-import { EditProcessTemplateDto } from './../../../dto/processTemplate/editProcessTemplateDto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { EditStepTemplateDto } from 'src/dto/stepTemplate/editStepTemplateDto';
 import { ProcessTemplate } from 'src/models/processTemplate';
-import { StepTemplate } from 'src/models/stepTemplate.model';
 import { ProcessTemplateDoc } from 'src/schemas/processTemplate.schema';
+
+import { EditProcessTemplateDto } from './../../../dto/processTemplate/editProcessTemplateDto';
+import { User } from './../../../models/user.model';
 
 @Injectable()
 export class ProcessTemplatesService {
@@ -16,7 +15,7 @@ export class ProcessTemplatesService {
     }
 
     async getAll(filter: { companyId?: string }): Promise<ProcessTemplate[]> {
-        let processDocs = await this.processTemplateModel.find(filter).exec();
+        let processDocs = await this.processTemplateModel.find({ ...filter, deletedAt: null }).exec();
         return processDocs.map(doc => new ProcessTemplate(doc));
     }
 
@@ -41,7 +40,7 @@ export class ProcessTemplatesService {
     }
 
     async delete(id: string): Promise<void> {
-        await this.processTemplateModel.findByIdAndDelete(id).exec();
+        await this.processTemplateModel.findByIdAndUpdate(id, { $currentDate: { deletedAt: true } }).exec();
         return;
     }
 }

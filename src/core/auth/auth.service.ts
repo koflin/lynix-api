@@ -81,4 +81,8 @@ export class AuthService {
 
         return this.tokenFromUser(user);
     }
+
+    getExpirationDate(token: string) {
+        return this.jwtService.decode(token)['exp'];
+    }
 }
