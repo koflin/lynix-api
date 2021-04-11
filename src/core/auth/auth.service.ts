@@ -25,7 +25,7 @@ export class AuthService {
         return null;
     }
 
-    async tokenFromUser(user: User) {
+    async tokenFromUser(user: User, persist: boolean) {
         const payloadToken = {
             // Issuer
             iss: this.config.get('jwt.issuer'),
@@ -39,7 +39,9 @@ export class AuthService {
                 companyId: user.companyId,
                 username: user.username,
                 permissions: user.role.permissions
-            }
+            },
+
+            persist: persist
         };
 
         const payloadRefreshToken = {
@@ -49,6 +51,8 @@ export class AuthService {
             sub: user.id,
             // Issued at
             iat: new Date().getTime(),
+
+            persist: persist
         }
 
         const accessToken = this.jwtService.sign(payloadToken, { expiresIn: this.config.get<number>('jwt.tokenExpiration') * 1000 });
@@ -59,6 +63,7 @@ export class AuthService {
             refresh_token: refreshToken,
             user: payloadToken.user,
             refresh_expiration : this.jwtService.decode(refreshToken)['exp'],
+            access_expiration: this.jwtService.decode(accessToken)['exp']
         };
     }
 
@@ -67,7 +72,8 @@ export class AuthService {
             return null;
         }
 
-        const id = this.jwtService.decode(refreshToken).sub;
+        const decoded = this.jwtService.decode(refreshToken);
+        const id = decoded['sub'];
 
         if (!id) {
             return null;
@@ -79,10 +85,17 @@ export class AuthService {
             return null;
         }
 
-        return this.tokenFromUser(user);
+        const persist = decoded['persist'];
+
+        return this.tokenFromUser(user, persist);
     }
 
-    getExpirationDate(token: string) {
-        return this.jwtService.decode(token)['exp'];
+    getInfo(token: string) {
+        const decoded = this.jwtService.decode(token);
+        
+        return {
+            expiration: decoded['exp'],
+            persist: decoded['persist']
+        };
     }
 }
