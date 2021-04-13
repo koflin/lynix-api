@@ -94,7 +94,7 @@ export class UsersService {
 
         this.userModel.findById(user.id, (err, user) => {
             if (user.status == 'offline') {
-                console.log('[' + moment().format('HH:mm:ss') + '] Now online: ' + user.username + " (" + client.id + ")");
+                console.log('[' + moment().format('HH:mm:ss') + '] Now online: ' + user.username);
             }
         });
 

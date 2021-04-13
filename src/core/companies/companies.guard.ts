@@ -1,15 +1,19 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { Observable } from 'rxjs';
-import { User } from 'src/models/user.model';
+import { LocalUser } from 'src/models/localUser.model';
+
+import { COMPANY_PROTECT_KEY } from './company-protect.decorator';
 
 @Injectable()
 export class CompaniesGuard implements CanActivate {
 
   constructor(
-    @InjectConnection() private connection: Connection
+    @InjectConnection() private connection: Connection,
+    private reflector: Reflector
   ) {
 
   }
@@ -17,32 +21,61 @@ export class CompaniesGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
+    const properties = this.reflector.getAllAndOverride<string[]>(COMPANY_PROTECT_KEY, [
+      context.getHandler(),
+      context.getClass()
+    ]);
+
+    if (!properties || properties.length == 0) {
+      return true;
+    }
+
+    const user: LocalUser = context.switchToHttp().getRequest().user;
     const params = context.switchToHttp().getRequest().params;
-    const id = params[Object.keys(params)[0]];
+    const body = context.switchToHttp().getRequest().body;
 
-    if (!id) {
-      return true;
-    }
+    for (const prop of properties) {
+      const paramValue = params[prop];
+      const bodyValue = body[prop];
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return true;
-    }
-
-    const user: User = context.switchToHttp().getRequest().user;
-
-    return new Promise(async (resolve) => {
-      const collections = await this.connection.db.collections();
-      
-      for (let col of collections) {
-        let result = await col.findOne({ "_id": new mongoose.Types.ObjectId(id) });
-
-        if (result && result.companyId == user.companyId) {
-          resolve(true);
-          return;
+      if (paramValue && mongoose.Types.ObjectId.isValid(paramValue)) {
+        if (!this.check(paramValue, user)) {
+          return false;
         }
       }
 
-      resolve(false);
-    });
+      if (bodyValue && mongoose.Types.ObjectId.isValid(bodyValue)) {
+        if (!this.check(bodyValue, user)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  async check(value: any, user: LocalUser) {
+    // Array value
+    if (Array.isArray(value)) {
+      for (const subValue of value) {
+        if (!this.check(subValue, user)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    const collections = await this.connection.db.collections();
+      
+    for (let col of collections) {
+      let result = await col.findOne({ "_id": new mongoose.Types.ObjectId(value) });
+
+      if (result && result.companyId == user.companyId) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

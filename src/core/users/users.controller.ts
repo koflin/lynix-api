@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     Body,
     Controller,
     Delete,
@@ -56,7 +57,9 @@ export class UsersController {
     @ApiOkResponse({ type: User })
     @Permissions(Permission.EDIT)
     @Post()
-    create(@Request() req: { user: User }, @Body() creatUserDto: CreateUserDto) {
+    async create(@Request() req: { user: User }, @Body() creatUserDto: CreateUserDto) {
+        const search = await this.usersService.getByUsername(creatUserDto.username);
+        if (search != null) throw new BadRequestException('Username already taken!');
         creatUserDto.companyId = req.user.companyId;
         return this.usersService.create(creatUserDto);
     }

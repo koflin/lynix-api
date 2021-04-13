@@ -1,4 +1,4 @@
-import { Controller, Delete, HttpStatus, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, HttpStatus, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
@@ -22,10 +22,10 @@ export class AuthController {
 
     @UseGuards(LocalAuthGuard)
     @Post('login')
-    async login(@Req() req: { user: User }, @Res() res: Response) {
-        const { access_token, refresh_token, user, refresh_expiration } = await this.authService.tokenFromUser(req.user);
+    async login(@Req() req: { user: User }, @Res() res: Response, @Body('persist') persist) {
+        const { access_token, refresh_token, user, refresh_expiration } = await this.authService.tokenFromUser(req.user, persist);
         
-        this.setCookies(res, refresh_token, access_token, refresh_expiration);
+        this.setCookies(res, refresh_token, access_token);
 
         res.status(HttpStatus.OK).json({ access_token, user, refresh_expiration });
     }
@@ -59,19 +59,22 @@ export class AuthController {
 
         const { access_token, refresh_token, user, refresh_expiration } = await this.authService.tokenFromRefresh(refreshToken);
         
-        this.setCookies(res, refresh_token, access_token, refresh_expiration);
+        this.setCookies(res, refresh_token, access_token);
 
         res.status(HttpStatus.OK).json({ access_token, user, refresh_expiration });
     }
 
-    private setCookies(res: Response, refreshToken: string, accessToken: string, refreshExpiration: number) {
+    private setCookies(res: Response, refreshToken: string, accessToken: string) {
+        const refreshInfo = this.authService.getInfo(refreshToken);
+        const accessInfo = this.authService.getInfo(accessToken);
+
         res.cookie('refresh_token', refreshToken, {
             httpOnly: true,
             path: '/' + this.config.get('version.prefix') + '/auth',
             domain: this.config.get('cookies.domain'),
             secure: this.config.get('cookies.secure'),
             sameSite: this.config.get('cookies.sameSite'),
-            expires: new Date(refreshExpiration)
+            expires: refreshInfo.persist ? new Date(refreshInfo.expiration) : undefined
         });
 
         res.cookie('access_token', accessToken, {
@@ -80,13 +83,15 @@ export class AuthController {
             domain: this.config.get('cookies.domain'),
             secure: this.config.get('cookies.secure'),
             sameSite: this.config.get('cookies.sameSite'),
-            expires: new Date(refreshExpiration)
+            expires: accessInfo.persist ? new Date(accessInfo.expiration) : undefined
         });
     }
 
     private unsetCookies(req: Request, res: Response) {
         const refreshToken = req.cookies['refresh_token'];
         const accessToken = req.cookies['access_token'];
+        const refreshInfo = this.authService.getInfo(refreshToken);
+        const accessInfo = this.authService.getInfo(accessToken);
 
         res.clearCookie('refresh_token', {
             httpOnly: true,
@@ -94,7 +99,7 @@ export class AuthController {
             domain: this.config.get('cookies.domain'),
             secure: this.config.get('cookies.secure'),
             sameSite: this.config.get('cookies.sameSite'),
-            expires: new Date(this.authService.getExpirationDate(refreshToken))
+            expires: refreshInfo.persist ? new Date(refreshInfo.expiration) : undefined
         });
 
         res.clearCookie('access_token', {
@@ -103,7 +108,7 @@ export class AuthController {
             domain: this.config.get('cookies.domain'),
             secure: this.config.get('cookies.secure'),
             sameSite: this.config.get('cookies.sameSite'),
-            expires: new Date(this.authService.getExpirationDate(accessToken))
+            expires: accessInfo.persist ? new Date(accessInfo.expiration) : undefined
         });
     }
 }
