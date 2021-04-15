@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { LocalUser } from 'src/models/localUser.model';
 
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -18,17 +18,16 @@ export class ActivationController {
 
     }
 
-    @Get(':id')
-    get(@Param('id') id) {
-        return;
+    @Get(':userId')
+    get(@Param('userId') userId) {
+        return this.activationService.getByUserId(userId);
     }
 
-    @Get()
-    
-
     @Put(':id')
-    activate(@Param('id') id, @Body() data: { code: string, password: string }) {
-
+    async activate(@Param('id') id, @Body() data: { code: string, password: string }) {
+        const result = await this.activationService.activate(id, data.code, data.password);
+        if (!result) throw new BadRequestException('Could not activate user');
+        return;
     }
 
     @UseGuards(JwtAuthGuard)

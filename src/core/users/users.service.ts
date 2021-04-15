@@ -51,6 +51,14 @@ export class UsersService {
         return this.getById(userDoc.id);
     }
 
+    async activate(userId: string, password: string) {
+        const userDoc = await this.userModel.findById(userId);
+        userDoc.passwordEncrypted = password;
+        return true;
+    }
+
+
+
     async edit(id: string, userDto: EditUserDto): Promise<User> {
         let userDoc = await this.userModel.findByIdAndUpdate(id, {
             ...userDto,

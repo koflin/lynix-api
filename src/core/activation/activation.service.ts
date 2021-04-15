@@ -38,4 +38,12 @@ export class ActivationService {
         activation.code = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
         return this.getById((await activation.save()).id);
     }
+
+    async activate(id: string, code: string, password: string) {
+        const activation = await this.activationModel.findById(id);
+        if (!activation) return false;
+        if (activation.code != code) return false;
+        
+        return this.usersService.activate(activation.userId, password);
+    }
 }
