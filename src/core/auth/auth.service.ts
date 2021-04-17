@@ -63,7 +63,8 @@ export class AuthService {
             refresh_token: refreshToken,
             user: payloadToken.user,
             refresh_expiration : this.jwtService.decode(refreshToken)['exp'],
-            access_expiration: this.jwtService.decode(accessToken)['exp']
+            access_expiration: this.jwtService.decode(accessToken)['exp'],
+            persist: persist
         };
     }
 
