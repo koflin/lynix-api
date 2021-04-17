@@ -20,6 +20,9 @@ export class User {
     @ApiProperty()
     avatar?: string;
 
+    @ApiProperty()
+    activatedAt: Date;
+
     constructor(user: UserDoc, role: Role) {
         this.id = user.id;
         this.companyId = user.companyId;
@@ -28,6 +31,7 @@ export class User {
         this.lastName = user.lastName;
         this.role = role;
         this.avatar = user.avatar;
+        this.activatedAt = user.activatedAt;
     }
 }
 

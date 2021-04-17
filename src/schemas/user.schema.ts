@@ -29,6 +29,11 @@ export class UserDoc extends Document {
     activity: UserActivity;
     @Prop()
     status: UserStatus;
+
+    @Prop()
+    activatedAt: Date;
+    @Prop()
+    lastPasswordResetAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDoc);

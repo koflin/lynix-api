@@ -10,6 +10,7 @@ import { LocalUser } from 'src/models/localUser.model';
 import { User, UserActivity, UserStatus } from 'src/models/user.model';
 import { UserDoc } from 'src/schemas/user.schema';
 
+import { ActivationService } from '../activation/activation.service';
 import { RolesService } from '../roles/roles.service';
 import { Role } from './../../models/role.model';
 
@@ -18,7 +19,8 @@ export class UsersService {
     private readonly offlineAfter = 5000;
 
     constructor(@InjectModel(UserDoc.name) private userModel: Model<UserDoc>,
-        private roleService: RolesService
+        private roleService: RolesService,
+        private activationService: ActivationService
     ) {
     }
 
@@ -46,8 +48,8 @@ export class UsersService {
 
     async create(userDto: CreateUserDto): Promise<User> {
         let userDoc = new this.userModel(userDto);
-        // Encryp password here later
-        await userDoc.save()
+        await this.activationService.create(userDoc.id, 'activation', userDoc.companyId);
+        await userDoc.save();
         return this.getById(userDoc.id);
     }
 

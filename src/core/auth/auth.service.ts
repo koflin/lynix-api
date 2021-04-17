@@ -18,7 +18,7 @@ export class AuthService {
         let user = await this.usersService.getByUsername(username);
 
         // Change to encrypted
-        if (user && user.passwordEncrypted === password) {
+        if (user && user.passwordEncrypted && user.passwordEncrypted === password) {
             return this.usersService.getById(user.id);
         }
 
@@ -63,7 +63,8 @@ export class AuthService {
             refresh_token: refreshToken,
             user: payloadToken.user,
             refresh_expiration : this.jwtService.decode(refreshToken)['exp'],
-            access_expiration: this.jwtService.decode(accessToken)['exp']
+            access_expiration: this.jwtService.decode(accessToken)['exp'],
+            persist: persist
         };
     }
 

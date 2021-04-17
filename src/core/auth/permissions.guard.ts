@@ -1,8 +1,9 @@
-import { User } from 'src/models/user.model';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { Permission } from 'src/models/role.model';
+import { User } from 'src/models/user.model';
+
 import { PERMISSIONS_KEY } from './permissions.decorator';
 
 @Injectable()
@@ -24,6 +25,11 @@ export class PermissionsGuard implements CanActivate {
     }
 
     const user: User = context.switchToHttp().getRequest().user;
+
+    if (!user) {
+      return false;
+    }
+
     return requiredPermissions.every((permission) => user.role.permissions.indexOf(permission) != -1);
   }
 }

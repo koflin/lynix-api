@@ -1,10 +1,11 @@
-import { RolesModule } from './../roles/roles.module';
-import { Module, HttpModule } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersController } from './users.controller';
+import { HttpModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserDoc, UserSchema } from 'src/schemas/user.schema';
-import { RolesService } from '../roles/roles.service';
+
+import { ActivationModule } from '../activation/activation.module';
+import { RolesModule } from './../roles/roles.module';
+import { UsersController } from './users.controller';
+import { UsersService } from './users.service';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { RolesService } from '../roles/roles.service';
     MongooseModule.forFeature([{
       name: UserDoc.name, schema: UserSchema, collection: 'users',
     }]),
-    RolesModule
+    RolesModule,
+    ActivationModule
   ],
   exports: [UsersService],
   providers: [UsersService],

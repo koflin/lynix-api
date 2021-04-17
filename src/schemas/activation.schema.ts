@@ -12,6 +12,9 @@ export class ActivationDoc extends Document {
     code: string;
     @Prop()
     type: 'activation' | 'reset';
+
+    @Prop()
+    validUntil: Date;
 }
 
 export const ActivationSchema = SchemaFactory.createForClass(ActivationDoc);

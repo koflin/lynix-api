@@ -57,11 +57,11 @@ export class AuthController {
             throw new UnauthorizedException('Invalid refresh token!');
         }
 
-        const { access_token, refresh_token, user, refresh_expiration } = await this.authService.tokenFromRefresh(refreshToken);
+        const { access_token, refresh_token, user, refresh_expiration, persist } = await this.authService.tokenFromRefresh(refreshToken);
         
         this.setCookies(res, refresh_token, access_token);
 
-        res.status(HttpStatus.OK).json({ access_token, user, refresh_expiration });
+        res.status(HttpStatus.OK).json({ access_token, user, refresh_expiration, persist });
     }
 
     private setCookies(res: Response, refreshToken: string, accessToken: string) {
