@@ -18,7 +18,7 @@ export class AuthService {
         let user = await this.usersService.getByUsername(username);
 
         // Change to encrypted
-        if (user && user.passwordEncrypted === password) {
+        if (user && user.passwordEncrypted && user.passwordEncrypted === password) {
             return this.usersService.getById(user.id);
         }
 

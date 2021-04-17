@@ -14,12 +14,16 @@ export class Activation {
     @ApiProperty()
     type: ActivationType;
 
+    @ApiProperty()
+    validUntil: Date;
+
     constructor(activation: ActivationDoc) {
         this.id = activation.id;
         this.companyId = activation.companyId;
         this.userId = activation.userId;
         this.code = activation.code;
         this.type = activation.type;
+        this.validUntil = activation.validUntil;
     }
 }
 
