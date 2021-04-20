@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { Activation } from 'src/models/activation.model';
 import { ActivationDoc } from 'src/schemas/activation.schema';
@@ -63,7 +64,8 @@ export class ActivationService {
             return false;
         }
 
-        userDoc.passwordEncrypted = password;
+        const rounds = 10;
+        userDoc.passwordEncrypted = await bcrypt.hash(password, rounds);
         await userDoc.save();
         activation.validUntil = new Date(0);
         await activation.save();

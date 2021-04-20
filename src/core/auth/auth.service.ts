@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 import { User } from 'src/models/user.model';
 
 import { UsersService } from '../users/users.service';
@@ -17,8 +18,8 @@ export class AuthService {
     async validateUser(username: string, password: string) {
         let user = await this.usersService.getByUsername(username);
 
-        // Change to encrypted
-        if (user && user.passwordEncrypted && user.passwordEncrypted === password) {
+        // Change to encrypted on production
+        if (user && user.passwordEncrypted && (user.passwordEncrypted === password || await bcrypt.compare(password, user.passwordEncrypted))) {
             return this.usersService.getById(user.id);
         }
 
