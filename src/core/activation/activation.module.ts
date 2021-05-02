@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ActivationDoc, ActivationSchema } from 'src/schemas/activation.schema';
 import { UserDoc, UserSchema } from 'src/schemas/user.schema';
 
+import { AccountModule } from '../account/account.module';
 import { ActivationController } from './activation.controller';
 import { ActivationService } from './activation.service';
 
@@ -13,7 +14,8 @@ import { ActivationService } from './activation.service';
       name: ActivationDoc.name, schema: ActivationSchema, collection: 'activations',
     },{
       name: UserDoc.name, schema: UserSchema, collection: 'users',
-    }])
+    }]),
+    AccountModule
   ],
   exports: [ActivationService],
   controllers: [ActivationController],

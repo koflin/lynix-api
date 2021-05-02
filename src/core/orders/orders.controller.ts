@@ -1,32 +1,20 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    NotFoundException,
-    Param,
-    Post,
-    Put,
-    Query,
-    Request,
-    UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { EditOrderDto } from 'src/dto/order/editOrderDto';
 import { Order } from 'src/models/order.model';
 import { Permission } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Permissions } from '../auth/permissions.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
-import { CompaniesGuard } from '../companies/companies.guard';
+import { UserAuthGuard } from '../auth/user-auth.guard';
 import { ParseIdPipe } from './../../pipes/parse-id.pipe';
+import { Account } from './../auth/account.decorator';
 import { OrdersService } from './orders.service';
 
 @ApiTags('orders')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
+@UseGuards(UserAuthGuard, PermissionsGuard)
 @Controller('orders')
 export class OrdersController {
     constructor(
@@ -44,8 +32,8 @@ export class OrdersController {
     @ApiOkResponse({ type: Order })
     @Permissions(Permission.EDIT)
     @Post()
-    create(@Request() req: { user: User }, @Body() editOrderDto: EditOrderDto) {
-        return this.ordersService.create(editOrderDto, req.user);
+    create(@Account() user: User, @Body() editOrderDto: EditOrderDto) {
+        return this.ordersService.create(editOrderDto, user);
     }
 
     @ApiOkResponse({ type: Order })

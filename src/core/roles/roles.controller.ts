@@ -1,19 +1,19 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { EditRoleDto } from 'src/dto/role/editRoleDto';
 import { Permission, Role } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
 
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Account } from '../auth/account.decorator';
 import { Permissions } from '../auth/permissions.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
-import { CompaniesGuard } from '../companies/companies.guard';
+import { UserAuthGuard } from '../auth/user-auth.guard';
 import { RolesService } from './roles.service';
 
 @ApiTags('roles')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
+@UseGuards(UserAuthGuard, PermissionsGuard)
 @Controller('roles')
 export class RolesController {
     constructor(private rolesService: RolesService) {
@@ -22,15 +22,15 @@ export class RolesController {
     @ApiOkResponse({ type: [Role] })
     @Permissions(Permission.VIEW)
     @Get()
-    getAll(@Request() req: { user: User }) {
-        return this.rolesService.getAll(req.user.companyId);
+    getAll(@Account() user: User) {
+        return this.rolesService.getAll(user.companyId);
     }
 
     @ApiOkResponse({ type: Role })
     @Permissions(Permission.EDIT)
     @Post()
-    create(@Request() req: { user: User }, @Body() editRoleDto: EditRoleDto) {
-        return this.rolesService.create(editRoleDto, req.user);
+    create(@Account() user: User, @Body() editRoleDto: EditRoleDto) {
+        return this.rolesService.create(editRoleDto, user);
     }
 
     @ApiOkResponse({ type: Role })

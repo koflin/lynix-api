@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Body, Param, NotFoundException, Patch, Delete, Put, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
-import { Company } from 'src/models/company.model';
-import { CompaniesService } from './companies.service';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CreateCompanyDto } from 'src/dto/company/createCompanyDto';
 import { EditCompanyDto } from 'src/dto/company/editCompanyDto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Company } from 'src/models/company.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
+
+import { AdminAuthGuard } from '../auth/admin-auth.guard';
 import { PermissionsGuard } from '../auth/permissions.guard';
+import { UserAuthGuard } from '../auth/user-auth.guard';
+import { CompaniesService } from './companies.service';
 
 @ApiTags('companies')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
+@UseGuards(PermissionsGuard)
 @Controller('companies')
 export class CompaniesController {
 
@@ -17,18 +19,21 @@ export class CompaniesController {
     }
 
     @ApiOkResponse({ type: [Company] })
+    @UseGuards(AdminAuthGuard)
     @Get()
     getAll() {
         return this.companyService.getAll();
     }
 
     @ApiOkResponse({ type: Company })
+    @UseGuards(AdminAuthGuard)
     @Post()
     create(@Body() createCompanyDto: CreateCompanyDto) {
         return this.companyService.create(createCompanyDto);
     }
 
     @ApiOkResponse({ type: Company })
+    @UseGuards(UserAuthGuard)
     @Get(':companyId')
     getById(@Param('companyId', new ParseIdPipe()) companyId: string) {
         let company = this.companyService.getById(companyId);
@@ -37,6 +42,7 @@ export class CompaniesController {
     }
 
     @ApiOkResponse({ type: Company })
+    @UseGuards(AdminAuthGuard)
     @Put(':companyId')
     edit(@Param('companyId', new ParseIdPipe()) companyId: string, @Body() editCompanyDto: EditCompanyDto) {
         let company = this.companyService.edit(companyId, editCompanyDto);
@@ -45,6 +51,7 @@ export class CompaniesController {
     }
 
     @ApiOkResponse()
+    @UseGuards(AdminAuthGuard)
     @Delete(':companyId')
     delete(@Param('companyId', new ParseIdPipe()) companyId: string) {
         let company = this.companyService.delete(companyId);

@@ -41,8 +41,8 @@ export class UsersService {
         return userDoc == null ? null : new User(userDoc, await this.roleService.getById(userDoc.roleId));
     }
 
-    async getByUsername(username: string): Promise<UserDoc> {
-        let userDoc = await this.userModel.findOne({ username }).exec();
+    async getByEmail(email: string): Promise<UserDoc> {
+        let userDoc = await this.userModel.findOne({ email }).exec();
         return userDoc == null ? null : userDoc;
     }
 
@@ -85,7 +85,7 @@ export class UsersService {
                     user.activity = 'idle';
                     user.save();
 
-                    console.log('[' + moment().format('HH:mm:ss') + '] Offline: ' + user.username);
+                    console.log('[' + moment().format('HH:mm:ss') + '] Offline: ' + user.email);
                 }
             });
         });
@@ -96,7 +96,7 @@ export class UsersService {
 
         this.userModel.findById(user.id, (err, user) => {
             if (user.status == 'offline') {
-                console.log('[' + moment().format('HH:mm:ss') + '] Now online: ' + user.username);
+                console.log('[' + moment().format('HH:mm:ss') + '] Now online: ' + user.email);
             }
         });
 

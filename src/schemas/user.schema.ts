@@ -11,7 +11,7 @@ export class UserDoc extends Document {
     companyId: string;
     
     @Prop()
-    username: string;
+    email: string;
     @Prop()
     passwordEncrypted: string;
     @Prop()

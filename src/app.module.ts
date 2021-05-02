@@ -7,6 +7,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import configuration from './config/configuration';
+import { AccountModule } from './core/account/account.module';
+import { ActivationModule } from './core/activation/activation.module';
+import { AdminModule } from './core/admin/admin.module';
 import { AuthModule } from './core/auth/auth.module';
 import { CompaniesModule } from './core/companies/companies.module';
 import { DevModule } from './core/dev/dev.module';
@@ -20,7 +23,6 @@ import { ProcessTemplatesModule } from './core/templates/process-templates/proce
 import { ProductTemplatesModule } from './core/templates/product-templates/product-templates.module';
 import { ToolsModule } from './core/tools/tools.module';
 import { UsersModule } from './core/users/users.module';
-import { ActivationModule } from './core/activation/activation.module';
 
 @Module({
   imports: [
@@ -73,6 +75,8 @@ import { ActivationModule } from './core/activation/activation.module';
     RolesModule,
     MediaModule,
     ActivationModule,
+    AdminModule,
+    AccountModule
   ],
   controllers: [AppController],
   providers: [AppService],

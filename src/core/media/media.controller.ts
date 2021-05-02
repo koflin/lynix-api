@@ -16,15 +16,14 @@ import * as path from 'path';
 import { User } from 'src/models/user.model';
 import { v4 as uuidv4 } from 'uuid';
 
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Account } from '../auth/account.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
-import { CompaniesGuard } from '../companies/companies.guard';
-import { Requestor } from '../users/requestor.decorator';
+import { UserAuthGuard } from '../auth/user-auth.guard';
 import { MediaService } from './media.service';
 
 const allowedFileTypes = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.ogg', '.webm'];
 
-@UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
+@UseGuards(UserAuthGuard, PermissionsGuard)
 @Controller('media')
 export class MediaController {
 
@@ -52,7 +51,7 @@ export class MediaController {
             destination: './media'
         })
     }))
-    async upload(@Requestor() user: User, @UploadedFile() file: Express.Multer.File) {
+    async upload(@Account() user: User, @UploadedFile() file: Express.Multer.File) {
         return this.mediaService.create(user.companyId, user.id, file.filename);
     }
 

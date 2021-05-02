@@ -24,12 +24,12 @@ export class PermissionsGuard implements CanActivate {
       return true;
     }
 
-    const user: User = context.switchToHttp().getRequest().user;
+    const user: User = context.switchToHttp().getRequest().account;
 
     if (!user) {
       return false;
     }
 
-    return requiredPermissions.every((permission) => user.role.permissions.indexOf(permission) != -1);
+    return requiredPermissions.every((permission) => user.role.permissions.includes(permission));
   }
 }

@@ -1,21 +1,20 @@
-import { ProductTemplate } from './../../../models/productTemplate.model';
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { ProductTemplateDoc } from 'src/schemas/productTemplate.schema';
-import { ProductTemplatesService } from './product-templates.service';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Account } from 'src/core/auth/account.decorator';
+import { Permissions } from 'src/core/auth/permissions.decorator';
+import { PermissionsGuard } from 'src/core/auth/permissions.guard';
+import { UserAuthGuard } from 'src/core/auth/user-auth.guard';
 import { EditProductTemplateDto } from 'src/dto/productTemplate/editProductTemplateDto';
-import { ApiTags, ApiBearerAuth, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
+import { Permission } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
-import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
-import { CompaniesGuard } from 'src/core/companies/companies.guard';
-import { PermissionsGuard } from 'src/core/auth/permissions.guard';
-import { Permissions } from 'src/core/auth/permissions.decorator';
-import { Permission } from 'src/models/role.model';
+
+import { ProductTemplate } from './../../../models/productTemplate.model';
+import { ProductTemplatesService } from './product-templates.service';
 
 @ApiTags('product-templates')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
+@UseGuards(UserAuthGuard, PermissionsGuard)
 @Controller('templates/product')
 export class ProductTemplatesController {
     constructor(private productService: ProductTemplatesService) {
@@ -32,8 +31,8 @@ export class ProductTemplatesController {
     @ApiOkResponse({ type: ProductTemplate })
     @Permissions(Permission.EDIT)
     @Post()
-    create(@Request() req: { user: User }, @Body() editProductDto: EditProductTemplateDto) {
-        return this.productService.create(editProductDto, req.user);
+    create(@Account() user: User, @Body() editProductDto: EditProductTemplateDto) {
+        return this.productService.create(editProductDto, user);
     }
 
     @ApiOkResponse({ type: ProductTemplate })

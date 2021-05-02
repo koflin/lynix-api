@@ -1,74 +1,41 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
-import { User } from 'src/models/user.model';
 
-import { UsersService } from '../users/users.service';
+import { AccountService } from '../account/account.service';
 
 @Injectable()
 export class AuthService {
     constructor(
-        private usersService: UsersService,
         private jwtService: JwtService,
-        private config: ConfigService
+        private config: ConfigService,
+        private accountService: AccountService
     ) {
     }
 
-    async validateUser(username: string, password: string) {
-        let user = await this.usersService.getByUsername(username);
+    /**
+     * Verifies account credentials and generates tokens
+     * @param email 
+     * @param password 
+     * @param persist 
+     * @param isAdmin 
+     * @returns 
+     */
+    async tokenFromCredentials(email: string, password: string, persist: boolean, isAdmin: boolean) {
+        const account = await this.accountService.getByCredentials(email, password, isAdmin);
 
-        // Change to encrypted on production
-        if (user && user.passwordEncrypted && (user.passwordEncrypted === password || await bcrypt.compare(password, user.passwordEncrypted))) {
-            return this.usersService.getById(user.id);
+        if (!account) {
+            return null;
         }
 
-        return null;
+        return this.tokenFromAccount(account, isAdmin, persist);
     }
 
-    async tokenFromUser(user: User, persist: boolean) {
-        const payloadToken = {
-            // Issuer
-            iss: this.config.get('jwt.issuer'),
-            // Subject
-            sub: user.id,
-            // Issued at
-            iat: new Date().getTime(),
-
-            user: {
-                id: user.id,
-                companyId: user.companyId,
-                username: user.username,
-                permissions: user.role.permissions
-            },
-
-            persist: persist
-        };
-
-        const payloadRefreshToken = {
-            // Issuer
-            iss: this.config.get('jwt.issuer'),
-            // Subject
-            sub: user.id,
-            // Issued at
-            iat: new Date().getTime(),
-
-            persist: persist
-        }
-
-        const accessToken = this.jwtService.sign(payloadToken, { expiresIn: this.config.get<number>('jwt.tokenExpiration') * 1000 });
-        const refreshToken = this.jwtService.sign(payloadRefreshToken, { expiresIn: this.config.get<number>('jwt.refreshTokenExpiration') * 1000 });
-
-        return {
-            access_token: accessToken,
-            refresh_token: refreshToken,
-            user: payloadToken.user,
-            refresh_expiration : this.jwtService.decode(refreshToken)['exp'],
-            access_expiration: this.jwtService.decode(accessToken)['exp'],
-            persist: persist
-        };
-    }
-
+    /**
+     * Verifies refresh token and generates new tokens
+     * @param refreshToken 
+     * @returns 
+     */
     async tokenFromRefresh(refreshToken: string) {
         if (!refreshToken || !this.jwtService.verify(refreshToken)) {
             return null;
@@ -81,23 +48,74 @@ export class AuthService {
             return null;
         }
 
-        const user = await this.usersService.getById(id);
-
-        if (!user) {
-            return null;
-        }
-
+        const isAdmin = decoded['isAdmin'];
         const persist = decoded['persist'];
 
-        return this.tokenFromUser(user, persist);
+        const account = await this.accountService.getById(id, isAdmin);
+        return this.tokenFromAccount(account, isAdmin, persist);
     }
 
+    /**
+     * Provides token information
+     * @param token 
+     * @returns 
+     */
     getInfo(token: string) {
         const decoded = this.jwtService.decode(token);
         
         return {
             expiration: decoded['exp'],
             persist: decoded['persist']
+        };
+    }
+
+    /**
+     * Generates tokens from account
+     * @param account 
+     * @param isAdmin 
+     * @param persist 
+     * @returns 
+     */
+    private async tokenFromAccount(account: any, isAdmin: boolean, persist: boolean) {
+        if (!account) {
+            return null;
+        }
+
+        const payloadToken = {
+            // Issuer
+            iss: this.config.get('jwt.issuer'),
+            // Subject
+            sub: account.id,
+            // Issued at
+            iat: new Date().getTime(),
+
+            account: account,
+            type: isAdmin ? 'admin' : 'user',
+            persist: persist,
+        };
+
+        const payloadRefreshToken = {
+            // Issuer
+            iss: this.config.get('jwt.issuer'),
+            // Subject
+            sub: account.id,
+            // Issued at
+            iat: new Date().getTime(),
+
+            type: isAdmin ? 'admin' : 'user',
+            persist: persist
+        };
+
+        const accessToken = this.jwtService.sign(payloadToken, { expiresIn: this.config.get<number>('jwt.tokenExpiration') * 1000 });
+        const refreshToken = this.jwtService.sign(payloadRefreshToken, { expiresIn: this.config.get<number>('jwt.refreshTokenExpiration') * 1000 });
+
+        return {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            account: payloadToken.account,
+            refresh_expiration : this.jwtService.decode(refreshToken)['exp'],
+            access_expiration: this.jwtService.decode(accessToken)['exp'],
+            persist: persist
         };
     }
 }

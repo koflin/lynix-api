@@ -1,17 +1,17 @@
-import { ToolsService } from './tools.service';
-import { Tool } from './../../models/tool.model';
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CompaniesGuard } from '../companies/companies.guard';
-import { PermissionsGuard } from '../auth/permissions.guard';
-import { Permissions } from '../auth/permissions.decorator';
 import { Permission } from 'src/models/role.model';
+import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
+
+import { Permissions } from '../auth/permissions.decorator';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { UserAuthGuard } from '../auth/user-auth.guard';
+import { Tool } from './../../models/tool.model';
+import { ToolsService } from './tools.service';
 
 @ApiTags('tools')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
+@UseGuards(UserAuthGuard, PermissionsGuard)
 @Controller('tools')
 export class ToolsController {
     constructor(private toolsService: ToolsService) {
