@@ -42,9 +42,10 @@ export class AccountService {
             };
         } else {
             const user = await this.userModel.findOne({ email }).exec();
-            const role = await this.roleService.getById(user.roleId);
 
             if (!user) return null;
+
+            const role = await this.roleService.getById(user.roleId);
 
             passwordExp = user.passwordEncrypted;
 

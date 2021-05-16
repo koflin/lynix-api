@@ -23,6 +23,7 @@ import { ProcessTemplatesModule } from './core/templates/process-templates/proce
 import { ProductTemplatesModule } from './core/templates/product-templates/product-templates.module';
 import { ToolsModule } from './core/tools/tools.module';
 import { UsersModule } from './core/users/users.module';
+import { StatisticsModule } from './core/statistics/statistics.module';
 
 @Module({
   imports: [
@@ -76,7 +77,8 @@ import { UsersModule } from './core/users/users.module';
     MediaModule,
     ActivationModule,
     AdminModule,
-    AccountModule
+    AccountModule,
+    StatisticsModule
   ],
   controllers: [AppController],
   providers: [AppService],
