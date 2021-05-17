@@ -18,12 +18,12 @@ import { MediaModule } from './core/media/media.module';
 import { OrdersModule } from './core/orders/orders.module';
 import { ProcessesModule } from './core/processes/processes.module';
 import { RolesModule } from './core/roles/roles.module';
+import { StatisticsModule } from './core/statistics/statistics.module';
 import { TasksModule } from './core/tasks/tasks.module';
 import { ProcessTemplatesModule } from './core/templates/process-templates/process-templates.module';
 import { ProductTemplatesModule } from './core/templates/product-templates/product-templates.module';
 import { ToolsModule } from './core/tools/tools.module';
 import { UsersModule } from './core/users/users.module';
-import { StatisticsModule } from './core/statistics/statistics.module';
 
 @Module({
   imports: [
