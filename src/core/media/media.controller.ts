@@ -9,12 +9,11 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
-import { diskStorage } from 'multer';
 import * as path from 'path';
 import { User } from 'src/models/user.model';
-import { v4 as uuidv4 } from 'uuid';
 
 import { Account } from '../auth/account.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
@@ -22,13 +21,15 @@ import { UserAuthGuard } from '../auth/user-auth.guard';
 import { MediaService } from './media.service';
 
 const allowedFileTypes = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.ogg', '.webm'];
+const env = process.env;
 
 @UseGuards(UserAuthGuard, PermissionsGuard)
 @Controller('media')
 export class MediaController {
 
     constructor(
-        private mediaService: MediaService
+        private mediaService: MediaService,
+        private config: ConfigService
     ) {
     }
 
@@ -42,14 +43,7 @@ export class MediaController {
             }
 
             callback(null, true);
-        },
-        storage: diskStorage({
-            filename: (req, file, cb) => {
-                const id = uuidv4();
-                return cb(null, id + path.extname(file.originalname).toLowerCase());
-            },
-            destination: './media'
-        })
+        }
     }))
     async upload(@Account() user: User, @UploadedFile() file: Express.Multer.File) {
         return this.mediaService.create(user.companyId, user.id, file.filename);
@@ -63,6 +57,6 @@ export class MediaController {
             throw new NotFoundException();
         }
 
-        return res.sendFile(fileName, { root: path.resolve(__dirname, '../../../media') });
+        return res.sendFile(fileName, { root: path.resolve(__dirname, '../../../' + this.config.get('media.path')) });
     }
 }

@@ -50,6 +50,8 @@ import { UsersModule } from './core/users/users.module';
         JWT_SECRET: Joi.string().required(),
         JWT_TOKEN_EXPIRATION: Joi.string().required(),
         JWT_REFRESH_TOKEN_EXPIRATION: Joi.string().required(),
+
+        MEDIA_PATH: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({

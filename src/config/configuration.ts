@@ -33,5 +33,8 @@ export default () => ({
       domain: env.COOKIES_DOMAIN,
       secure: new Boolean(env.COOKIES_SECURE),
       sameSite: env.COOKIES_SAME_SITE,
+    },
+    media: {
+      path: env.MEDIA_PATH
     }
 });
