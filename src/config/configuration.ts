@@ -31,7 +31,7 @@ export default () => ({
     },
     cookies: {
       domain: env.COOKIES_DOMAIN,
-      secure: new Boolean(env.COOKIES_SECURE),
+      secure: new Boolean(parseInt(env.COOKIES_SECURE)),
       sameSite: env.COOKIES_SAME_SITE,
     },
     media: {

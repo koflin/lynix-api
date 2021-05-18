@@ -51,6 +51,10 @@ import { UsersModule } from './core/users/users.module';
         JWT_TOKEN_EXPIRATION: Joi.string().required(),
         JWT_REFRESH_TOKEN_EXPIRATION: Joi.string().required(),
 
+        COOKIES_DOMAIN: Joi.string().required(),
+        COOKIES_SECURE: Joi.number().required(),
+        COOKIES_SAME_SITE: Joi.string().required(),
+
         MEDIA_PATH: Joi.string().required(),
       }),
     }),
