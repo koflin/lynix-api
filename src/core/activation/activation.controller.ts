@@ -11,11 +11,9 @@ import {
 } from '@nestjs/common';
 import { Permission } from 'src/models/role.model';
 
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Permissions } from '../auth/permissions.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
-import { CompaniesGuard } from '../companies/companies.guard';
-import { CompanyProtect } from '../companies/company-protect.decorator';
+import { UserAuthGuard } from '../auth/user-auth.guard';
 import { ActivationService } from './activation.service';
 
 @Controller('activation')
@@ -27,8 +25,7 @@ export class ActivationController {
 
     }
 
-    @UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
-    @CompanyProtect('userId')
+    @UseGuards(UserAuthGuard, PermissionsGuard)
     @Permissions(Permission.EDIT)
     @Get()
     search(@Query('userId') userId) {

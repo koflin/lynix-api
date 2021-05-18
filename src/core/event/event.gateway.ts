@@ -1,4 +1,4 @@
-import { UseFilters, UseGuards } from '@nestjs/common';
+import { UseFilters } from '@nestjs/common';
 import {
   BaseWsExceptionFilter,
   OnGatewayConnection,
@@ -11,20 +11,19 @@ import {
 import { Server, Socket } from 'socket.io';
 import { User } from 'src/models/user.model';
 
-import { WsJwtAuthGuard } from '../auth/ws-jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from '../users/users.service';
 import { Event } from './event.model';
 
-@UseGuards(WsJwtAuthGuard)
 @UseFilters(new BaseWsExceptionFilter())
-@WebSocketGateway(3001)
+@WebSocketGateway()
 export class EventGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   public server: Server;
 
   constructor(
-    private wsJwtAuthGuard: WsJwtAuthGuard,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private authGuard: JwtAuthGuard
     ) {
   }
 
@@ -33,17 +32,19 @@ export class EventGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
   
   async handleConnection(client: Socket, ...args: any[]) {
     // Get user
-    const user = this.wsJwtAuthGuard.verify(client);
+    const { account, type } = await this.authGuard.authenticate(null, client);
 
-    if (!user) {
+    if (!account) {
       client.disconnect(true);
       return;
     }
 
-    // Join company room
-    client.join(user.companyId);
+    if (type === 'user') {
+      // Join company room
+      client.join(account.companyId);
 
-    this.usersService.setConnected(user, client);
+      this.usersService.setConnected(account, client);
+    }
   }
   
   handleDisconnect(client: Socket) {

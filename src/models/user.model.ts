@@ -10,7 +10,9 @@ export class User {
     companyId: string;
     
     @ApiProperty()
-    username: string;
+    email: string;
+    @ApiProperty()
+    displayName?: string;
     @ApiProperty()
     firstName?: string;
     @ApiProperty()
@@ -26,7 +28,8 @@ export class User {
     constructor(user: UserDoc, role: Role) {
         this.id = user.id;
         this.companyId = user.companyId;
-        this.username = user.username;
+        this.email = user.email;
+        this.displayName = user?.firstName + ' ' + user?.lastName;
         this.firstName = user.firstName;
         this.lastName = user.lastName;
         this.role = role;

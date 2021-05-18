@@ -9,12 +9,10 @@ import {
     Post,
     Put,
     Query,
-    Request,
     UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { filter } from 'rxjs/operators';
-import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
 import { CreateUserDto } from 'src/dto/user/createUserDto';
 import { EditUserDto } from 'src/dto/user/editUserDto';
 import { Permission } from 'src/models/role.model';
@@ -23,14 +21,14 @@ import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
 
 import { Permissions } from '../auth/permissions.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
-import { CompaniesGuard } from '../companies/companies.guard';
+import { UserAuthGuard } from '../auth/user-auth.guard';
 import { RolesService } from '../roles/roles.service';
-import { Requestor } from './requestor.decorator';
+import { Account } from './../auth/account.decorator';
 import { UsersService } from './users.service';
 
 @ApiTags('users')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
+@UseGuards(UserAuthGuard, PermissionsGuard)
 @Controller('users')
 export class UsersController {
     constructor(
@@ -42,8 +40,8 @@ export class UsersController {
     @ApiOkResponse({ type: [User] })
     @Permissions(Permission.VIEW)
     @Get()
-    async getAll(@Requestor() user: User, @Query() filter: { username: string, permissions: Permission[] }) {
-        const { username, permissions } = filter;
+    async getAll(@Account() user: User, @Query() filter: { email: string, permissions: Permission[] }) {
+        const { email, permissions } = filter;
         const { companyId } = user;
 
         if (permissions) {
@@ -57,17 +55,17 @@ export class UsersController {
     @ApiOkResponse({ type: User })
     @Permissions(Permission.EDIT)
     @Post()
-    async create(@Request() req: { user: User }, @Body() creatUserDto: CreateUserDto) {
-        const search = await this.usersService.getByUsername(creatUserDto.username);
-        if (search != null) throw new BadRequestException('Username already taken!');
-        creatUserDto.companyId = req.user.companyId;
+    async create(@Account() user: User, @Body() creatUserDto: CreateUserDto) {
+        const search = await this.usersService.getByEmail(creatUserDto.email);
+        if (search != null) throw new BadRequestException('Email already taken!');
+        creatUserDto.companyId = user.companyId;
         return this.usersService.create(creatUserDto);
     }
 
     @ApiOkResponse({ type: [User] })
     @Get('me')
-    getMe(@Request() req: { user: User }) {
-        return req.user;
+    getMe(@Account() user: User) {
+        return user;
     }
 
     @ApiOkResponse({ type: User })

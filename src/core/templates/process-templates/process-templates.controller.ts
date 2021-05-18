@@ -1,19 +1,20 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
+import { Account } from 'src/core/auth/account.decorator';
 import { Permissions } from 'src/core/auth/permissions.decorator';
 import { PermissionsGuard } from 'src/core/auth/permissions.guard';
-import { CompaniesGuard } from 'src/core/companies/companies.guard';
+import { UserAuthGuard } from 'src/core/auth/user-auth.guard';
 import { EditProcessTemplateDto } from 'src/dto/processTemplate/editProcessTemplateDto';
 import { ProcessTemplate } from 'src/models/processTemplate';
 import { Permission } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
+
 import { ProcessTemplatesService } from './process-templates.service';
 
 @ApiTags('process-templates')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
+@UseGuards(UserAuthGuard, PermissionsGuard)
 @Controller('templates/process')
 export class ProcessTemplatesController {
     constructor(private processService: ProcessTemplatesService) {
@@ -30,8 +31,8 @@ export class ProcessTemplatesController {
     @ApiOkResponse({ type: ProcessTemplate })
     @Permissions(Permission.EDIT)
     @Post()
-    create(@Request() req: { user: User }, @Body() editProcessDto: EditProcessTemplateDto) {
-        return this.processService.create(editProcessDto, req.user);
+    create(@Account() user: User, @Body() editProcessDto: EditProcessTemplateDto) {
+        return this.processService.create(editProcessDto, user);
     }
 
     @ApiOkResponse({ type: ProcessTemplate })

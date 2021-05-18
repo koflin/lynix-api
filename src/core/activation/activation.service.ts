@@ -5,11 +5,14 @@ import { Activation } from 'src/models/activation.model';
 import { ActivationDoc } from 'src/schemas/activation.schema';
 import { UserDoc } from 'src/schemas/user.schema';
 
+import { AccountService } from '../account/account.service';
+
 @Injectable()
 export class ActivationService {
     constructor(
         @InjectModel(ActivationDoc.name) private activationModel: Model<ActivationDoc>,
         @InjectModel(UserDoc.name) private userModel: Model<UserDoc>,
+        private accountService: AccountService
     ) {
 
     }
@@ -25,8 +28,8 @@ export class ActivationService {
         return this.getById(id);
     }
 
-    async getByUsername(username: string) {
-        return this.getByUserId(await (await this.userModel.findOne({ username })).id);
+    async getByEmail(email: string) {
+        return this.getByUserId(await (await this.userModel.findOne({ email })).id);
     }
 
     async create(userId: string, type: 'activation' | 'reset', companyId?: string) {
@@ -53,18 +56,8 @@ export class ActivationService {
         if (activation.code != code) return false;
         if (activation.validUntil && activation.validUntil.valueOf() < Date.now()) return false;
 
-        const userDoc = await this.userModel.findById(activation.userId);
-
-        if (activation.type == 'activation') {
-            userDoc.activatedAt = new Date();
-        } else if (activation.type == 'reset') {
-            userDoc.lastPasswordResetAt = new Date();
-        } else {
-            return false;
-        }
-
-        userDoc.passwordEncrypted = password;
-        await userDoc.save();
+        this.accountService.activate(activation, password);
+        
         activation.validUntil = new Date(0);
         await activation.save();
         return true;

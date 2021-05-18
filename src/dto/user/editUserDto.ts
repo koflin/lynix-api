@@ -5,7 +5,7 @@ export class EditUserDto {
     @ApiPropertyOptional()
     @IsOptional()
     @IsString()
-    username?: string;
+    email?: string;
     @ApiPropertyOptional()
     @IsOptional()
     @IsString()

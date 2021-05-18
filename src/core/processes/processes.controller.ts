@@ -10,7 +10,6 @@ import {
     Post,
     Put,
     Query,
-    Request,
     UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -20,10 +19,10 @@ import { Permission } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
 
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Account } from '../auth/account.decorator';
 import { Permissions } from '../auth/permissions.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
-import { CompaniesGuard } from '../companies/companies.guard';
+import { UserAuthGuard } from '../auth/user-auth.guard';
 import { EventGateway } from '../event/event.gateway';
 import { Event } from '../event/event.model';
 import { EditProcessDto } from './../../dto/process/editProcessDto';
@@ -31,7 +30,7 @@ import { ProcessesService } from './processes.service';
 
 @ApiTags('processes')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, CompaniesGuard, PermissionsGuard)
+@UseGuards(UserAuthGuard, PermissionsGuard)
 @Controller('processes')
 export class ProcessesController {
     constructor(
@@ -61,101 +60,101 @@ export class ProcessesController {
     @ApiOkResponse({ type: Process })
     @Permissions(Permission.EDIT)
     @Post()
-    async create(@Request() req: { user: User }, @Body() createProcessDto: CreateProcessDto) {
-        let process = await this.processesService.create(createProcessDto, req.user);
+    async create(@Account() user: User, @Body() createProcessDto: CreateProcessDto) {
+        let process = await this.processesService.create(createProcessDto, user);
         if (process == null) throw new NotFoundException('Template not found!');
-        this.event.triggerOther(Event.PROCESS_CREATE, req.user, process);
+        this.event.triggerOther(Event.PROCESS_CREATE, user, process);
         return process;
     }
 
     @ApiOkResponse({ type: Process })
     @Permissions(Permission.EDIT)
     @Put(':processId')
-    async edit(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string, @Body() editProcessDto: EditProcessDto) {
+    async edit(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string, @Body() editProcessDto: EditProcessDto) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
         let process = await this.processesService.edit(processId, editProcessDto);
-        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
+        this.event.triggerOther(Event.PROCESS_UPDATE, user, process);
         return process;
     }
 
     @ApiOkResponse()
     @Permissions(Permission.EDIT)
     @Delete(':processId')
-    async delete(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string) {
+    async delete(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
-        this.event.triggerOther(Event.PROCESS_DELETE, req.user, processId);
+        this.event.triggerOther(Event.PROCESS_DELETE, user, processId);
         return this.processesService.delete(processId);
     }
     @ApiOkResponse()
     @Permissions(Permission.EXECUTE)
     @Patch(':processId/enter')
-    async enter(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string) {
+    async enter(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
-        let process = await this.processesService.enter(processId, req.user);
-        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
+        let process = await this.processesService.enter(processId, user);
+        this.event.triggerOther(Event.PROCESS_UPDATE, user, process);
         return process;
     }
 
     @ApiOkResponse()
     @Permissions(Permission.EXECUTE)
     @Patch(':processId/exit')
-    async exit(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string) {
+    async exit(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
         let process = await this.processesService.exit(processId);
-        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
+        this.event.triggerOther(Event.PROCESS_UPDATE, user, process);
         return process;
     }
 
     @ApiOkResponse()
     @Permissions(Permission.EXECUTE)
     @Patch(':processId/start')
-    async start(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string, @Body('userId') userId: string) {
+    async start(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string, @Body('userId') userId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
         let process = await this.processesService.start(processId, userId);
-        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
+        this.event.triggerOther(Event.PROCESS_UPDATE, user, process);
         return process;
     }
 
     @ApiOkResponse()
     @Permissions(Permission.EXECUTE)
     @Patch(':processId/stop')
-    async stop(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string) {
+    async stop(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
         let process = await this.processesService.stop(processId);
-        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
+        this.event.triggerOther(Event.PROCESS_UPDATE, user, process);
         return process;
     }
 
     @ApiOkResponse()
     @Permissions(Permission.ASSIGN)
     @Patch(':processId/assign')
-    async assign(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string, @Body('assigneeId') assigneeId: string) {
+    async assign(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string, @Body('assigneeId') assigneeId: string) {
         let process = await this.processesService.getById(processId);
         if (!process) throw new NotFoundException('Process not found!');
         if (process.occupiedBy) throw new ForbiddenException('Process occupied!');
 
         process = await this.processesService.assign(processId, assigneeId);
-        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
+        this.event.triggerOther(Event.PROCESS_UPDATE, user, process);
         return process;
     }
 
     @ApiOkResponse()
     @Permissions(Permission.EXECUTE)
     @Patch(':processId/finish')
-    async finish(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string) {
+    async finish(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
         let process = await this.processesService.finish(processId, undefined);
-        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
+        this.event.triggerOther(Event.PROCESS_UPDATE, user, process);
         return process;
     }
 
     @ApiOkResponse()
     @Permissions(Permission.EXECUTE)
     @Patch(':processId/switch')
-    async switch(@Request() req: { user: User }, @Param('processId', new ParseIdPipe()) processId: string, @Body('stepIndex') stepIndex: number) {
+    async switch(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string, @Body('stepIndex') stepIndex: number) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
         let process = await this.processesService.switch(processId, stepIndex);
-        this.event.triggerOther(Event.PROCESS_UPDATE, req.user, process);
+        this.event.triggerOther(Event.PROCESS_UPDATE, user, process);
         return process;
     }
 }

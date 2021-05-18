@@ -1,13 +1,22 @@
-import { Body, Controller, Delete, HttpStatus, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    HttpStatus,
+    Post,
+    Req,
+    Res,
+    UnauthorizedException,
+    UseGuards,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { User } from 'src/models/user.model';
 
-import { Requestor } from '../users/requestor.decorator';
+import { Account } from './account.decorator';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { LocalAuthGuard } from './local-auth.guard';
 
 @ApiTags('authentication')
 @Controller('auth')
@@ -20,20 +29,31 @@ export class AuthController {
 
     }
 
-    @UseGuards(LocalAuthGuard)
     @Post('login')
-    async login(@Req() req: { user: User }, @Res() res: Response, @Body('persist') persist) {
-        const { access_token, refresh_token, user, refresh_expiration } = await this.authService.tokenFromUser(req.user, persist);
+    async login(@Res() res: Response, @Body() body) {
+        const { email, password, persist, isAdmin } = body;
+
+        if (!email || !password) {
+            throw new BadRequestException('Credentials missing!');
+        }
+
+        const auth = await this.authService.tokenFromCredentials(email, password, persist, isAdmin);
+
+        if (!auth) {
+            throw new UnauthorizedException('Credentials wrong!');
+        }
+
+        const { access_token, refresh_token, account, refresh_expiration } = auth;
         
         this.setCookies(res, refresh_token, access_token);
 
-        res.status(HttpStatus.OK).json({ access_token, user, refresh_expiration });
+        res.status(HttpStatus.OK).json({ access_token, account, refresh_expiration });
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete('logout')
-    async logout(@Requestor() user, @Req() req: Request, @Res() res: Response) { 
-        if (!user) {
+    async logout(@Account() account, @Req() req: Request, @Res() res: Response) { 
+        if (!account) {
             res.status(HttpStatus.NOT_FOUND).send();
             return;
         }
@@ -51,17 +71,17 @@ export class AuthController {
             throw new UnauthorizedException('No refresh token provided!');
         }
 
-        const response = await this.authService.tokenFromRefresh(refreshToken);
+        const auth = await this.authService.tokenFromRefresh(refreshToken);
 
-        if (!response) {
+        if (!auth) {
             throw new UnauthorizedException('Invalid refresh token!');
         }
 
-        const { access_token, refresh_token, user, refresh_expiration, persist } = await this.authService.tokenFromRefresh(refreshToken);
+        const { access_token, refresh_token, account, refresh_expiration, persist } = auth;
         
         this.setCookies(res, refresh_token, access_token);
 
-        res.status(HttpStatus.OK).json({ access_token, user, refresh_expiration, persist });
+        res.status(HttpStatus.OK).json({ access_token, account, refresh_expiration, persist });
     }
 
     private setCookies(res: Response, refreshToken: string, accessToken: string) {
