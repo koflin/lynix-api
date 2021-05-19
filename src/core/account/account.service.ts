@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
 import { Permission } from 'src/models/role.model';
 import { ActivationDoc } from 'src/schemas/activation.schema';
