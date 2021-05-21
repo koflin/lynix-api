@@ -34,9 +34,9 @@ export class ActivationController {
 
     @Post('verify/:id')
     async verify(@Param('id') id, @Body() data: { code: string }) {
-        const userId = await this.activationService.verify(id, data.code);
-        if (!userId) throw new NotFoundException();
-        return { userId };
+        const user = await this.activationService.verify(id, data.code);
+        if (!user) throw new NotFoundException();
+        return user;
     }
 
     @Post('activate/:id')
