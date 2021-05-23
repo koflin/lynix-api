@@ -16,7 +16,7 @@ import { UsersService } from '../users/users.service';
 import { Event } from './event.model';
 
 @UseFilters(new BaseWsExceptionFilter())
-@WebSocketGateway()
+@WebSocketGateway(3001)
 export class EventGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   public server: Server;

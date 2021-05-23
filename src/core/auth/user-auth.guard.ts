@@ -88,6 +88,11 @@ export class UserAuthGuard extends JwtAuthGuard {
         for (let col of collections) {
             let result = await col.findOne({ "_id": new mongoose.Types.ObjectId(value) });
     
+            // Not found
+            if (!result) {
+                return true;
+            }
+
             if (result && result.companyId == user.companyId) {
                 return true;
             }
