@@ -80,9 +80,10 @@ export class AccountService {
             };
         } else {
             const user = await this.userModel.findById(id).exec();
-            const role = await this.roleService.getById(user.roleId);
 
             if (!user) return null;
+
+            const role = await this.roleService.getById(user.roleId);
 
             return {
                 id: user.id,
