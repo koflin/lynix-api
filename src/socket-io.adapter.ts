@@ -9,7 +9,8 @@ import { Server } from 'socket.io';
 export class SocketIoAdapter extends AbstractWsAdapter {  
   constructor(
     private appOrHttpServer?: INestApplicationContext | any,
-    private readonly corsOrigins = []
+    private readonly corsOrigins = [],
+    private readonly port = 0
   ) {
     super(appOrHttpServer);
   }
@@ -18,6 +19,10 @@ export class SocketIoAdapter extends AbstractWsAdapter {
     port: number,
     options?: any & { namespace?: string; server?: any },
   ): any {
+    if (!port) {
+      port = this.port;
+    }
+
     if (!options) {
       return this.createIOServer(port);
     }
@@ -30,6 +35,10 @@ export class SocketIoAdapter extends AbstractWsAdapter {
   }
 
   public createIOServer(port: number, options?: any): any {     
+    if (!port) {
+      port = this.port;
+    }
+    
     options = {
       ...options,
       cors: {
