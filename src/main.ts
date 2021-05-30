@@ -15,6 +15,9 @@ async function bootstrap() {
   const versionFull = config.get('version.full');
   const versionPrefix = config.get('version.prefix');
 
+  const apiPort = config.get('api.port');
+  const gatewayPort = config.get('gateway.port');
+
   const docOptions = new DocumentBuilder()
     .setTitle('Lynix API')
     .setDescription('The Lynix API documentation')
@@ -49,8 +52,8 @@ async function bootstrap() {
     whitelist: true,
   }));
 
-  app.useWebSocketAdapter(new SocketIoAdapter(app, [config.get('client.host')]));
+  app.useWebSocketAdapter(new SocketIoAdapter(app, [config.get('client.host')], apiPort != gatewayPort ? gatewayPort : 0));
 
-  await app.listen(config.get('api.port'));
+  await app.listen(apiPort);
 }
 bootstrap();
