@@ -1,11 +1,12 @@
-import { Injectable, HttpService } from '@nestjs/common';
-import { OrderDoc } from 'src/schemas/order.schema';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Order } from 'src/models/order.model';
-import { ProductTemplatesService } from '../templates/product-templates/product-templates.service';
 import { EditOrderDto } from 'src/dto/order/editOrderDto';
+import { Order } from 'src/models/order.model';
 import { User } from 'src/models/user.model';
+import { OrderDoc } from 'src/schemas/order.schema';
+
+import { ProductTemplatesService } from '../templates/product-templates/product-templates.service';
 
 @Injectable()
 export class OrdersService {
@@ -14,18 +15,18 @@ export class OrdersService {
         private productTemplatesService: ProductTemplatesService
     ) { }
 
-    async getAll(filter: { companyId?: string }): Promise<Order[]> {
-        let orderIds = await this.orderModel.find(filter, '_id').exec();
+    async getAll(filter: { companyId?: string, status: any }): Promise<Order[]> {
+        const orderIds = await this.orderModel.find(filter, '_id').exec();
         return Promise.all(orderIds.map( async (doc) => {
             return this.getById(doc._id);
         }));
     }
 
     async getById(id: string): Promise<Order> {
-        let orderDoc = await this.orderModel.findById(id).exec();
+        const orderDoc = await this.orderModel.findById(id).exec();
         
         if (orderDoc) {
-            let productDocs = await Promise.all(orderDoc.products.map((product) => {
+            const productDocs = await Promise.all(orderDoc.products.map((product) => {
                 return this.productTemplatesService.getById(product.templateId);
             }));
             return new Order(orderDoc, productDocs);
@@ -35,15 +36,16 @@ export class OrdersService {
     }
 
     async create(orderDto: EditOrderDto, user: User): Promise<Order> {
-        let orderDoc = new this.orderModel(orderDto);
+        const orderDoc = new this.orderModel(orderDto);
         orderDoc.companyId = user.companyId;
         await orderDoc.save();
         return this.getById(orderDoc._id);
     }
 
     async edit(id: string, orderDto: EditOrderDto): Promise<Order> {
-        let orderDoc = await this.orderModel.findByIdAndUpdate(id, {
-            ...orderDto
+
+        const orderDoc = await this.orderModel.findByIdAndUpdate(id, {
+            ...orderDto,
         }, { new: true, omitUndefined: true });
 
         await orderDoc.save();

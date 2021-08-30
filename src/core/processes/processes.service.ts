@@ -25,7 +25,7 @@ export class ProcessesService {
     }
 
     async start(id: string, userId: string) {
-        let processDoc = await this.processModel.findById(id).exec();
+        const processDoc = await this.processModel.findById(id).exec();
 
         processDoc.isRunning = true;
         await processDoc.save();
@@ -33,7 +33,7 @@ export class ProcessesService {
     }
 
     async stop(id: string) {
-        let processDoc = await this.processModel.findById(id).exec();
+        const processDoc = await this.processModel.findById(id).exec();
 
         processDoc.isRunning = false;
         await processDoc.save();
@@ -41,7 +41,7 @@ export class ProcessesService {
     }
 
     async enter(id: string, user: User) {
-        let processDoc = await this.processModel.findById(id).exec();
+        const processDoc = await this.processModel.findById(id).exec();
 
         processDoc.status = 'in_progress';
         processDoc.occupiedBy = user.id;
@@ -51,7 +51,7 @@ export class ProcessesService {
     }
 
     async exit(id: string) {
-        let processDoc = await this.processModel.findById(id).exec();
+        const processDoc = await this.processModel.findById(id).exec();
 
         processDoc.occupiedBy = null;
         processDoc.isRunning = false;
@@ -60,7 +60,7 @@ export class ProcessesService {
     }
 
     async assign(id: string, assignedId: string) {
-        let processDoc = await this.processModel.findById(id).exec();
+        const processDoc = await this.processModel.findById(id).exec();
 
         processDoc.assignedUserId = assignedId;
         await processDoc.save();
@@ -68,7 +68,7 @@ export class ProcessesService {
     }
 
     async finish(id: string, assignedId: string) {
-        let processDoc = await this.processModel.findById(id).exec();
+        const processDoc = await this.processModel.findById(id).exec();
 
         processDoc.status = 'completed';
         processDoc.occupiedBy = null;
@@ -78,7 +78,7 @@ export class ProcessesService {
     }
 
     async switch(id: string, stepIndex: number) {
-        let processDoc = await this.processModel.findById(id).exec();
+        const processDoc = await this.processModel.findById(id).exec();
 
         processDoc.currentStepIndex = stepIndex;
         await processDoc.save();
@@ -86,15 +86,15 @@ export class ProcessesService {
     }
 
     async getAll(companyId?: string, assignedUserId?: string, orderId?: string): Promise<Process[]> {
-        let processIds = await this.processModel.find({ companyId, assignedUserId, orderId, }, '_id').exec();
+        const processIds = await this.processModel.find({ companyId, assignedUserId, orderId, }, '_id').exec();
         return Promise.all(processIds.map( async (doc) => {
             return this.getById(doc._id);
         }));
     }
 
     async getById(id: string): Promise<Process> {
-        let processDoc = await this.processModel.findById(id).exec();
-        let order = await this.orderService.getById(processDoc.orderId);
+        const processDoc = await this.processModel.findById(id).exec();
+        const order = await this.orderService.getById(processDoc.orderId);
         
         if (processDoc) {
             return new Process(processDoc, order);
@@ -104,9 +104,9 @@ export class ProcessesService {
     }
 
     async create(processDto: CreateProcessDto, user: User): Promise<Process> {
-        let processDoc = new this.processModel(processDto);
-        let templateDoc = await this.processTemplatesService.getById(processDoc.templateId);
-        let order = await this.orderService.getById(processDoc.orderId);
+        const processDoc = new this.processModel(processDto);
+        const templateDoc = await this.processTemplatesService.getById(processDoc.templateId);
+        const order = await this.orderService.getById(processDoc.orderId);
 
         if (templateDoc == null) {
             return null;
@@ -115,12 +115,12 @@ export class ProcessesService {
         processDoc.companyId = user.companyId;
 
         processDoc.status = 'released';
-        processDoc.estimatedTime = templateDoc.stepTemplates.reduce((total, step) => total + (step.estimatedTime ? step.estimatedTime : 0), 0);
+        processDoc.estimatedTime = templateDoc.steps.reduce((total, step) => total + (step.estimatedTime ? step.estimatedTime : 0), 0);
         processDoc.deliveryDate = order.deliveryDate;
         processDoc.mainTasks = templateDoc.mainTasks;
         processDoc.name = templateDoc.name;
         processDoc.previousComments = templateDoc.previousComments;
-        processDoc.steps = templateDoc.stepTemplates.map((stepTemplate) => {
+        processDoc.steps = templateDoc.steps.map((stepTemplate) => {
             return {
                 ...stepTemplate,
                 timeTaken: 0

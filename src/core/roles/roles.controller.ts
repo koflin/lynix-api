@@ -20,42 +20,42 @@ export class RolesController {
     }
 
     @ApiOkResponse({ type: [Role] })
-    @Permissions(Permission.VIEW)
+    @Permissions(Permission.ROLE_VIEW)
     @Get()
     getAll(@Account() user: User) {
         return this.rolesService.getAll(user.companyId);
     }
 
     @ApiOkResponse({ type: Role })
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.ROLE_EDIT)
     @Post()
     create(@Account() user: User, @Body() editRoleDto: EditRoleDto) {
         return this.rolesService.create(editRoleDto, user);
     }
 
     @ApiOkResponse({ type: Role })
-    @Permissions(Permission.VIEW)
+    @Permissions(Permission.ROLE_VIEW)
     @Get(':roleId')
     getById(@Param('roleId', new ParseIdPipe()) roleId: string) {
-        let role = this.rolesService.getById(roleId);
+        const role = this.rolesService.getById(roleId);
         if (role == null) throw new NotFoundException('Role not found!');
         return role;
     }
 
     @ApiOkResponse({ type: Role })
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.ROLE_EDIT)
     @Put(':roleId')
     edit(@Param('roleId', new ParseIdPipe()) roleId: string, @Body() editRoleDto: EditRoleDto) {
-        let role = this.rolesService.edit(roleId, editRoleDto);
+        const role = this.rolesService.edit(roleId, editRoleDto);
         if (role == null) throw new NotFoundException('Role not found!');
         return role;
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.ROLE_EDIT)
     @Delete(':roleId')
     delete(@Param('roleId', new ParseIdPipe()) roleId: string) {
-        let role = this.rolesService.delete(roleId);
+        const role = this.rolesService.delete(roleId);
         if (role == null) throw new NotFoundException('Role not found!');
         return role;
     }

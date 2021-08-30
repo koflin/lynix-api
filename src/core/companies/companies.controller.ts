@@ -36,7 +36,7 @@ export class CompaniesController {
     @UseGuards(UserAuthGuard)
     @Get(':companyId')
     getById(@Param('companyId', new ParseIdPipe()) companyId: string) {
-        let company = this.companyService.getById(companyId);
+        const company = this.companyService.getById(companyId);
         if (company == null) throw new NotFoundException('Company not found!');
         return company;
     }
@@ -45,7 +45,7 @@ export class CompaniesController {
     @UseGuards(AdminAuthGuard)
     @Put(':companyId')
     edit(@Param('companyId', new ParseIdPipe()) companyId: string, @Body() editCompanyDto: EditCompanyDto) {
-        let company = this.companyService.edit(companyId, editCompanyDto);
+        const company = this.companyService.edit(companyId, editCompanyDto);
         if (company == null) throw new NotFoundException('Company not found!');
         return company;
     }
@@ -54,7 +54,7 @@ export class CompaniesController {
     @UseGuards(AdminAuthGuard)
     @Delete(':companyId')
     delete(@Param('companyId', new ParseIdPipe()) companyId: string) {
-        let company = this.companyService.delete(companyId);
+        const company = this.companyService.delete(companyId);
         if (company == null) throw new NotFoundException('Company not found!');
         return company;
     }

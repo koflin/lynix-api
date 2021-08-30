@@ -17,7 +17,7 @@ export class ProcessTemplate {
     previousComments?: string[];
 
     @ApiProperty()
-    stepTemplates: StepTemplate[];
+    steps: StepTemplate[];
 
     constructor(process: ProcessTemplateDoc) {
         this.id = process.id;
@@ -25,6 +25,6 @@ export class ProcessTemplate {
         this.name = process.name;
         this.mainTasks = process.mainTasks;
         this.previousComments = process.previousComments;
-        this.stepTemplates = process.stepTemplates.map(step => new StepTemplate(step));
+        this.steps = process.stepTemplates.map(step => new StepTemplate(step));
     }
 }

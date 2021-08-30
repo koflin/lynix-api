@@ -27,7 +27,7 @@ export class UsersService {
     private activeUsers = new Map<string, ActiveUser>();
 
     async getAll(companyId?: string, roles?: Role[]): Promise<User[]> {
-        let userIds = await this.userModel.find({
+        const userIds = await this.userModel.find({
             companyId,
             roleId: roles ? { $in: roles.map(role => role.id) } : undefined
         }, '_id').exec();
@@ -37,24 +37,24 @@ export class UsersService {
     }
 
     async getById(id: string): Promise<User> {
-        let userDoc = await this.userModel.findById(id).exec();
+        const userDoc = await this.userModel.findById(id).exec();
         return userDoc == null ? null : new User(userDoc, await this.roleService.getById(userDoc.roleId));
     }
 
     async getByEmail(email: string): Promise<UserDoc> {
-        let userDoc = await this.userModel.findOne({ email }).exec();
+        const userDoc = await this.userModel.findOne({ email }).exec();
         return userDoc == null ? null : userDoc;
     }
 
     async create(userDto: CreateUserDto): Promise<User> {
-        let userDoc = new this.userModel(userDto);
+        const userDoc = new this.userModel(userDto);
         await this.activationService.create(userDoc.id, 'activation', userDoc.companyId);
         await userDoc.save();
         return this.getById(userDoc.id);
     }
 
     async edit(id: string, userDto: EditUserDto): Promise<User> {
-        let userDoc = await this.userModel.findByIdAndUpdate(id, {
+        const userDoc = await this.userModel.findByIdAndUpdate(id, {
             ...userDto,
         }, { new: true, omitUndefined: true }).exec();
         
@@ -107,7 +107,7 @@ export class UsersService {
     }
 
     setDisconnected(client: Socket) {
-        for (let [id, activeUser] of this.activeUsers) {
+        for (const [id, activeUser] of this.activeUsers) {
             if (activeUser.client.id == client.id) {
                 this.activeUsers.delete(id);
 
@@ -139,7 +139,7 @@ export class UsersService {
     }
 
     getIdFromSocket(client: Socket) {
-        for (let [id, activeUser] of this.activeUsers) {
+        for (const [id, activeUser] of this.activeUsers) {
             if (activeUser.client.id == client.id) {
                 return id;
             }

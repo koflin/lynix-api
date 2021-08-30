@@ -1,6 +1,5 @@
-import { Schema, SchemaFactory, Prop, raw } from "@nestjs/mongoose";
-import { Document } from "mongoose";
-import { string } from "@hapi/joi";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 /**
  * Represents a order document
@@ -15,9 +14,16 @@ export class OrderDoc extends Document {
     @Prop()
     name: string;
     @Prop()
-    description?: object;
+    description?: any;
     @Prop()
     deliveryDate: Date;
+
+    @Prop()
+    releasedAt: Date;
+    @Prop()
+    startedAt: Date;
+    @Prop()
+    completedAt: Date;
 
     @Prop()
     products: {

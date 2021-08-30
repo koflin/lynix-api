@@ -13,7 +13,7 @@ export class ProductTemplateDoc extends Document {
     name: string;
 
     @Prop()
-    description?: object;
+    description?: any;
 
     @Prop()
     processes: {

@@ -18,42 +18,42 @@ export class ToolsController {
     }
 
     @ApiOkResponse({ type: [Tool] })
-    @Permissions(Permission.VIEW)
+    @Permissions(Permission.PROCESS_VIEW, Permission.TEMPLATE_VIEW)
     @Get()
     getAll() {
         return this.toolsService.getAll();
     }
 
     @ApiOkResponse({ type: Tool })
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.TOOL_EDIT)
     @Post()
     create(@Body() createDto: any) {
         return this.toolsService.create(createDto);
     }
 
     @ApiOkResponse({ type: Tool })
-    @Permissions(Permission.VIEW)
+    @Permissions(Permission.PROCESS_VIEW, Permission.TEMPLATE_VIEW)
     @Get(':toolId')
     getById(@Param('toolId', new ParseIdPipe()) toolId: string) {
-        let tool = this.toolsService.getById(toolId);
+        const tool = this.toolsService.getById(toolId);
         if (tool == null) throw new NotFoundException('Tool not found!');
         return tool;
     }
 
     @ApiOkResponse({ type: Tool })
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.TOOL_EDIT)
     @Put(':toolId')
     edit(@Param('toolId', new ParseIdPipe()) toolId: string, @Body() editDto: any) {
-        let tool = this.toolsService.edit(toolId, editDto);
+        const tool = this.toolsService.edit(toolId, editDto);
         if (tool == null) throw new NotFoundException('Tool not found!');
         return tool;
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.TOOL_EDIT)
     @Delete(':toolId')
     delete(@Param('toolId', new ParseIdPipe()) toolId: string) {
-        let tool = this.toolsService.delete(toolId);
+        const tool = this.toolsService.delete(toolId);
         if (tool == null) throw new NotFoundException('Tool not found!');
         return tool;
     }

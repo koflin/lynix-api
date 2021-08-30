@@ -17,11 +17,11 @@ export class EditStepTemplateDto {
     @ApiProperty()
     @IsOptional()
     @IsObject()
-    keyMessage: object;
+    keyMessage: any;
     @ApiProperty()
     @IsOptional()
     @IsObject()
-    tasks: object;
+    tasks: any;
     @ApiProperty()
     @IsOptional()
     @IsString({ each: true })

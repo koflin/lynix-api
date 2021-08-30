@@ -26,7 +26,7 @@ export class ActivationController {
     }
 
     @UseGuards(UserAuthGuard, PermissionsGuard)
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.USER_EDIT)
     @Get()
     search(@Query('userId') userId) {
         return this.activationService.getByUserId(userId);

@@ -10,13 +10,20 @@ export class Order {
     companyId: string;
 
     @ApiProperty()
-    status: 'in_preparation' | 'released' | 'in_progress' | 'completed';
+    status: OrderStatus;
     @ApiProperty()
     name: string;
     @ApiProperty()
-    description: object;
+    description: any;
     @ApiProperty()
     deliveryDate: Date;
+
+    @ApiProperty()
+    releasedAt: Date;
+    @ApiProperty()
+    startedAt: Date;
+    @ApiProperty()
+    completedAt: Date;
 
     @ApiProperty()
     products: {
@@ -32,6 +39,10 @@ export class Order {
         this.description = order.description;
         this.deliveryDate = order.deliveryDate;
 
+        this.releasedAt = order.releasedAt;
+        this.startedAt = order.startedAt;
+        this.completedAt = order.completedAt;
+
         this.products = order.products.map((prod, index) => {
             return {
                 template: productTemplates[index],
@@ -40,3 +51,5 @@ export class Order {
         });
     }
 }
+
+export type OrderStatus = 'in_preparation' | 'released' | 'in_progress' | 'completed';

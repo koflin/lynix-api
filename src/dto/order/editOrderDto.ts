@@ -1,7 +1,17 @@
-import { IsMongoId, IsNotEmpty, IsNumber, IsString, Min, ValidateNested } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsArray, IsDate, IsDateString, IsIn, IsISO8601, IsObject, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import {
+    IsIn,
+    IsISO8601,
+    IsMongoId,
+    IsNotEmpty,
+    IsNumber,
+    IsObject,
+    IsOptional,
+    IsString,
+    Min,
+    ValidateNested,
+} from 'class-validator';
 
 export class EditOrderDto {
     @ApiProperty()
@@ -15,7 +25,7 @@ export class EditOrderDto {
     @ApiProperty()
     @IsOptional()
     @IsObject()
-    description: object;
+    description: any;
     @ApiProperty()
     @IsOptional()
     @IsISO8601()

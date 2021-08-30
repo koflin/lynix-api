@@ -22,42 +22,42 @@ export class ProcessTemplatesController {
 
     @ApiOkResponse({ type: [ProcessTemplate] })
     @ApiQuery({ name: 'companyId', required: false })
-    @Permissions(Permission.VIEW)
+    @Permissions(Permission.TEMPLATE_VIEW)
     @Get()
     getAll(@Query() filter: { companyId: string }) {
         return this.processService.getAll(filter);
     }
 
     @ApiOkResponse({ type: ProcessTemplate })
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.TEMPLATE_EDIT)
     @Post()
     create(@Account() user: User, @Body() editProcessDto: EditProcessTemplateDto) {
         return this.processService.create(editProcessDto, user);
     }
 
     @ApiOkResponse({ type: ProcessTemplate })
-    @Permissions(Permission.VIEW)
+    @Permissions(Permission.TEMPLATE_VIEW)
     @Get(':templateId')
     getById(@Param('templateId', new ParseIdPipe()) templateId: string) {
-        let processTemplate = this.processService.getById(templateId);
+        const processTemplate = this.processService.getById(templateId);
         if (processTemplate == null) throw new NotFoundException('Process template not found!');
         return processTemplate;
     }
 
     @ApiOkResponse({ type: ProcessTemplate })
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.TEMPLATE_EDIT)
     @Put(':templateId')
     edit(@Param('templateId', new ParseIdPipe()) templateId: string, @Body() editProcessTemplateDto: EditProcessTemplateDto) {
-        let processTemplate = this.processService.edit(templateId, editProcessTemplateDto);
+        const processTemplate = this.processService.edit(templateId, editProcessTemplateDto);
         if (processTemplate == null) throw new NotFoundException('Process template not found!');
         return processTemplate;
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.TEMPLATE_EDIT)
     @Delete(':templateId')
     delete(@Param('templateId', new ParseIdPipe()) templateId: string) {
-        let processTemplate = this.processService.delete(templateId);
+        const processTemplate = this.processService.delete(templateId);
         if (processTemplate == null) throw new NotFoundException('Process template not found!');
         return processTemplate;
     }

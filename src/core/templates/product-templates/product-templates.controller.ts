@@ -22,42 +22,42 @@ export class ProductTemplatesController {
 
     @ApiOkResponse({ type: [ProductTemplate] })
     @ApiQuery({ name: 'companyId', required: false })
-    @Permissions(Permission.VIEW)
+    @Permissions(Permission.TEMPLATE_VIEW)
     @Get()
     getAll(@Query() filter: { companyId: string }) {
         return this.productService.getAll(filter);
     }
 
     @ApiOkResponse({ type: ProductTemplate })
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.TEMPLATE_EDIT)
     @Post()
     create(@Account() user: User, @Body() editProductDto: EditProductTemplateDto) {
         return this.productService.create(editProductDto, user);
     }
 
     @ApiOkResponse({ type: ProductTemplate })
-    @Permissions(Permission.VIEW)
+    @Permissions(Permission.TEMPLATE_VIEW)
     @Get(':templateId')
     getById(@Param('templateId', new ParseIdPipe()) templateId: string) {
-        let productTemplate = this.productService.getById(templateId);
+        const productTemplate = this.productService.getById(templateId);
         if (productTemplate == null) throw new NotFoundException('Product template not found!');
         return productTemplate;
     }
 
     @ApiOkResponse({ type: ProductTemplate })
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.TEMPLATE_EDIT)
     @Put(':templateId')
     edit(@Param('templateId', new ParseIdPipe()) templateId: string, @Body() editProductDto: EditProductTemplateDto) {
-        let productTemplate = this.productService.edit(templateId, editProductDto);
+        const productTemplate = this.productService.edit(templateId, editProductDto);
         if (productTemplate == null) throw new NotFoundException('Product template not found!');
         return productTemplate;
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.TEMPLATE_EDIT)
     @Delete(':templateId')
     delete(@Param('templateId', new ParseIdPipe()) templateId: string) {
-        let productTemplate = this.productService.delete(templateId);
+        const productTemplate = this.productService.delete(templateId);
         if (productTemplate == null) throw new NotFoundException('Product template not found!');
         return productTemplate;
     }

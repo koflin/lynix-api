@@ -27,6 +27,13 @@ export class Process {
     deliveryDate: Date;
 
     @ApiProperty()
+    releasedAt: Date;
+    @ApiProperty()
+    startedAt: Date;
+    @ApiProperty()
+    completedAt: Date;
+
+    @ApiProperty()
     timeTaken: number;
     @ApiProperty()
     currentStepIndex: number;
@@ -54,6 +61,10 @@ export class Process {
         this.previousComments = process.previousComments;
         this.estimatedTime = process.estimatedTime;
         this.deliveryDate = process.deliveryDate;
+
+        this.releasedAt = process.releasedAt;
+        this.startedAt = process.startedAt;
+        this.completedAt = process.completedAt;
 
         this.timeTaken = process.timeTaken;
         this.currentStepIndex = process.currentStepIndex;

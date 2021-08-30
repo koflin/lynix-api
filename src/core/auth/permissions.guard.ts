@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { Permission } from 'src/models/role.model';
@@ -15,7 +15,7 @@ export class PermissionsGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const requiredPermissions = this.reflector.getAllAndOverride<Permission[]>(PERMISSIONS_KEY, [
+    const requiredPermissions = this.reflector.getAllAndOverride<(Permission | Permission[])[]>(PERMISSIONS_KEY, [
       context.getHandler(),
       context.getClass()
     ]);
@@ -30,6 +30,12 @@ export class PermissionsGuard implements CanActivate {
       return false;
     }
 
-    return requiredPermissions.every((permission) => user.role.permissions.includes(permission));
+    const hasPermissions = user.role?.hasPermission(...requiredPermissions);
+
+    if (!hasPermissions) {
+      throw new ForbiddenException(undefined, 'Missing permissions. Needs one of: ' + requiredPermissions.join(', '));
+    }
+
+    return true;
   }
 }

@@ -16,7 +16,7 @@ export class ProductTemplate {
     @ApiProperty()
     name: string;
     @ApiProperty()
-    description: object;
+    description: any;
     @ApiProperty()
     processes: {
         template: ProcessTemplate;

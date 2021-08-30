@@ -1,4 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class StatisticsService {}
+export class StatisticsService {
+    getAnualOrderState() {
+        return;
+    }
+}

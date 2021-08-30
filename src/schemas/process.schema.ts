@@ -42,6 +42,13 @@ export class ProcessDoc extends Document {
     isRunning: boolean;
 
     @Prop()
+    releasedAt: Date;
+    @Prop()
+    startedAt: Date;
+    @Prop()
+    completedAt: Date;
+
+    @Prop()
     assignedUserId: string;
 
     @Prop([StepDoc])

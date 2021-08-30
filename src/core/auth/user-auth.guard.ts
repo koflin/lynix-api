@@ -23,7 +23,7 @@ export class UserAuthGuard extends JwtAuthGuard {
     }
  
     async authenticate(context: ExecutionContext, client?: Socket) {
-        let auth = await super.authenticate(context, client);
+        const auth = await super.authenticate(context, client);
         auth.account = await this.usersService.getById(auth.account.id);
         return auth;
     }
@@ -39,7 +39,7 @@ export class UserAuthGuard extends JwtAuthGuard {
             const metadata = Reflect.getMetadata("__routeArguments__", context.getClass(), context.getHandler().name);
             const request = context.switchToHttp().getRequest();
 
-            for (let key in metadata) {
+            for (const key in metadata) {
                 const keyType = parseInt(key.split(':')[0]);
                 const prop = metadata[key].data;
 
@@ -85,8 +85,8 @@ export class UserAuthGuard extends JwtAuthGuard {
     
         const collections = await this.connection.db.collections();
             
-        for (let col of collections) {
-            let result = await col.findOne({ "_id": new mongoose.Types.ObjectId(value) });
+        for (const col of collections) {
+            const result = await col.findOne({ "_id": new mongoose.Types.ObjectId(value) });
     
             // Not found
             if (!result) {

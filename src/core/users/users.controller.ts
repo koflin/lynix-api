@@ -38,7 +38,7 @@ export class UsersController {
     }
 
     @ApiOkResponse({ type: [User] })
-    @Permissions(Permission.VIEW)
+    @Permissions(Permission.USER_VIEW)
     @Get()
     async getAll(@Account() user: User, @Query() filter: { email: string, permissions: Permission[] }) {
         const { email, permissions } = filter;
@@ -53,7 +53,7 @@ export class UsersController {
     }
 
     @ApiOkResponse({ type: User })
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.USER_EDIT)
     @Post()
     async create(@Account() user: User, @Body() creatUserDto: CreateUserDto) {
         const search = await this.usersService.getByEmail(creatUserDto.email);
@@ -69,28 +69,28 @@ export class UsersController {
     }
 
     @ApiOkResponse({ type: User })
-    @Permissions(Permission.VIEW)
+    @Permissions(Permission.USER_VIEW)
     @Get(':userId')
     getById(@Param('userId', new ParseIdPipe()) userId: string) {
-        let user = this.usersService.getById(userId);
+        const user = this.usersService.getById(userId);
         if (user == null) throw new NotFoundException('User not found!');
         return user;
     }
 
     @ApiOkResponse({ type: User })
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.USER_EDIT)
     @Put(':userId')
     edit(@Param('userId', new ParseIdPipe()) userId: string, @Body() editUserDto: EditUserDto) {
-        let user = this.usersService.edit(userId, editUserDto);
+        const user = this.usersService.edit(userId, editUserDto);
         if (user == null) throw new NotFoundException('User not found!');
         return user;
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.EDIT)
+    @Permissions(Permission.USER_EDIT)
     @Delete(':userId')
     delete(@Param('userId', new ParseIdPipe()) userId: string) {
-        let user = this.usersService.delete(userId);
+        const user = this.usersService.delete(userId);
         if (user == null) throw new NotFoundException('User not found!');
         return user;
     }

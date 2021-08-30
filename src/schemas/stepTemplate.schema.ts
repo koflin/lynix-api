@@ -1,4 +1,4 @@
-import { Prop, Schema } from "@nestjs/mongoose";
+import { Prop, Schema } from '@nestjs/mongoose';
 
 /**
  * Represents a step template subdocument
@@ -12,9 +12,9 @@ export class StepTemplateDoc {
     @Prop()
     toolIds: string[];
     @Prop()
-    keyMessage: object;
+    keyMessage: any;
     @Prop()
-    tasks: object;
+    tasks: any;
     @Prop()
     pictureUris?: string[];
     @Prop()

@@ -41,7 +41,6 @@ export class JwtAuthGuard implements CanActivate {
 
     async authenticate(context: ExecutionContext, client?: Socket) {
         let token;
-        let account;
 
         if (client) {
             token = client.handshake.auth['token'];
@@ -58,7 +57,7 @@ export class JwtAuthGuard implements CanActivate {
 
         const decodedToken = this.jwtService.decode(token);
         const type = decodedToken['type'];
-        account = decodedToken['account'];
+        const account = decodedToken['account'];
         
         return {
             account,
