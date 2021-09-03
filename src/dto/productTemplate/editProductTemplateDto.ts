@@ -20,7 +20,7 @@ export class EditProductTemplateDto {
     @ApiProperty()
     @IsOptional()
     @IsObject()
-    description: object;
+    description: any;
     @ApiProperty()
     @IsOptional()
     @IsArray()

@@ -16,6 +16,6 @@ export class Media {
         this.uploadedBy = media.uploadedBy;
         this.uploadedAt = media.uploadedAt;
 
-        this.url = media.url;
+        this.url = media.url.toString();
     }
   }

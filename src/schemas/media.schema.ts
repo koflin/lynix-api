@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { UrlDoc } from 'src/schemas/url.schema';
 
 @Schema()
 export class MediaDoc extends Document {
@@ -12,7 +13,7 @@ export class MediaDoc extends Document {
     uploadedAt: Date;
 
     @Prop()
-    url: string;
+    url: UrlDoc;
 
     @Prop()
     fileName: string;

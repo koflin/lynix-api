@@ -1,5 +1,7 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 
+import { UrlDoc } from './url.schema';
+
 /**
  * Represents a step template subdocument
  */
@@ -16,9 +18,9 @@ export class StepTemplateDoc {
     @Prop()
     tasks: any;
     @Prop()
-    pictureUris?: string[];
+    pictureUris?: UrlDoc[];
     @Prop()
-    videoUris?: string[];
+    videoUris?: UrlDoc[];
     @Prop()
     estimatedTime: number;
 }

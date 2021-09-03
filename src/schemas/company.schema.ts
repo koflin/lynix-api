@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { UrlDoc } from 'src/schemas/url.schema';
 
 /**
  * Represents a company document
@@ -10,7 +11,7 @@ export class CompanyDoc extends Document {
     name: string;
 
     @Prop()
-    logo: string;
+    logo?: UrlDoc;
 }
 
 export const CompanySchema = SchemaFactory.createForClass(CompanyDoc);

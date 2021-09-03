@@ -6,6 +6,7 @@ import { json } from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
+import { MigrationService } from './core/migration/migration.service';
 import { SocketIoAdapter } from './socket-io.adapter';
 
 async function bootstrap() {
@@ -53,6 +54,8 @@ async function bootstrap() {
   }));
 
   app.useWebSocketAdapter(new SocketIoAdapter(app, [config.get('client.host')], apiPort != gatewayPort ? gatewayPort : 0));
+
+  await app.get(MigrationService).migrate();
 
   await app.listen(apiPort);
 }

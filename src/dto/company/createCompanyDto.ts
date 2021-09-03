@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { UrlDoc } from 'src/schemas/url.schema';
 
 
 export class CreateCompanyDto {
@@ -10,5 +11,5 @@ export class CreateCompanyDto {
     @ApiPropertyOptional()
     @IsOptional()
     @IsString()
-    logo?: string;
+    logo?: UrlDoc;
 }

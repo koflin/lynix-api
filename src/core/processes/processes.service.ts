@@ -5,11 +5,11 @@ import { CreateProcessDto } from 'src/dto/process/createProcessDto';
 import { Process } from 'src/models/process.model';
 import { User } from 'src/models/user.model';
 import { ProcessDoc } from 'src/schemas/process.schema';
+import { ProcessTemplateDoc } from 'src/schemas/processTemplate.schema';
 
 import { EventGateway } from '../event/event.gateway';
 import { Event } from '../event/event.model';
 import { OrdersService } from '../orders/orders.service';
-import { ProcessTemplatesService } from '../templates/process-templates/process-templates.service';
 import { UsersService } from '../users/users.service';
 import { EditProcessDto } from './../../dto/process/editProcessDto';
 
@@ -17,7 +17,7 @@ import { EditProcessDto } from './../../dto/process/editProcessDto';
 export class ProcessesService {
     constructor(
         @InjectModel(ProcessDoc.name) private processModel: Model<ProcessDoc>,
-        private processTemplatesService: ProcessTemplatesService,
+        @InjectModel(ProcessTemplateDoc.name) private processTemplateModel: Model<ProcessTemplateDoc>,
         private orderService: OrdersService,
         private usersService: UsersService,
         private events: EventGateway
@@ -105,7 +105,7 @@ export class ProcessesService {
 
     async create(processDto: CreateProcessDto, user: User): Promise<Process> {
         const processDoc = new this.processModel(processDto);
-        const templateDoc = await this.processTemplatesService.getById(processDoc.templateId);
+        const templateDoc = await this.processTemplateModel.findById(processDto.templateId);
         const order = await this.orderService.getById(processDoc.orderId);
 
         if (templateDoc == null) {
@@ -115,12 +115,12 @@ export class ProcessesService {
         processDoc.companyId = user.companyId;
 
         processDoc.status = 'released';
-        processDoc.estimatedTime = templateDoc.steps.reduce((total, step) => total + (step.estimatedTime ? step.estimatedTime : 0), 0);
+        processDoc.estimatedTime = templateDoc.stepTemplates.reduce((total, step) => total + (step.estimatedTime ? step.estimatedTime : 0), 0);
         processDoc.deliveryDate = order.deliveryDate;
         processDoc.mainTasks = templateDoc.mainTasks;
         processDoc.name = templateDoc.name;
         processDoc.previousComments = templateDoc.previousComments;
-        processDoc.steps = templateDoc.steps.map((stepTemplate) => {
+        processDoc.steps = templateDoc.stepTemplates.map((stepTemplate) => {
             return {
                 ...stepTemplate,
                 timeTaken: 0

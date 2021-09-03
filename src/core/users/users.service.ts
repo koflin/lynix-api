@@ -11,6 +11,7 @@ import { User, UserActivity, UserStatus } from 'src/models/user.model';
 import { UserDoc } from 'src/schemas/user.schema';
 
 import { ActivationService } from '../activation/activation.service';
+import { CompaniesService } from '../companies/companies.service';
 import { RolesService } from '../roles/roles.service';
 import { Role } from './../../models/role.model';
 
@@ -20,7 +21,8 @@ export class UsersService {
 
     constructor(@InjectModel(UserDoc.name) private userModel: Model<UserDoc>,
         private roleService: RolesService,
-        private activationService: ActivationService
+        private activationService: ActivationService,
+        private companyService: CompaniesService
     ) {
     }
 
@@ -38,7 +40,7 @@ export class UsersService {
 
     async getById(id: string): Promise<User> {
         const userDoc = await this.userModel.findById(id).exec();
-        return userDoc == null ? null : new User(userDoc, await this.roleService.getById(userDoc.roleId));
+        return userDoc == null ? null : new User(userDoc, await this.roleService.getById(userDoc.roleId), await this.companyService.getById(userDoc.companyId));
     }
 
     async getByEmail(email: string): Promise<UserDoc> {

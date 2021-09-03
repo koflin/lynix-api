@@ -12,6 +12,7 @@ import { CompaniesService } from './companies.service';
       name: CompanyDoc.name, schema: CompanySchema, collection: 'companies'
     }])
   ],
+  exports: [CompaniesService],
   controllers: [CompaniesController],
   providers: [CompaniesService]
 })

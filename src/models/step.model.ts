@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UrlDoc } from 'src/schemas/url.schema';
 
 import { StepDoc } from './../schemas/step.schema';
 
@@ -28,8 +29,8 @@ export class Step {
         this.materials = step.materials;
         this.keyMessage = step.keyMessage;
         this.tasks = step.tasks;
-        this.pictureUris = step.pictureUris;
-        this.videoUris = step.videoUris;
+        this.pictureUris = step.pictureUris?.map(s => UrlDoc.to(s));
+        this.videoUris = step.videoUris?.map(s => UrlDoc.to(s));
         this.estimatedTime = step.estimatedTime;
         
         this.timeTaken = step.timeTaken;

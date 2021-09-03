@@ -1,5 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsMongoId, IsOptional, IsString } from 'class-validator';
+import { UrlType } from 'src/models/url.type';
+import { UrlDoc } from 'src/schemas/url.schema';
+
+import { IsUrl } from '../decorators/url.decorator';
 
 export class EditUserDto {
     @ApiPropertyOptional()
@@ -20,6 +24,6 @@ export class EditUserDto {
     roleId?: string;
     @ApiPropertyOptional()
     @IsOptional()
-    @IsString()
-    avatar?: string;
+    @IsUrl([UrlType.MEDIA])
+    avatar?: UrlDoc;
 }

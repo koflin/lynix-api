@@ -2,6 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { UserActivity, UserStatus } from 'src/models/user.model';
 
+import { UrlDoc } from './url.schema';
+
 /**
  * Represents a user document
  */
@@ -21,7 +23,7 @@ export class UserDoc extends Document {
     @Prop()
     roleId?: string;
     @Prop()
-    avatar?: string;
+    avatar?: UrlDoc;
 
     @Prop()
     lastSeen: Date;
