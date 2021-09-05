@@ -15,6 +15,8 @@ import { CompaniesModule } from './core/companies/companies.module';
 import { DevModule } from './core/dev/dev.module';
 import { EventModule } from './core/event/event.module';
 import { MediaModule } from './core/media/media.module';
+import { MetadataModule } from './core/metadata/metadata.module';
+import { MigrationModule } from './core/migration/migration.module';
 import { OrdersModule } from './core/orders/orders.module';
 import { ProcessesModule } from './core/processes/processes.module';
 import { RolesModule } from './core/roles/roles.module';
@@ -24,7 +26,6 @@ import { ProcessTemplatesModule } from './core/templates/process-templates/proce
 import { ProductTemplatesModule } from './core/templates/product-templates/product-templates.module';
 import { ToolsModule } from './core/tools/tools.module';
 import { UsersModule } from './core/users/users.module';
-import { MigrationModule } from './core/migration/migration.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { MigrationModule } from './core/migration/migration.module';
       }),
     }),
     ScheduleModule.forRoot(),
+    MetadataModule,
     CompaniesModule,
     UsersModule,
     OrdersModule,
@@ -86,10 +88,11 @@ import { MigrationModule } from './core/migration/migration.module';
     AdminModule,
     AccountModule,
     StatisticsModule,
-    MigrationModule
+    MigrationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {
 }
+

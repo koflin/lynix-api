@@ -27,7 +27,7 @@ export class MediaService {
     }
 
     async get(id: string) {
-        const { fileName, } = await this.mediaModel.findById(id).exec();
+        const { fileName } = await this.mediaModel.findById(id).exec();
         return fileName;
     }
 }

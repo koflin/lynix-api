@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 
+import { MetadataDocument } from './base';
 import { ProcessTemplateDoc } from './processTemplate.schema';
 import { StepDoc } from './step.schema';
 
@@ -8,7 +8,7 @@ import { StepDoc } from './step.schema';
  * Represents a process document
  */
 @Schema()
-export class ProcessDoc extends Document {
+export class ProcessDoc extends MetadataDocument {
     @Prop()
     companyId: string;
 

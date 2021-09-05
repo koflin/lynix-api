@@ -14,6 +14,9 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateProcessDto } from 'src/dto/process/createProcessDto';
+import { ApplyDocumentMetadata } from 'src/interceptors/document-metadata/apply-document-metadata.decorator';
+import { DocumentMetadataType } from 'src/interceptors/document-metadata/document-metadata';
+import { DocumentMetadata } from 'src/interceptors/document-metadata/document-metadata.decorator';
 import { Process } from 'src/models/process.model';
 import { Permission } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
@@ -31,6 +34,7 @@ import { ProcessesService } from './processes.service';
 @ApiTags('processes')
 @ApiBearerAuth()
 @UseGuards(UserAuthGuard, PermissionsGuard)
+@ApplyDocumentMetadata(ProcessesService)
 @Controller('processes')
 export class ProcessesController {
     constructor(
@@ -51,14 +55,15 @@ export class ProcessesController {
     @ApiOkResponse({ type: Process })
     @Permissions(Permission.PROCESS_VIEW)
     @Get(':processId')
-    getById(@Param('processId') processId: string) {
-        const process = this.processesService.getById(processId);
+    async getById(@Param('processId') processId: string) {
+        const process = await this.processesService.getById(processId);
         if (process == null) throw new NotFoundException('Process not found!');
         return process;
     }
 
     @ApiOkResponse({ type: Process })
     @Permissions(Permission.ORDER_EDIT)
+    @DocumentMetadata(DocumentMetadataType.CREATED_AT, DocumentMetadataType.CREATED_BY)
     @Post()
     async create(@Account() user: User, @Body() createProcessDto: CreateProcessDto) {
         const process = await this.processesService.create(createProcessDto, user);
@@ -69,6 +74,7 @@ export class ProcessesController {
 
     @ApiOkResponse({ type: Process })
     @Permissions(Permission.ORDER_EDIT)
+    @DocumentMetadata(DocumentMetadataType.EDITED_AT, DocumentMetadataType.EDITED_BY)
     @Put(':processId')
     async edit(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string, @Body() editProcessDto: EditProcessDto) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
@@ -79,11 +85,13 @@ export class ProcessesController {
 
     @ApiOkResponse()
     @Permissions(Permission.ORDER_EDIT)
+    @DocumentMetadata(DocumentMetadataType.DELETED_AT, DocumentMetadataType.DELETED_BY)
     @Delete(':processId')
     async delete(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
         this.event.triggerOther(Event.PROCESS_DELETE, user, processId);
-        return this.processesService.delete(processId);
+        // TODO harddelete return this.processesService.delete(processId);
+        return this.processesService.getById(processId);
     }
     @ApiOkResponse()
     @Permissions(Permission.PROCESS_EXECUTE)

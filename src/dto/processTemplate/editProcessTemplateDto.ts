@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsOptional, IsString, ValidateNested } from 'class-validator';
+
 import { EditStepTemplateDto } from '../stepTemplate/editStepTemplateDto';
 
 export class EditProcessTemplateDto {
@@ -22,5 +23,5 @@ export class EditProcessTemplateDto {
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => EditStepTemplateDto)
-    stepTemplates: EditStepTemplateDto[];
+    steps: EditStepTemplateDto[];
 }

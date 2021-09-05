@@ -54,7 +54,7 @@ export class MediaController {
         const fileName = await this.mediaService.get(params['id']);
 
         if (fileName != params['filename']) {
-            throw new NotFoundException();
+            throw new NotFoundException('File does not exist');
         }
 
         return res.sendFile(fileName, { root: path.resolve(__dirname, '../../../' + this.config.get('media.path')) });

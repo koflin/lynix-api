@@ -4,6 +4,7 @@ import { ProcessDoc, ProcessSchema } from 'src/schemas/process.schema';
 import { ProcessTemplateDoc, ProcessTemplateSchema } from 'src/schemas/processTemplate.schema';
 
 import { EventModule } from '../event/event.module';
+import { MetadataModule } from '../metadata/metadata.module';
 import { ProcessTemplatesModule } from '../templates/process-templates/process-templates.module';
 import { UsersModule } from '../users/users.module';
 import { OrdersModule } from './../orders/orders.module';
@@ -21,7 +22,8 @@ import { ProcessesService } from './processes.service';
     ProcessTemplatesModule,
     OrdersModule,
     EventModule,
-    UsersModule
+    UsersModule,
+    MetadataModule
   ],
   providers: [ProcessesService],
   controllers: [ProcessesController],

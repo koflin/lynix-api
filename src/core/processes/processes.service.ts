@@ -9,6 +9,7 @@ import { ProcessTemplateDoc } from 'src/schemas/processTemplate.schema';
 
 import { EventGateway } from '../event/event.gateway';
 import { Event } from '../event/event.model';
+import { MetadataService } from '../metadata/metadata.service';
 import { OrdersService } from '../orders/orders.service';
 import { UsersService } from '../users/users.service';
 import { EditProcessDto } from './../../dto/process/editProcessDto';
@@ -20,7 +21,8 @@ export class ProcessesService {
         @InjectModel(ProcessTemplateDoc.name) private processTemplateModel: Model<ProcessTemplateDoc>,
         private orderService: OrdersService,
         private usersService: UsersService,
-        private events: EventGateway
+        private events: EventGateway,
+        private metadataSerivce: MetadataService
     ) {
     }
 
@@ -86,7 +88,7 @@ export class ProcessesService {
     }
 
     async getAll(companyId?: string, assignedUserId?: string, orderId?: string): Promise<Process[]> {
-        const processIds = await this.processModel.find({ companyId, assignedUserId, orderId, }, '_id').exec();
+        const processIds = await this.processModel.find({ companyId, assignedUserId, orderId, deletedAt: { $exists: false } }, '_id').exec();
         return Promise.all(processIds.map( async (doc) => {
             return this.getById(doc._id);
         }));
@@ -97,7 +99,7 @@ export class ProcessesService {
         const order = await this.orderService.getById(processDoc.orderId);
         
         if (processDoc) {
-            return new Process(processDoc, order);
+            return new Process(await this.metadataSerivce.get(processDoc), processDoc, order);
         }
 
         return null;
@@ -115,12 +117,12 @@ export class ProcessesService {
         processDoc.companyId = user.companyId;
 
         processDoc.status = 'released';
-        processDoc.estimatedTime = templateDoc.stepTemplates.reduce((total, step) => total + (step.estimatedTime ? step.estimatedTime : 0), 0);
+        processDoc.estimatedTime = templateDoc.steps.reduce((total, step) => total + (step.estimatedTime ? step.estimatedTime : 0), 0);
         processDoc.deliveryDate = order.deliveryDate;
         processDoc.mainTasks = templateDoc.mainTasks;
         processDoc.name = templateDoc.name;
         processDoc.previousComments = templateDoc.previousComments;
-        processDoc.steps = templateDoc.stepTemplates.map((stepTemplate) => {
+        processDoc.steps = templateDoc.steps.map((stepTemplate) => {
             return {
                 ...stepTemplate,
                 timeTaken: 0
@@ -141,7 +143,7 @@ export class ProcessesService {
     async edit(id: string, processDto: EditProcessDto): Promise<Process> {
         await this.processModel.findByIdAndUpdate(id, {
             ...processDto
-        } as any, { new: true, omitUndefined: true });
+        } as any, { new: true, omitUndefined: true }).exec();
 
         return this.getById(id);
     }

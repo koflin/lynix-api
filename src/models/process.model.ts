@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ProcessDoc } from 'src/schemas/process.schema';
 
+import { Metadata } from './base/metadata.interface';
+import { MetadataEntity } from './base/metadata.model';
 import { Order } from './order.model';
 import { Step } from './step.model';
 
-export class Process {
+export class Process extends MetadataEntity{
     @ApiProperty()
     id: string;
     @ApiProperty()
@@ -50,7 +52,9 @@ export class Process {
     @ApiProperty()
     steps: Step[];
 
-    constructor(process: ProcessDoc, order: Order) {
+    constructor(metadata: Metadata, process: ProcessDoc, order: Order) {
+        super(metadata);
+
         this.id = process.id;
         this.companyId = process.companyId;
         this.order = order;

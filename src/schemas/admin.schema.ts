@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+
+import { MetadataDocument } from './base';
 
 /**
  * Represents a admin document
  */
 @Schema()
-export class AdminDoc extends Document {    
+export class AdminDoc extends MetadataDocument {    
     @Prop()
     email: string;
     @Prop()

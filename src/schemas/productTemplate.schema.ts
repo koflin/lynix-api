@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+
+import { MetadataDocument } from './base';
 
 /**
  * Represents a product template document
  */
 @Schema()
-export class ProductTemplateDoc extends Document {
+export class ProductTemplateDoc extends MetadataDocument {
     @Prop()
     companyId: string;
 

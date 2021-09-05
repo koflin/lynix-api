@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as moment from 'moment';
 import { Model } from 'mongoose';
 import { Socket } from 'socket.io';
+import { EditService } from 'src/core/interfaces/edit-service.interface';
 import { CreateUserDto } from 'src/dto/user/createUserDto';
 import { EditUserDto } from 'src/dto/user/editUserDto';
 import { ActiveUser } from 'src/models/activeUser.model';
@@ -12,17 +13,19 @@ import { UserDoc } from 'src/schemas/user.schema';
 
 import { ActivationService } from '../activation/activation.service';
 import { CompaniesService } from '../companies/companies.service';
+import { MetadataService } from '../metadata/metadata.service';
 import { RolesService } from '../roles/roles.service';
 import { Role } from './../../models/role.model';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements EditService {
     private readonly offlineAfter = 5000;
 
     constructor(@InjectModel(UserDoc.name) private userModel: Model<UserDoc>,
         private roleService: RolesService,
         private activationService: ActivationService,
-        private companyService: CompaniesService
+        private companyService: CompaniesService,
+        private metadataService: MetadataService
     ) {
     }
 
@@ -40,7 +43,7 @@ export class UsersService {
 
     async getById(id: string): Promise<User> {
         const userDoc = await this.userModel.findById(id).exec();
-        return userDoc == null ? null : new User(userDoc, await this.roleService.getById(userDoc.roleId), await this.companyService.getById(userDoc.companyId));
+        return userDoc == null ? null : new User(userDoc, await this.metadataService.get(userDoc), await this.roleService.getById(userDoc.roleId), await this.companyService.getById(userDoc.companyId));
     }
 
     async getByEmail(email: string): Promise<UserDoc> {

@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+
+import { MetadataDocument } from './base';
 
 @Schema()
-export class ToolDoc extends Document {
+export class ToolDoc extends MetadataDocument {
     @Prop()
     companyId: string;
 

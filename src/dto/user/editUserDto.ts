@@ -24,6 +24,6 @@ export class EditUserDto {
     roleId?: string;
     @ApiPropertyOptional()
     @IsOptional()
-    @IsUrl([UrlType.MEDIA])
+    @IsUrl([UrlType.MEDIA, UrlType.EXTERNAL])
     avatar?: UrlDoc;
 }

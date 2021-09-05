@@ -1,6 +1,8 @@
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as fs from 'fs';
 import { Document, Model } from 'mongoose';
+import * as path from 'path';
 import { CompanyDoc } from 'src/schemas/company.schema';
 import { MediaDoc } from 'src/schemas/media.schema';
 import { MigrationDoc } from 'src/schemas/migration.schema';
@@ -9,11 +11,10 @@ import { ProcessTemplateDoc } from 'src/schemas/processTemplate.schema';
 import { UrlDoc } from 'src/schemas/url.schema';
 import { UserDoc } from 'src/schemas/user.schema';
 
-import { version } from '../../../package.json';
-
 const versionHistory = [
     '0.1.0',
     '0.1.1',
+    '0.1.2',
 ];
 
 @Injectable()
@@ -31,10 +32,11 @@ export class MigrationService {
     }
 
     async migrate() {
-        const softwareVersion = new Version(version);
+        const packageData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../package.json'), 'utf8'));
+        const softwareVersion = new Version(packageData?.version);
 
         if (softwareVersion.versionString != versionHistory[versionHistory.length - 1]) {
-            throw new NotImplementedException('Complete versionHistory with newest history!');
+            throw new NotImplementedException('Complete version History with newest history!');
         }
 
         const latestUpdate = await this.migrationModel.findOne().sort({ updatedAt: 'desc' }).exec();
@@ -50,13 +52,13 @@ export class MigrationService {
 
                 const migration: () => Promise<void> = Reflect.get(this, 'migrate' + version.major + '_' + version.minor + '_' + version.patch);
 
-                if (!migration) {
-                    console.error('Migration failed: migration procedure not found!');
+                if (migration) {
+                    console.log('Migrating to version: ' + version.versionString);
+                    await migration.call(this);
                 }
-
-                console.log('Migrating to version: ' + version.versionString);
-                await migration.call(this);
             }
+
+            console.log('Migrated from ' + dbVersion.versionString + ' to ' + softwareVersion.versionString);
 
             await this.migrationModel.create({
                 updatedFrom: dbVersion.versionString,
@@ -143,6 +145,10 @@ export class MigrationService {
                 object[index] = new UrlDoc(value);
             }
         }
+    }
+
+    private async migrate0_1_2() {
+        await this.processTemplateModel.updateMany({ stepTemplates: { $exists: true } }, { $rename: { 'stepTemplates': 'steps' } }, { strict: false }).exec();
     }
 }
 

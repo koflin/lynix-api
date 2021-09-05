@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { OrderDoc } from 'src/schemas/order.schema';
 
+import { Metadata } from './base/metadata.interface';
+import { MetadataEntity } from './base/metadata.model';
 import { ProductTemplate } from './productTemplate.model';
 
-export class Order {
+export class Order extends MetadataEntity {
     @ApiProperty()
     id: string;
     @ApiProperty()
@@ -31,7 +33,9 @@ export class Order {
         quantity: number;
     }[];
 
-    constructor(order: OrderDoc, productTemplates: ProductTemplate[]) {
+    constructor(metadata: Metadata, order: OrderDoc, productTemplates: ProductTemplate[]) {
+        super(metadata);
+        
         this.id = order.id;
         this.companyId = order.companyId;
         this.status = order.status;

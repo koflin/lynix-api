@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RoleDoc } from 'src/schemas/role.schema';
 
-export class Role {
+import { Metadata } from './base/metadata.interface';
+import { MetadataEntity } from './base/metadata.model';
+
+export class Role extends MetadataEntity {
     @ApiProperty()
     id: string;
     @ApiProperty()
@@ -12,7 +15,9 @@ export class Role {
     @ApiProperty()
     permissions: Permission[];
 
-    constructor(doc: RoleDoc) {
+    constructor(metadata: Metadata, doc: RoleDoc) {
+        super(metadata);
+        
         this.id = doc.id;
         this.companyId = doc.companyId;
         this.name = doc.name;

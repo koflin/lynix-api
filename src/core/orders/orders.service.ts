@@ -6,17 +6,19 @@ import { Order } from 'src/models/order.model';
 import { User } from 'src/models/user.model';
 import { OrderDoc } from 'src/schemas/order.schema';
 
+import { MetadataService } from '../metadata/metadata.service';
 import { ProductTemplatesService } from '../templates/product-templates/product-templates.service';
 
 @Injectable()
 export class OrdersService {
     constructor(
         @InjectModel(OrderDoc.name) private orderModel: Model<OrderDoc>,
-        private productTemplatesService: ProductTemplatesService
+        private productTemplatesService: ProductTemplatesService,
+        private metadataSerivce: MetadataService
     ) { }
 
     async getAll(filter: { companyId?: string, status: any }): Promise<Order[]> {
-        const orderIds = await this.orderModel.find(filter, '_id').exec();
+        const orderIds = await this.orderModel.find({ ...filter, deletedAt: { $exists: false } }, '_id').exec();
         return Promise.all(orderIds.map( async (doc) => {
             return this.getById(doc._id);
         }));
@@ -29,7 +31,7 @@ export class OrdersService {
             const productDocs = await Promise.all(orderDoc.products.map((product) => {
                 return this.productTemplatesService.getById(product.templateId);
             }));
-            return new Order(orderDoc, productDocs);
+            return new Order(await this.metadataSerivce.get(orderDoc), orderDoc, productDocs);
         }
 
         return null;
@@ -46,9 +48,8 @@ export class OrdersService {
 
         const orderDoc = await this.orderModel.findByIdAndUpdate(id, {
             ...orderDto,
-        }, { new: true, omitUndefined: true });
+        }, { new: true, omitUndefined: true }).exec();
 
-        await orderDoc.save();
         return this.getById(orderDoc.id);
     }
 

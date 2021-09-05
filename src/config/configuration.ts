@@ -1,6 +1,13 @@
-const env = process.env;
+import { config } from 'dotenv';
 
-export default () => ({
+export default () => {
+  let env = process.env;
+
+  if (!env?.API_PORT) {
+    env = config().parsed;
+  }
+
+  return {
     api: {
       port: parseInt(env.API_PORT, 10),
       url: env.API_HOST + '/' + env.VERSION_PREFIX,
@@ -37,4 +44,5 @@ export default () => ({
     media: {
       path: env.MEDIA_PATH
     }
-});
+  }
+};

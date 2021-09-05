@@ -2,10 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UrlDoc } from 'src/schemas/url.schema';
 import { UserDoc } from 'src/schemas/user.schema';
 
+import { Metadata } from './base/metadata.interface';
+import { MetadataEntity } from './base/metadata.model';
 import { Company } from './company.model';
 import { Role } from './role.model';
 
-export class User {
+export class User extends MetadataEntity {
     @ApiProperty()
     id: string;
     @ApiProperty()
@@ -30,7 +32,9 @@ export class User {
     @ApiProperty()
     activatedAt: Date;
 
-    constructor(user: UserDoc, role: Role, company: Company) {
+    constructor(user: UserDoc, metadata?: Metadata, role?: Role, company?: Company) {
+        super(metadata);
+        
         this.id = user.id;
         this.companyId = user.companyId;
         this.email = user.email;
@@ -39,7 +43,7 @@ export class User {
         this.lastName = user.lastName;
         this.role = role;
         this.avatar = UrlDoc.to(user.avatar);
-        this.companyLogo = company.logo;
+        this.companyLogo = company?.logo;
         this.activatedAt = user.activatedAt;
     }
 }

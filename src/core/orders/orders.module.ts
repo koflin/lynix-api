@@ -1,9 +1,11 @@
-import { Module, HttpModule } from '@nestjs/common';
-import { OrdersController } from './orders.controller';
-import { OrdersService } from './orders.service';
+import { HttpModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { OrderDoc, OrderSchema } from 'src/schemas/order.schema';
+
+import { MetadataModule } from '../metadata/metadata.module';
 import { ProductTemplatesModule } from '../templates/product-templates/product-templates.module';
+import { OrdersController } from './orders.controller';
+import { OrdersService } from './orders.service';
 
 @Module({
   imports: [
@@ -11,7 +13,8 @@ import { ProductTemplatesModule } from '../templates/product-templates/product-t
     MongooseModule.forFeature([{
       name: OrderDoc.name, schema: OrderSchema, collection: 'orders'
     }]),
-    ProductTemplatesModule
+    ProductTemplatesModule,
+    MetadataModule
   ],
   controllers: [OrdersController],
   providers: [OrdersService],

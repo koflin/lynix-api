@@ -2,6 +2,9 @@ import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Use
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CreateCompanyDto } from 'src/dto/company/createCompanyDto';
 import { EditCompanyDto } from 'src/dto/company/editCompanyDto';
+import { ApplyDocumentMetadata } from 'src/interceptors/document-metadata/apply-document-metadata.decorator';
+import { DocumentMetadataType } from 'src/interceptors/document-metadata/document-metadata';
+import { DocumentMetadata } from 'src/interceptors/document-metadata/document-metadata.decorator';
 import { Company } from 'src/models/company.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
 
@@ -12,10 +15,13 @@ import { CompaniesService } from './companies.service';
 
 @ApiTags('companies')
 @UseGuards(PermissionsGuard)
+@ApplyDocumentMetadata(CompaniesService)
 @Controller('companies')
 export class CompaniesController {
 
-    constructor(private companyService: CompaniesService) {
+    constructor(
+        private companyService: CompaniesService
+    ) {
     }
 
     @ApiOkResponse({ type: [Company] })
@@ -27,6 +33,7 @@ export class CompaniesController {
 
     @ApiOkResponse({ type: Company })
     @UseGuards(AdminAuthGuard)
+    @DocumentMetadata(DocumentMetadataType.CREATED_AT, DocumentMetadataType.CREATED_BY)
     @Post()
     create(@Body() createCompanyDto: CreateCompanyDto) {
         return this.companyService.create(createCompanyDto);
@@ -35,26 +42,29 @@ export class CompaniesController {
     @ApiOkResponse({ type: Company })
     @UseGuards(UserAuthGuard)
     @Get(':companyId')
-    getById(@Param('companyId', new ParseIdPipe()) companyId: string) {
-        const company = this.companyService.getById(companyId);
+    async getById(@Param('companyId', new ParseIdPipe()) companyId: string) {
+        const company = await this.companyService.getById(companyId);
         if (company == null) throw new NotFoundException('Company not found!');
         return company;
     }
 
     @ApiOkResponse({ type: Company })
     @UseGuards(AdminAuthGuard)
+    @DocumentMetadata(DocumentMetadataType.EDITED_AT, DocumentMetadataType.EDITED_BY)
     @Put(':companyId')
-    edit(@Param('companyId', new ParseIdPipe()) companyId: string, @Body() editCompanyDto: EditCompanyDto) {
-        const company = this.companyService.edit(companyId, editCompanyDto);
+    async edit(@Param('companyId', new ParseIdPipe()) companyId: string, @Body() editCompanyDto: EditCompanyDto) {
+        const company = await this.companyService.edit(companyId, editCompanyDto);
         if (company == null) throw new NotFoundException('Company not found!');
         return company;
     }
 
     @ApiOkResponse()
     @UseGuards(AdminAuthGuard)
+    @DocumentMetadata(DocumentMetadataType.DELETED_AT, DocumentMetadataType.DELETED_BY)
     @Delete(':companyId')
-    delete(@Param('companyId', new ParseIdPipe()) companyId: string) {
-        const company = this.companyService.delete(companyId);
+    async delete(@Param('companyId', new ParseIdPipe()) companyId: string) {
+        // TODO hard delete
+        const company = await this.companyService.getById(companyId);
         if (company == null) throw new NotFoundException('Company not found!');
         return company;
     }

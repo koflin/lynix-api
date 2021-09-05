@@ -1,10 +1,10 @@
-import { Permission } from './../models/role.model';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Permission } from './../models/role.model';
+import { MetadataDocument } from './base';
 
 @Schema()
-export class RoleDoc extends Document {
+export class RoleDoc extends MetadataDocument {
     @Prop()
     companyId: string;
 

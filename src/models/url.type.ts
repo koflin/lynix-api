@@ -14,10 +14,10 @@ export function urlTypeToPrefix(type: UrlType) {
     
     switch(type) {
         case UrlType.MEDIA:
-            return config.api.url + '/';
+            return config.api.url + mediaSubUrl;
         
         case UrlType.API:
-            return config.api.url + mediaSubUrl;
+            return config.api.url + '/';
 
         case UrlType.CLIENT:
             return config.client.host + '/';

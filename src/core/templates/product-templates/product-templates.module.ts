@@ -1,11 +1,11 @@
 import { HttpModule, Module } from '@nestjs/common';
-import { ProductTemplatesService } from './product-templates.service';
-import { ProductTemplatesController } from './product-templates.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ToolDoc, ToolSchema } from 'src/schemas/tool.schema';
+import { MetadataModule } from 'src/core/metadata/metadata.module';
 import { ProductTemplateDoc, ProductTemplateSchema } from 'src/schemas/productTemplate.schema';
-import { ProcessTemplatesService } from '../process-templates/process-templates.service';
+
 import { ProcessTemplatesModule } from '../process-templates/process-templates.module';
+import { ProductTemplatesController } from './product-templates.controller';
+import { ProductTemplatesService } from './product-templates.service';
 
 @Module({
   imports: [
@@ -13,7 +13,8 @@ import { ProcessTemplatesModule } from '../process-templates/process-templates.m
     MongooseModule.forFeature([{
       name: ProductTemplateDoc.name, schema: ProductTemplateSchema, collection: 'productTemplates'
     }]),
-    ProcessTemplatesModule
+    ProcessTemplatesModule,
+    MetadataModule
   ],
   providers: [ProductTemplatesService],
   controllers: [ProductTemplatesController],

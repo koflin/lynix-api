@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import { UrlDoc } from 'src/schemas/url.schema';
 
 @Schema()
-export class MediaDoc extends Document {
+export class MediaDoc extends Document{
     @Prop()
     companyId: string;
 

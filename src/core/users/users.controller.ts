@@ -15,6 +15,9 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { filter } from 'rxjs/operators';
 import { CreateUserDto } from 'src/dto/user/createUserDto';
 import { EditUserDto } from 'src/dto/user/editUserDto';
+import { ApplyDocumentMetadata } from 'src/interceptors/document-metadata/apply-document-metadata.decorator';
+import { DocumentMetadataType } from 'src/interceptors/document-metadata/document-metadata';
+import { DocumentMetadata } from 'src/interceptors/document-metadata/document-metadata.decorator';
 import { Permission } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
@@ -29,6 +32,7 @@ import { UsersService } from './users.service';
 @ApiTags('users')
 @ApiBearerAuth()
 @UseGuards(UserAuthGuard, PermissionsGuard)
+@ApplyDocumentMetadata(UsersService)
 @Controller('users')
 export class UsersController {
     constructor(
@@ -54,6 +58,7 @@ export class UsersController {
 
     @ApiOkResponse({ type: User })
     @Permissions(Permission.USER_EDIT)
+    @DocumentMetadata(DocumentMetadataType.CREATED_AT, DocumentMetadataType.CREATED_BY)
     @Post()
     async create(@Account() user: User, @Body() creatUserDto: CreateUserDto) {
         const search = await this.usersService.getByEmail(creatUserDto.email);
@@ -71,26 +76,29 @@ export class UsersController {
     @ApiOkResponse({ type: User })
     @Permissions(Permission.USER_VIEW)
     @Get(':userId')
-    getById(@Param('userId', new ParseIdPipe()) userId: string) {
-        const user = this.usersService.getById(userId);
+    async getById(@Param('userId', new ParseIdPipe()) userId: string) {
+        const user = await this.usersService.getById(userId);
         if (user == null) throw new NotFoundException('User not found!');
         return user;
     }
 
     @ApiOkResponse({ type: User })
     @Permissions(Permission.USER_EDIT)
+    @DocumentMetadata(DocumentMetadataType.EDITED_AT, DocumentMetadataType.EDITED_BY)
     @Put(':userId')
-    edit(@Param('userId', new ParseIdPipe()) userId: string, @Body() editUserDto: EditUserDto) {
-        const user = this.usersService.edit(userId, editUserDto);
+    async edit(@Param('userId', new ParseIdPipe()) userId: string, @Body() editUserDto: EditUserDto) {
+        const user = await this.usersService.edit(userId, editUserDto);
         if (user == null) throw new NotFoundException('User not found!');
         return user;
     }
 
     @ApiOkResponse()
     @Permissions(Permission.USER_EDIT)
+    @DocumentMetadata(DocumentMetadataType.DELETED_AT, DocumentMetadataType.DELETED_BY)
     @Delete(':userId')
-    delete(@Param('userId', new ParseIdPipe()) userId: string) {
-        const user = this.usersService.delete(userId);
+    async delete(@Param('userId', new ParseIdPipe()) userId: string) {
+        //TODO hard delete const user = this.usersService.delete(userId);
+        const user = await this.usersService.getById(userId);
         if (user == null) throw new NotFoundException('User not found!');
         return user;
     }

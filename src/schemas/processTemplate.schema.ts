@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 
+import { MetadataDocument } from './base';
 import { StepTemplateDoc } from './stepTemplate.schema';
 
 /**
  * Represents a process template document
  */
 @Schema()
-export class ProcessTemplateDoc extends Document {
+export class ProcessTemplateDoc extends MetadataDocument {
     @Prop()
     companyId: string;
 
@@ -19,7 +19,7 @@ export class ProcessTemplateDoc extends Document {
     previousComments?: string[];
 
     @Prop()
-    stepTemplates: StepTemplateDoc[];
+    steps: StepTemplateDoc[];
 
     @Prop()
     deletedAt: Date;

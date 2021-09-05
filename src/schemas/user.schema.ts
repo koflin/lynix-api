@@ -1,14 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 import { UserActivity, UserStatus } from 'src/models/user.model';
 
+import { MetadataDocument } from './base';
 import { UrlDoc } from './url.schema';
 
 /**
  * Represents a user document
  */
 @Schema()
-export class UserDoc extends Document {
+export class UserDoc extends MetadataDocument {
     @Prop()
     companyId: string;
     

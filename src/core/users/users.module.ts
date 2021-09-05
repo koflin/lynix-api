@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserDoc, UserSchema } from 'src/schemas/user.schema';
 
 import { ActivationModule } from '../activation/activation.module';
+import { MetadataModule } from '../metadata/metadata.module';
 import { CompaniesModule } from './../companies/companies.module';
 import { RolesModule } from './../roles/roles.module';
 import { UsersController } from './users.controller';
@@ -16,7 +17,8 @@ import { UsersService } from './users.service';
     }]),
     RolesModule,
     ActivationModule,
-    CompaniesModule
+    CompaniesModule,
+    MetadataModule
   ],
   exports: [UsersService],
   providers: [UsersService],

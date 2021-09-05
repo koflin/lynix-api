@@ -1,4 +1,5 @@
 import { MediaDoc } from 'src/schemas/media.schema';
+import { UrlDoc } from 'src/schemas/url.schema';
 
 export class Media {
     id: string;
@@ -16,6 +17,6 @@ export class Media {
         this.uploadedBy = media.uploadedBy;
         this.uploadedAt = media.uploadedAt;
 
-        this.url = media.url.toString();
+        this.url = UrlDoc.to(media.url);
     }
   }

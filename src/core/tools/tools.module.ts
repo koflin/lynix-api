@@ -1,7 +1,9 @@
-import { ToolsController } from './tools.controller';
-import { ToolDoc, ToolSchema } from './../../schemas/tool.schema';
 import { HttpModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+
+import { MetadataModule } from '../metadata/metadata.module';
+import { ToolDoc, ToolSchema } from './../../schemas/tool.schema';
+import { ToolsController } from './tools.controller';
 import { ToolsService } from './tools.service';
 
 @Module({
@@ -10,6 +12,7 @@ import { ToolsService } from './tools.service';
     MongooseModule.forFeature([{
       name: ToolDoc.name, schema: ToolSchema, collection: 'tools'
     }]),
+    MetadataModule
   ],
   controllers: [ToolsController],
   providers: [ToolsService]

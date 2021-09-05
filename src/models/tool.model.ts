@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ToolDoc } from 'src/schemas/tool.schema';
 
-export class Tool {
+import { Metadata } from './base/metadata.interface';
+import { MetadataEntity } from './base/metadata.model';
+
+export class Tool extends MetadataEntity {
     @ApiProperty()
     id: string;
     @ApiProperty()
@@ -9,7 +12,9 @@ export class Tool {
     @ApiProperty()
     name: string;
 
-    constructor(tool: ToolDoc) {
+    constructor(metadata: Metadata, tool: ToolDoc) {
+        super(metadata);
+
         this.id = tool.id;
         this.companyId = tool.companyId;
         this.name = tool.name;
