@@ -54,7 +54,7 @@ export class UserAuthGuard extends JwtAuthGuard {
                     value = request.query[prop];
                 }
 
-                if (value && !await this.checkResource(value, account)) {
+                if (value != undefined && !await this.checkResource(value, account)) {
                     return false;
                 }
             }
@@ -87,11 +87,6 @@ export class UserAuthGuard extends JwtAuthGuard {
             
         for (const col of collections) {
             const result = await col.findOne({ "_id": new mongoose.Types.ObjectId(value) });
-    
-            // Not found
-            if (!result) {
-                return true;
-            }
 
             if (result && result.companyId == user.companyId) {
                 return true;

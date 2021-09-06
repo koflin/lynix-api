@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Account } from 'src/core/auth/account.decorator';
 import { Permissions } from 'src/core/auth/permissions.decorator';
@@ -28,8 +28,8 @@ export class ProcessTemplatesController {
     @ApiQuery({ name: 'companyId', required: false })
     @Permissions(Permission.TEMPLATE_VIEW)
     @Get()
-    getAll(@Query() filter: { companyId: string }) {
-        return this.processService.getAll(filter);
+    getAll(@Account() user: User) {
+        return this.processService.getAll({ companyId: user.companyId });
     }
 
     @ApiOkResponse({ type: ProcessTemplate })

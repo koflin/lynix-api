@@ -48,8 +48,8 @@ export class ProcessesController {
     @ApiQuery({ name: 'orderId', required: false })
     @Permissions(Permission.PROCESS_VIEW)
     @Get()
-    getAll(@Query() filter: { companyId: string, assignedUserId: string, orderId: string }) {
-        return this.processesService.getAll(filter.companyId, filter.assignedUserId, filter.orderId);
+    getAll(@Account() user: User, @Query() filter: { assignedUserId: string, orderId: string }) {
+        return this.processesService.getAll(user.companyId, filter.assignedUserId, filter.orderId);
     }
 
     @ApiOkResponse({ type: Process })

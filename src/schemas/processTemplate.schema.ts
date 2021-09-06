@@ -18,7 +18,7 @@ export class ProcessTemplateDoc extends MetadataDocument {
     @Prop([String])
     previousComments?: string[];
 
-    @Prop()
+    @Prop([StepTemplateDoc])
     steps: StepTemplateDoc[];
 
     @Prop()

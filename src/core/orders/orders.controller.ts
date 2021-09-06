@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { filter } from 'rxjs/operators';
 import { EditOrderDto } from 'src/dto/order/editOrderDto';
 import { ApplyDocumentMetadata } from 'src/interceptors/document-metadata/apply-document-metadata.decorator';
 import { DocumentMetadataType } from 'src/interceptors/document-metadata/document-metadata';
@@ -29,12 +30,12 @@ export class OrdersController {
     @ApiQuery({ name: 'companyId', required: false })
     @Permissions(Permission.ORDER_VIEW)
     @Get()
-    getAll(@Account() user: User, @Query() filter: { companyId: string, status: any }) {
+    getAll(@Account() user: User, @Query() filter: { status: any }) {
         if (!user.role?.hasPermission(Permission.ORDER_EDIT)) {
             filter.status = { $in: ['released', 'in_progress'] };
         }
 
-        return this.ordersService.getAll(filter);
+        return this.ordersService.getAll({ companyId: user.companyId, status: filter.status });
     }
 
     @ApiOkResponse({ type: Order })
