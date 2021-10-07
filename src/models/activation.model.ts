@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ActivationDoc } from 'src/schemas/activation.schema';
 
-import { User } from './user.model';
+import { Account } from './account';
 
 export class Activation {
     @ApiProperty()
@@ -10,7 +10,7 @@ export class Activation {
     companyId: string;
 
     @ApiProperty()
-    user: User;
+    account: Account;
 
     @ApiProperty()
     code: string;
@@ -20,10 +20,10 @@ export class Activation {
     @ApiProperty()
     validUntil: Date;
 
-    constructor(activation: ActivationDoc, user: User) {
+    constructor(activation: ActivationDoc, account: Account) {
         this.id = activation.id;
         this.companyId = activation.companyId;
-        this.user = user;
+        this.account = account;
         this.code = activation.code;
         this.type = activation.type;
         this.validUntil = activation.validUntil;

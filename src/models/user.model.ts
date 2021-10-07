@@ -2,12 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UrlDoc } from 'src/schemas/url.schema';
 import { UserDoc } from 'src/schemas/user.schema';
 
+import { Account } from './account';
+import { AccountType } from './account-type';
 import { Metadata } from './base/metadata.interface';
 import { MetadataEntity } from './base/metadata.model';
 import { Company } from './company.model';
 import { Role } from './role.model';
 
-export class User extends MetadataEntity {
+export class User extends MetadataEntity implements Account {
     @ApiProperty()
     id: string;
     @ApiProperty()
@@ -31,6 +33,9 @@ export class User extends MetadataEntity {
 
     @ApiProperty()
     activatedAt: Date;
+
+    @ApiProperty()
+    type = AccountType.USER;
 
     constructor(user: UserDoc, metadata?: Metadata, role?: Role, company?: Company) {
         super(metadata);

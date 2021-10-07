@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Account } from 'src/core/auth/account.decorator';
-import { Permissions } from 'src/core/auth/permissions.decorator';
 import { PermissionsGuard } from 'src/core/auth/permissions.guard';
+import { RequiredPermissions } from 'src/core/auth/required-permissions.decorator';
 import { UserAuthGuard } from 'src/core/auth/user-auth.guard';
 import { EditProductTemplateDto } from 'src/dto/productTemplate/editProductTemplateDto';
 import { ApplyDocumentMetadata } from 'src/interceptors/document-metadata/apply-document-metadata.decorator';
@@ -26,14 +26,14 @@ export class ProductTemplatesController {
 
     @ApiOkResponse({ type: [ProductTemplate] })
     @ApiQuery({ name: 'companyId', required: false })
-    @Permissions(Permission.TEMPLATE_VIEW)
+    @RequiredPermissions(Permission.TEMPLATE_VIEW)
     @Get()
     getAll(@Account() user: User) {
         return this.productService.getAll({ companyId: user.companyId });
     }
 
     @ApiOkResponse({ type: ProductTemplate })
-    @Permissions(Permission.TEMPLATE_EDIT)
+    @RequiredPermissions(Permission.TEMPLATE_EDIT)
     @DocumentMetadata(DocumentMetadataType.CREATED_AT, DocumentMetadataType.CREATED_BY)
     @Post()
     create(@Account() user: User, @Body() editProductDto: EditProductTemplateDto) {
@@ -41,7 +41,7 @@ export class ProductTemplatesController {
     }
 
     @ApiOkResponse({ type: ProductTemplate })
-    @Permissions(Permission.TEMPLATE_VIEW)
+    @RequiredPermissions(Permission.TEMPLATE_VIEW)
     @Get(':templateId')
     async getById(@Param('templateId', new ParseIdPipe()) templateId: string) {
         const productTemplate = await this.productService.getById(templateId);
@@ -50,7 +50,7 @@ export class ProductTemplatesController {
     }
 
     @ApiOkResponse({ type: ProductTemplate })
-    @Permissions(Permission.TEMPLATE_EDIT)
+    @RequiredPermissions(Permission.TEMPLATE_EDIT)
     @DocumentMetadata(DocumentMetadataType.EDITED_AT, DocumentMetadataType.EDITED_BY)
     @Put(':templateId')
     async edit(@Param('templateId', new ParseIdPipe()) templateId: string, @Body() editProductDto: EditProductTemplateDto) {
@@ -60,7 +60,7 @@ export class ProductTemplatesController {
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.TEMPLATE_EDIT)
+    @RequiredPermissions(Permission.TEMPLATE_EDIT)
     @DocumentMetadata(DocumentMetadataType.DELETED_AT, DocumentMetadataType.DELETED_BY)
     @Delete(':templateId')
     async delete(@Param('templateId', new ParseIdPipe()) templateId: string) {

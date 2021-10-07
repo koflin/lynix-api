@@ -23,24 +23,25 @@ export class ActivationService {
         const activation = await this.activationModel.findById(id).exec();
         if (activation == null) return null;
 
-        const user = await this.usersService.getById(activation.userId);
+        const user = await this.usersService.getById(activation.accountId);
+        const account = await this.accountService.getById(activation.accountId);
         
         return new Activation(activation, user);
     }
 
-    async getByUserId(userId: string) {
-        const id =  (await this.activationModel.findOne({ userId }, '_id').exec())?.id;
+    async getByAccountId(accountId: string) {
+        const id =  (await this.activationModel.findOne({ accountId: accountId }, '_id').exec())?.id;
         return this.getById(id);
     }
 
     async getByEmail(email: string) {
-        return this.getByUserId(await (await this.userModel.findOne({ email })).id);
+        return this.getByAccountId(await (await this.userModel.findOne({ email })).id);
     }
 
-    async create(userId: string, type: ActivationType, companyId?: string) {
+    async create(accountId: string, type: ActivationType, companyId?: string) {
         const activation = new this.activationModel();
         activation.companyId = companyId;
-        activation.userId = userId;
+        activation.accountId = accountId;
         activation.type = type;
         activation.code = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
         return this.getById((await activation.save()).id);

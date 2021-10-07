@@ -46,7 +46,7 @@ export class MediaController {
         }
     }))
     async upload(@Account() user: User, @UploadedFile() file: Express.Multer.File) {
-        return this.mediaService.create(user.companyId, user.id, file.filename);
+        return this.mediaService.create(user.companyId, user.id, file.filename, file.size);
     }
 
     @Get(':id/:filename')

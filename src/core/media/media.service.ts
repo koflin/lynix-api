@@ -14,13 +14,14 @@ export class MediaService {
     ) {
     }
 
-    async create(companyId: string, userId: string, fileName: string) {
+    async create(companyId: string, userId: string, fileName: string, fileSize: number) {
         const media = new this.mediaModel();
         media.companyId = companyId;
         media.uploadedBy = userId;
         media.uploadedAt = new Date();
         media.url = new UrlDoc(this.config.get('api.url') + '/media/' + media.id + '/' + fileName);
         media.fileName = fileName;
+        media.fileSize = fileSize;
         await media.save();
 
         return new Media(media);

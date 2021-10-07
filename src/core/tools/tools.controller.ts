@@ -8,8 +8,8 @@ import { User } from 'src/models/user.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
 
 import { Account } from '../auth/account.decorator';
-import { Permissions } from '../auth/permissions.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
+import { RequiredPermissions } from '../auth/required-permissions.decorator';
 import { UserAuthGuard } from '../auth/user-auth.guard';
 import { Tool } from './../../models/tool.model';
 import { ToolsService } from './tools.service';
@@ -24,14 +24,14 @@ export class ToolsController {
     }
 
     @ApiOkResponse({ type: [Tool] })
-    @Permissions(Permission.PROCESS_VIEW, Permission.TEMPLATE_VIEW)
+    @RequiredPermissions(Permission.PROCESS_VIEW, Permission.TEMPLATE_VIEW)
     @Get()
     getAll(@Account() user: User) {
         return this.toolsService.getAll(user.companyId);
     }
 
     @ApiOkResponse({ type: Tool })
-    @Permissions(Permission.TOOL_EDIT)
+    @RequiredPermissions(Permission.TOOL_EDIT)
     @DocumentMetadata(DocumentMetadataType.CREATED_AT, DocumentMetadataType.CREATED_BY)
     @Post()
     create(@Body() createDto: any) {
@@ -39,7 +39,7 @@ export class ToolsController {
     }
 
     @ApiOkResponse({ type: Tool })
-    @Permissions(Permission.PROCESS_VIEW, Permission.TEMPLATE_VIEW)
+    @RequiredPermissions(Permission.PROCESS_VIEW, Permission.TEMPLATE_VIEW)
     @Get(':toolId')
     async getById(@Param('toolId', new ParseIdPipe()) toolId: string) {
         const tool = await this.toolsService.getById(toolId);
@@ -48,7 +48,7 @@ export class ToolsController {
     }
 
     @ApiOkResponse({ type: Tool })
-    @Permissions(Permission.TOOL_EDIT)
+    @RequiredPermissions(Permission.TOOL_EDIT)
     @DocumentMetadata(DocumentMetadataType.EDITED_AT, DocumentMetadataType.EDITED_BY)
     @Put(':toolId')
     async edit(@Param('toolId', new ParseIdPipe()) toolId: string, @Body() editDto: any) {
@@ -58,7 +58,7 @@ export class ToolsController {
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.TOOL_EDIT)
+    @RequiredPermissions(Permission.TOOL_EDIT)
     @DocumentMetadata(DocumentMetadataType.DELETED_AT, DocumentMetadataType.DELETED_BY)
     @Delete(':toolId')
     async delete(@Param('toolId', new ParseIdPipe()) toolId: string) {

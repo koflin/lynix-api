@@ -10,8 +10,8 @@ import { AccountModule } from '../account/account.module';
 import { UsersModule } from '../users/users.module';
 import { AdminAuthGuard } from './admin-auth.guard';
 import { AuthController } from './auth.controller';
+import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
 import { UserAuthGuard } from './user-auth.guard';
 
 @Global()
@@ -34,8 +34,8 @@ import { UserAuthGuard } from './user-auth.guard';
     AccountModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAuthGuard, UserAuthGuard, AdminAuthGuard],
-  exports: [JwtModule, UsersModule, JwtAuthGuard, UserAuthGuard, AdminAuthGuard]
+  providers: [AuthService, AuthGuard, UserAuthGuard, AdminAuthGuard],
+  exports: [JwtModule, UsersModule, AuthGuard, UserAuthGuard, AdminAuthGuard]
 })
 export class AuthModule {
 }

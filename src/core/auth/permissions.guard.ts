@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Permission } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 
-import { PERMISSIONS_KEY } from './permissions.decorator';
+import { REQUIRED_PERMISSIONS_KEY } from './required-permissions.decorator';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -15,7 +15,7 @@ export class PermissionsGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const requiredPermissions = this.reflector.getAllAndOverride<(Permission | Permission[])[]>(PERMISSIONS_KEY, [
+    const requiredPermissions = this.reflector.getAllAndOverride<(Permission | Permission[])[]>(REQUIRED_PERMISSIONS_KEY, [
       context.getHandler(),
       context.getClass()
     ]);

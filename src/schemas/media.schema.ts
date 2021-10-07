@@ -17,6 +17,9 @@ export class MediaDoc extends Document{
 
     @Prop()
     fileName: string;
+
+    @Prop()
+    fileSize: number;
 }
 
 export const MediaSchema =  SchemaFactory.createForClass(MediaDoc);

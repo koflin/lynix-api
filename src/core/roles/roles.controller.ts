@@ -9,8 +9,8 @@ import { User } from 'src/models/user.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
 
 import { Account } from '../auth/account.decorator';
-import { Permissions } from '../auth/permissions.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
+import { RequiredPermissions } from '../auth/required-permissions.decorator';
 import { UserAuthGuard } from '../auth/user-auth.guard';
 import { RolesService } from './roles.service';
 
@@ -24,14 +24,14 @@ export class RolesController {
     }
 
     @ApiOkResponse({ type: [Role] })
-    @Permissions(Permission.ROLE_VIEW)
+    @RequiredPermissions(Permission.ROLE_VIEW)
     @Get()
     getAll(@Account() user: User) {
         return this.rolesService.getAll(user.companyId);
     }
 
     @ApiOkResponse({ type: Role })
-    @Permissions(Permission.ROLE_EDIT)
+    @RequiredPermissions(Permission.ROLE_EDIT)
     @DocumentMetadata(DocumentMetadataType.CREATED_AT, DocumentMetadataType.CREATED_BY)
     @Post()
     create(@Account() user: User, @Body() editRoleDto: EditRoleDto) {
@@ -39,7 +39,7 @@ export class RolesController {
     }
 
     @ApiOkResponse({ type: Role })
-    @Permissions(Permission.ROLE_VIEW)
+    @RequiredPermissions(Permission.ROLE_VIEW)
     @Get(':roleId')
     async getById(@Param('roleId', new ParseIdPipe()) roleId: string) {
         const role = await this.rolesService.getById(roleId);
@@ -48,7 +48,7 @@ export class RolesController {
     }
 
     @ApiOkResponse({ type: Role })
-    @Permissions(Permission.ROLE_EDIT)
+    @RequiredPermissions(Permission.ROLE_EDIT)
     @DocumentMetadata(DocumentMetadataType.EDITED_AT, DocumentMetadataType.EDITED_BY)
     @Put(':roleId')
     edit(@Param('roleId', new ParseIdPipe()) roleId: string, @Body() editRoleDto: EditRoleDto) {
@@ -58,7 +58,7 @@ export class RolesController {
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.ROLE_EDIT)
+    @RequiredPermissions(Permission.ROLE_EDIT)
     @DocumentMetadata(DocumentMetadataType.DELETED_AT, DocumentMetadataType.DELETED_BY)
     @Delete(':roleId')
     async delete(@Param('roleId', new ParseIdPipe()) roleId: string) {

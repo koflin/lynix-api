@@ -1,17 +1,17 @@
 import { UseFilters } from '@nestjs/common';
 import {
-  BaseWsExceptionFilter,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  OnGatewayInit,
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
+    BaseWsExceptionFilter,
+    OnGatewayConnection,
+    OnGatewayDisconnect,
+    OnGatewayInit,
+    SubscribeMessage,
+    WebSocketGateway,
+    WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { User } from 'src/models/user.model';
 
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { UsersService } from '../users/users.service';
 import { Event } from './event.model';
 
@@ -23,7 +23,7 @@ export class EventGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
 
   constructor(
     private usersService: UsersService,
-    private authGuard: JwtAuthGuard
+    private authGuard: AuthGuard
     ) {
   }
 

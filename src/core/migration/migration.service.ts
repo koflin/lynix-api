@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as fs from 'fs';
 import { Document, Model } from 'mongoose';
 import * as path from 'path';
+import { ActivationDoc } from 'src/schemas/activation.schema';
 import { CompanyDoc } from 'src/schemas/company.schema';
 import { MediaDoc } from 'src/schemas/media.schema';
 import { MigrationDoc } from 'src/schemas/migration.schema';
@@ -16,7 +17,7 @@ const versionHistory = [
     '0.1.1',
     '0.1.2',
     '0.1.3',
-    '0.1.4'
+    '0.1.4',
 ];
 
 @Injectable()
@@ -29,6 +30,7 @@ export class MigrationService {
         @InjectModel(ProcessTemplateDoc.name) private processTemplateModel: Model<ProcessTemplateDoc>,
         @InjectModel(MediaDoc.name) private mediaModel: Model<MediaDoc>,
         @InjectModel(CompanyDoc.name) private companyModel: Model<CompanyDoc>,
+        @InjectModel(ActivationDoc.name) private activationModel: Model<ActivationDoc>,
     ) {
 
     }
@@ -151,6 +153,10 @@ export class MigrationService {
 
     private async migrate0_1_2() {
         await this.processTemplateModel.updateMany({ stepTemplates: { $exists: true } }, { $rename: { 'stepTemplates': 'steps' } }, { strict: false }).exec();
+    }
+
+    private async migrate0_2_0() {
+        await this.activationModel.updateMany({}, { $rename: { 'userId': 'accountId' } }, { strict: false }).exec();
     }
 }
 

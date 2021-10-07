@@ -23,8 +23,8 @@ import { User } from 'src/models/user.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
 
 import { Account } from '../auth/account.decorator';
-import { Permissions } from '../auth/permissions.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
+import { RequiredPermissions } from '../auth/required-permissions.decorator';
 import { UserAuthGuard } from '../auth/user-auth.guard';
 import { EventGateway } from '../event/event.gateway';
 import { Event } from '../event/event.model';
@@ -46,14 +46,14 @@ export class ProcessesController {
     @ApiQuery({ name: 'companyId', required: false })
     @ApiQuery({ name: 'assignedUserId', required: false })
     @ApiQuery({ name: 'orderId', required: false })
-    @Permissions(Permission.PROCESS_VIEW)
+    @RequiredPermissions(Permission.PROCESS_VIEW)
     @Get()
     getAll(@Account() user: User, @Query() filter: { assignedUserId: string, orderId: string }) {
         return this.processesService.getAll(user.companyId, filter.assignedUserId, filter.orderId);
     }
 
     @ApiOkResponse({ type: Process })
-    @Permissions(Permission.PROCESS_VIEW)
+    @RequiredPermissions(Permission.PROCESS_VIEW)
     @Get(':processId')
     async getById(@Param('processId') processId: string) {
         const process = await this.processesService.getById(processId);
@@ -62,7 +62,7 @@ export class ProcessesController {
     }
 
     @ApiOkResponse({ type: Process })
-    @Permissions(Permission.ORDER_EDIT)
+    @RequiredPermissions(Permission.ORDER_EDIT)
     @DocumentMetadata(DocumentMetadataType.CREATED_AT, DocumentMetadataType.CREATED_BY)
     @Post()
     async create(@Account() user: User, @Body() createProcessDto: CreateProcessDto) {
@@ -73,7 +73,7 @@ export class ProcessesController {
     }
 
     @ApiOkResponse({ type: Process })
-    @Permissions(Permission.ORDER_EDIT)
+    @RequiredPermissions(Permission.ORDER_EDIT)
     @DocumentMetadata(DocumentMetadataType.EDITED_AT, DocumentMetadataType.EDITED_BY)
     @Put(':processId')
     async edit(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string, @Body() editProcessDto: EditProcessDto) {
@@ -84,7 +84,7 @@ export class ProcessesController {
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.ORDER_EDIT)
+    @RequiredPermissions(Permission.ORDER_EDIT)
     @DocumentMetadata(DocumentMetadataType.DELETED_AT, DocumentMetadataType.DELETED_BY)
     @Delete(':processId')
     async delete(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string) {
@@ -94,7 +94,7 @@ export class ProcessesController {
         return this.processesService.getById(processId);
     }
     @ApiOkResponse()
-    @Permissions(Permission.PROCESS_EXECUTE)
+    @RequiredPermissions(Permission.PROCESS_EXECUTE)
     @Patch(':processId/enter')
     async enter(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
@@ -104,7 +104,7 @@ export class ProcessesController {
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.PROCESS_EXECUTE)
+    @RequiredPermissions(Permission.PROCESS_EXECUTE)
     @Patch(':processId/exit')
     async exit(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
@@ -114,7 +114,7 @@ export class ProcessesController {
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.PROCESS_EXECUTE)
+    @RequiredPermissions(Permission.PROCESS_EXECUTE)
     @Patch(':processId/start')
     async start(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string, @Body('userId') userId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
@@ -124,7 +124,7 @@ export class ProcessesController {
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.PROCESS_EXECUTE)
+    @RequiredPermissions(Permission.PROCESS_EXECUTE)
     @Patch(':processId/stop')
     async stop(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
@@ -134,7 +134,7 @@ export class ProcessesController {
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.PROCESS_ASSIGN)
+    @RequiredPermissions(Permission.PROCESS_ASSIGN)
     @Patch(':processId/assign')
     async assign(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string, @Body('assigneeId') assigneeId: string) {
         let process = await this.processesService.getById(processId);
@@ -147,7 +147,7 @@ export class ProcessesController {
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.PROCESS_EXECUTE)
+    @RequiredPermissions(Permission.PROCESS_EXECUTE)
     @Patch(':processId/finish')
     async finish(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');
@@ -157,7 +157,7 @@ export class ProcessesController {
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.PROCESS_EXECUTE)
+    @RequiredPermissions(Permission.PROCESS_EXECUTE)
     @Patch(':processId/switch')
     async switch(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string, @Body('stepIndex') stepIndex: number) {
         if (!await this.processesService.exists(processId)) throw new NotFoundException('Process not found!');

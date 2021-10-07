@@ -1,9 +1,8 @@
 import { ExecutionContext } from '@nestjs/common';
+import { AccountType } from 'src/models/account-type';
 
 export interface AuthInfo {
     account: any;
-    type: AuthAccountType,
+    type: AccountType,
     context: ExecutionContext
 }
-
-export type AuthAccountType = 'user' | 'admin';

@@ -7,7 +7,7 @@ export class ActivationDoc extends Document {
     companyId: string;
     
     @Prop()
-    userId: string;
+    accountId: string;
     @Prop()
     code: string;
     @Prop()

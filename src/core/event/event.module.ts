@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
+import { AuthGuard } from '../auth/auth.guard';
 import { AuthModule } from '../auth/auth.module';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersModule } from './../users/users.module';
 import { EventGateway } from './event.gateway';
 
@@ -18,7 +18,7 @@ import { EventGateway } from './event.gateway';
     }),
     UsersModule
   ],
-  providers: [EventGateway, JwtAuthGuard],
+  providers: [EventGateway, AuthGuard],
   exports: [EventGateway],
   controllers: []
 })

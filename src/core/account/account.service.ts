@@ -106,20 +106,20 @@ export class AccountService {
         return true;
     }
 
-    async activate(activation: ActivationDoc, password: string) {
-        const userDoc = await this.userModel.findById(activation.userId);
+    async activate(activation: ActivationDoc, password: string, isAdmin?: boolean) {
+        const activatable = isAdmin ? await this.adminModel.findById(activation.accountId) : await this.userModel.findById(activation.accountId);
 
         if (activation.type == 'activation') {
-            userDoc.activatedAt = new Date();
+            activatable.activatedAt = new Date();
         } else if (activation.type == 'reset') {
-            userDoc.lastPasswordResetAt = new Date();
+            activatable.lastPasswordResetAt = new Date();
         } else {
             return false;
         }
 
         const rounds = 10;
-        userDoc.passwordEncrypted = await bcrypt.hash(password, rounds);
-        await userDoc.save();
+        activatable.passwordEncrypted = await bcrypt.hash(password, rounds);
+        await activatable.save();
         return true;
     }
 }

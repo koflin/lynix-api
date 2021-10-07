@@ -9,11 +9,11 @@ import {
     Query,
     UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Permission } from 'src/models/role.model';
 
-import { Permissions } from '../auth/permissions.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
-import { UserAuthGuard } from '../auth/user-auth.guard';
+import { RequiredPermissions } from '../auth/required-permissions.decorator';
 import { ActivationService } from './activation.service';
 
 @Controller('activation')
@@ -25,11 +25,11 @@ export class ActivationController {
 
     }
 
-    @UseGuards(UserAuthGuard, PermissionsGuard)
-    @Permissions(Permission.USER_EDIT)
+    @UseGuards(AuthGuard, PermissionsGuard)
+    @RequiredPermissions(Permission.USER_EDIT)
     @Get()
     search(@Query('userId') userId) {
-        return this.activationService.getByUserId(userId);
+        return this.activationService.getByAccountId(userId);
     }
 
     @Post('verify/:id')

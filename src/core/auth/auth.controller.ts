@@ -15,8 +15,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
 import { Account } from './account.decorator';
+import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
 
 @ApiTags('authentication')
 @Controller('auth')
@@ -50,7 +50,7 @@ export class AuthController {
         res.status(HttpStatus.OK).json({ access_token, account, refresh_expiration });
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Delete('logout')
     async logout(@Account() account, @Req() req: Request, @Res() res: Response) { 
         if (!account) {

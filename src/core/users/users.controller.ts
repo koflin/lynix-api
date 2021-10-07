@@ -22,8 +22,8 @@ import { Permission } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
 
-import { Permissions } from '../auth/permissions.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
+import { RequiredPermissions } from '../auth/required-permissions.decorator';
 import { UserAuthGuard } from '../auth/user-auth.guard';
 import { RolesService } from '../roles/roles.service';
 import { Account } from './../auth/account.decorator';
@@ -42,7 +42,7 @@ export class UsersController {
     }
 
     @ApiOkResponse({ type: [User] })
-    @Permissions(Permission.USER_VIEW)
+    @RequiredPermissions(Permission.USER_VIEW)
     @Get()
     async getAll(@Account() user: User, @Query() filter: { email: string, permissions: Permission[] }) {
         const { email, permissions } = filter;
@@ -57,7 +57,7 @@ export class UsersController {
     }
 
     @ApiOkResponse({ type: User })
-    @Permissions(Permission.USER_EDIT)
+    @RequiredPermissions(Permission.USER_EDIT)
     @DocumentMetadata(DocumentMetadataType.CREATED_AT, DocumentMetadataType.CREATED_BY)
     @Post()
     async create(@Account() user: User, @Body() creatUserDto: CreateUserDto) {
@@ -74,7 +74,7 @@ export class UsersController {
     }
 
     @ApiOkResponse({ type: User })
-    @Permissions(Permission.USER_VIEW)
+    @RequiredPermissions(Permission.USER_VIEW)
     @Get(':userId')
     async getById(@Param('userId', new ParseIdPipe()) userId: string) {
         const user = await this.usersService.getById(userId);
@@ -83,7 +83,7 @@ export class UsersController {
     }
 
     @ApiOkResponse({ type: User })
-    @Permissions(Permission.USER_EDIT)
+    @RequiredPermissions(Permission.USER_EDIT)
     @DocumentMetadata(DocumentMetadataType.EDITED_AT, DocumentMetadataType.EDITED_BY)
     @Put(':userId')
     async edit(@Param('userId', new ParseIdPipe()) userId: string, @Body() editUserDto: EditUserDto) {
@@ -93,7 +93,7 @@ export class UsersController {
     }
 
     @ApiOkResponse()
-    @Permissions(Permission.USER_EDIT)
+    @RequiredPermissions(Permission.USER_EDIT)
     @DocumentMetadata(DocumentMetadataType.DELETED_AT, DocumentMetadataType.DELETED_BY)
     @Delete(':userId')
     async delete(@Param('userId', new ParseIdPipe()) userId: string) {
