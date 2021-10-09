@@ -6,6 +6,7 @@ import { Process } from 'src/models/process.model';
 import { User } from 'src/models/user.model';
 import { ProcessDoc } from 'src/schemas/process.schema';
 import { ProcessTemplateDoc } from 'src/schemas/processTemplate.schema';
+import { StepDoc } from 'src/schemas/step.schema';
 
 import { EventGateway } from '../event/event.gateway';
 import { Event } from '../event/event.model';
@@ -19,6 +20,7 @@ export class ProcessesService {
     constructor(
         @InjectModel(ProcessDoc.name) private processModel: Model<ProcessDoc>,
         @InjectModel(ProcessTemplateDoc.name) private processTemplateModel: Model<ProcessTemplateDoc>,
+        @InjectModel(StepDoc.name) private stepModel: Model<StepDoc>,
         private orderService: OrdersService,
         private usersService: UsersService,
         private events: EventGateway,
@@ -122,13 +124,10 @@ export class ProcessesService {
         processDoc.mainTasks = templateDoc.mainTasks;
         processDoc.name = templateDoc.name;
         processDoc.previousComments = templateDoc.previousComments;
-        processDoc.steps = templateDoc.steps.map((stepTemplate) => {
-            return {
-                ...stepTemplate,
-                timeTaken: 0
-            };
-        });
 
+        processDoc.steps = templateDoc.steps.map((stepTemplate) => {
+            return new this.stepModel({ ...stepTemplate, timeTaken: 0 });
+        });
 
         processDoc.timeTaken = 0;
         processDoc.currentStepIndex = null;
