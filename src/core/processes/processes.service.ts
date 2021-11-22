@@ -126,7 +126,7 @@ export class ProcessesService {
         processDoc.previousComments = templateDoc.previousComments;
 
         processDoc.steps = templateDoc.steps.map((stepTemplate) => {
-            return new this.stepModel({ ...stepTemplate, timeTaken: 0 });
+            return new this.stepModel({ ...stepTemplate.toObject(), timeTaken: 0 });
         });
 
         processDoc.timeTaken = 0;

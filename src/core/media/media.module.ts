@@ -27,7 +27,9 @@ import { MediaService } from './media.service';
               return cb(null, id + path.extname(file.originalname).toLowerCase());
           },
           destination: './' + config.get('media.path')
-        })
+        }),
+        limits: {
+        }
       })
     }),
   ]
