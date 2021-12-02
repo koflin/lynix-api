@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
+import { filter } from 'rxjs/operators';
 import { MetadataService } from 'src/core/metadata/metadata.service';
+import { ProcessTemplatePreview } from 'src/models/previews/processTemplate-preview.model';
 import { ProcessTemplate } from 'src/models/processTemplate';
 import { ProcessTemplateDoc } from 'src/schemas/processTemplate.schema';
 
@@ -46,5 +48,23 @@ export class ProcessTemplatesService {
     async delete(id: string): Promise<void> {
         await this.processTemplateModel.findByIdAndUpdate(id, { $currentDate: { deletedAt: true } }).exec();
         return;
+    }
+
+    async search(filter: { companyId?: string, name?: string, limit?: number}) {
+        const { companyId, limit, name } = filter;
+        const filterAddition: FilterQuery<ProcessTemplateDoc> = {};
+
+        if (name)  filterAddition.name = { $regex: name };
+
+        let query = this.processTemplateModel.find({ 
+            companyId,
+        } && filterAddition, '_id companyId name');
+
+        if (limit) query = query.limit(limit);
+
+        const processDocs = await query.exec();
+        if (!processDocs) return undefined;
+
+        return processDocs.map(doc => new ProcessTemplatePreview(doc));
     }
 }
