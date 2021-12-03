@@ -4,6 +4,7 @@ import { CompanyDoc, CompanySchema } from 'src/schemas/company.schema';
 import { OrderDoc, OrderSchema } from 'src/schemas/order.schema';
 import { ProcessDoc, ProcessSchema } from 'src/schemas/process.schema';
 import { ProcessTemplateDoc, ProcessTemplateSchema } from 'src/schemas/processTemplate.schema';
+import { ProductTemplateDoc, ProductTemplateSchema } from 'src/schemas/productTemplate.schema';
 import { RoleDoc, RoleSchema } from 'src/schemas/role.schema';
 import { StepDoc, StepSchema } from 'src/schemas/step.schema';
 import { UserDoc, UserSchema } from 'src/schemas/user.schema';
@@ -33,6 +34,9 @@ import { StatisticsService } from './statistics.service';
     },
     {
       name: OrderDoc.name, schema: OrderSchema, collection: 'orders'
+    },
+    {
+      name: ProductTemplateDoc.name, schema: ProductTemplateSchema, collection: 'productTemplates'
     }
     ]),
   ],

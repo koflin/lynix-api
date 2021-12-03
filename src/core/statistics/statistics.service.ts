@@ -5,6 +5,7 @@ import { CompanyDoc } from 'src/schemas/company.schema';
 import { OrderDoc } from 'src/schemas/order.schema';
 import { ProcessDoc } from 'src/schemas/process.schema';
 import { ProcessTemplateDoc } from 'src/schemas/processTemplate.schema';
+import { ProductTemplateDoc } from 'src/schemas/productTemplate.schema';
 import { RoleDoc } from 'src/schemas/role.schema';
 import { StepDoc } from 'src/schemas/step.schema';
 import { UserDoc } from 'src/schemas/user.schema';
@@ -19,6 +20,7 @@ export class StatisticsService {
         @InjectModel(StepDoc.name) private stepModel: Model<StepDoc>,
         @InjectModel(ProcessTemplateDoc.name) private processTemplateModel: Model<ProcessTemplateDoc>,
         @InjectModel(OrderDoc.name) private orderModel: Model<OrderDoc>,
+        @InjectModel(ProductTemplateDoc.name) private productModel: Model<ProductTemplateDoc>,
     ) {
     }
 

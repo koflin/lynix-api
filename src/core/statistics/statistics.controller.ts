@@ -32,9 +32,9 @@ export class StatisticsController {
         return this.statisticService.getProcessTime(user.companyId, from, to, templateId);
     }
 
-    @Permissions(Permission.STATISTIC_VIEW)
+    /*@Permissions(Permission.STATISTIC_VIEW)
     @Get('products/time')
     getProductTimes(@Account() user: User) {
         return;
-    }
+    }*/
 }
