@@ -83,7 +83,7 @@ export class UserAuthGuard extends JwtAuthGuard {
             return true;
         }
     
-        const collections = await this.connection.db.collections();
+        const collections = (await this.connection.db.collections()).filter(col => !col.collectionName.startsWith('system'));
             
         for (const col of collections) {
             const result = await col.findOne({ "_id": new mongoose.Types.ObjectId(value) });

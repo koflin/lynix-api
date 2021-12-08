@@ -36,7 +36,7 @@ export class StatisticsService {
     }
 
     async getProcessTime(companyId: string, from: Date, to: Date, templateId: string) {
-        const processes = await this.processModel.find({ companyId, createdAt: { $gte: from, $lte: to }, templateId }, 'orderId name steps').exec();
+        const processes = await this.processModel.find({ companyId, createdAt: { $gte: from, $lte: to }, templateId }, 'orderId name steps').sort({ createdAt: -1 }).exec();
 
         return Promise.all(processes.map(async (process) => {
             return {
@@ -50,5 +50,26 @@ export class StatisticsService {
                 }),
             };
         }));
+    }
+
+    async getOrderTimes(companyId: string, from: Date, to: Date) {
+        const orders = await this.orderModel.aggregate<{ id: string, name: string, timeTaken?: number }>([
+            { $match: { companyId, createdAt: { $gte: from, $lte: to } } },
+            { $sort: { createdAt: -1 } },
+            { $project: { name: true } },
+            { $lookup: {
+                from: "processes",
+                let: { ordersId: { $toString: "$_id" } }, 
+                pipeline: [
+                    { $group: { _id: "$orderId", timeTaken: { $sum: "$timeTaken"}}},
+                    { $match: { $expr: { $eq: ["$$ordersId", "$_id"] }}},
+                ],
+                as: "processes"
+            } },
+            { $unwind: { path: "$processes", preserveNullAndEmptyArrays: true } },
+            { $project: { id: "$_id", name: true, timeTaken: "$processes.timeTaken", _id: false } }
+        ]).exec();
+
+        return orders;
     }
 }

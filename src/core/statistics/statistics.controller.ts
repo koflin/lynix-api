@@ -32,6 +32,12 @@ export class StatisticsController {
         return this.statisticService.getProcessTime(user.companyId, from, to, templateId);
     }
 
+    @Permissions(Permission.STATISTIC_VIEW)
+    @Get('orders/time')
+    async getOrderTimes(@Account() user: User, @Query('from') from: Date, @Query('to') to: Date) {
+        return this.statisticService.getOrderTimes(user.companyId, from, to);
+    }
+
     /*@Permissions(Permission.STATISTIC_VIEW)
     @Get('products/time')
     getProductTimes(@Account() user: User) {
