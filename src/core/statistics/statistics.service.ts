@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
+import { OrderStatus } from 'src/models/enums/orderStatus.enum';
+import { ProcessStatus } from 'src/models/enums/processStatus.enum';
 import { CompanyDoc } from 'src/schemas/company.schema';
 import { OrderDoc } from 'src/schemas/order.schema';
 import { ProcessDoc } from 'src/schemas/process.schema';
@@ -35,8 +37,12 @@ export class StatisticsService {
         }));
     }
 
-    async getProcessTime(companyId: string, from: Date, to: Date, templateId: string) {
-        const processes = await this.processModel.find({ companyId, createdAt: { $gte: from, $lte: to }, templateId }, 'orderId name steps').sort({ createdAt: -1 }).exec();
+    async getProcessTime(companyId: string, from: Date, to: Date, templateId: string, status?: ProcessStatus[]) {
+        const processQuery = this.processModel.find({ companyId, createdAt: { $gte: from, $lte: to }, templateId }, 'orderId name steps');
+
+        if (status) processQuery.where(<FilterQuery<ProcessDoc>>{ status: { $in: status } });
+
+        const processes = await processQuery.sort({ createdAt: -1 }).exec();
 
         return Promise.all(processes.map(async (process) => {
             return {
@@ -52,9 +58,13 @@ export class StatisticsService {
         }));
     }
 
-    async getOrderTimes(companyId: string, from: Date, to: Date) {
+    async getOrderTimes(companyId: string, from: Date, to: Date, status?: OrderStatus[]) {
+        const filter: { status?: any } = { };
+
+        if (status) filter.status = { $in: status };
+
         const orders = await this.orderModel.aggregate<{ id: string, name: string, timeTaken?: number }>([
-            { $match: { companyId, createdAt: { $gte: from, $lte: to } } },
+            { $match: { companyId, createdAt: { $gte: from, $lte: to }, ...filter } },
             { $sort: { createdAt: -1 } },
             { $project: { name: true } },
             { $lookup: {

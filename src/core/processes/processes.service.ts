@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { CreateProcessDto } from 'src/dto/process/createProcessDto';
+import { ProcessStatus } from 'src/models/enums/processStatus.enum';
 import { Process } from 'src/models/process.model';
 import { User } from 'src/models/user.model';
 import { ProcessDoc } from 'src/schemas/process.schema';
@@ -47,7 +48,7 @@ export class ProcessesService {
     async enter(id: string, user: User) {
         const processDoc = await this.processModel.findById(id).exec();
 
-        processDoc.status = 'in_progress';
+        processDoc.status = ProcessStatus.IN_PROGRESS;
         processDoc.occupiedBy = user.id;
         processDoc.isRunning = false;
         await processDoc.save();
@@ -74,7 +75,7 @@ export class ProcessesService {
     async finish(id: string, assignedId: string) {
         const processDoc = await this.processModel.findById(id).exec();
 
-        processDoc.status = 'completed';
+        processDoc.status = ProcessStatus.COMPLETED;
         processDoc.occupiedBy = null;
         processDoc.isRunning = false;
         await processDoc.save();
@@ -118,7 +119,7 @@ export class ProcessesService {
 
         processDoc.companyId = user.companyId;
 
-        processDoc.status = 'released';
+        processDoc.status = ProcessStatus.RELEASED;
         processDoc.estimatedTime = templateDoc.steps.reduce((total, step) => total + (step.estimatedTime ? step.estimatedTime : 0), 0);
         processDoc.deliveryDate = order.deliveryDate;
         processDoc.mainTasks = templateDoc.mainTasks;

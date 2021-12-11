@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ProcessStatus } from 'src/models/enums/processStatus.enum';
 
 import { MetadataDocument } from './base';
 import { ProcessTemplateDoc } from './processTemplate.schema';
@@ -34,8 +35,8 @@ export class ProcessDoc extends MetadataDocument {
     timeTaken: number;
     @Prop()
     currentStepIndex: number;
-    @Prop()
-    status: 'in_preparation' | 'released' | 'in_progress' | 'completed' | 'assistance_required';
+    @Prop({ type: String, enum: Object.values(ProcessStatus) })
+    status: ProcessStatus;
     @Prop()
     occupiedBy: string;
     @Prop()

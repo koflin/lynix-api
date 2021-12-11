@@ -3,6 +3,7 @@ import { ProcessDoc } from 'src/schemas/process.schema';
 
 import { Metadata } from './base/metadata.interface';
 import { MetadataEntity } from './base/metadata.model';
+import { ProcessStatus } from './enums/processStatus.enum';
 import { Order } from './order.model';
 import { Step } from './step.model';
 
@@ -40,7 +41,7 @@ export class Process extends MetadataEntity{
     @ApiProperty()
     currentStepIndex: number;
     @ApiProperty()
-    status: 'in_preparation' | 'released' | 'in_progress' | 'completed' | 'assistance_required';
+    status: ProcessStatus;
     @ApiProperty()
     occupiedBy: string;
     @ApiProperty()
