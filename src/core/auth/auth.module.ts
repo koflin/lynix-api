@@ -8,11 +8,9 @@ import { UserDoc, UserSchema } from 'src/schemas/user.schema';
 
 import { AccountModule } from '../account/account.module';
 import { UsersModule } from '../users/users.module';
-import { AdminAuthGuard } from './admin-auth.guard';
 import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
-import { UserAuthGuard } from './user-auth.guard';
 
 @Global()
 @Module({
@@ -34,8 +32,8 @@ import { UserAuthGuard } from './user-auth.guard';
     AccountModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthGuard, UserAuthGuard, AdminAuthGuard],
-  exports: [JwtModule, UsersModule, AuthGuard, UserAuthGuard, AdminAuthGuard]
+  providers: [AuthService, AuthGuard],
+  exports: [JwtModule, UsersModule, AuthGuard]
 })
 export class AuthModule {
 }

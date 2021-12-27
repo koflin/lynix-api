@@ -68,7 +68,13 @@ export class AccountService {
         return null;
     }
 
-    async getById(id: string, isAdmin: boolean) {
+    async getById(id: string) {
+        const account = await this.getAccountDocById(id);
+
+        if (!account) {
+            return null;
+        }
+
         if (isAdmin) {
             const admin = await this.adminModel.findById(id).exec();
 
@@ -106,8 +112,8 @@ export class AccountService {
         return true;
     }
 
-    async activate(activation: ActivationDoc, password: string, isAdmin?: boolean) {
-        const activatable = isAdmin ? await this.adminModel.findById(activation.accountId) : await this.userModel.findById(activation.accountId);
+    async activate(activation: ActivationDoc, password: string) {
+        const activatable = await this.getAccountDocById(activation.accountId);
 
         if (activation.type == 'activation') {
             activatable.activatedAt = new Date();
@@ -121,5 +127,21 @@ export class AccountService {
         activatable.passwordEncrypted = await bcrypt.hash(password, rounds);
         await activatable.save();
         return true;
+    }
+
+    private async getAccountDocById(id: string): Promise<UserDoc | AdminDoc> {
+        const user = await this.userModel.findById(id).exec();
+
+        if (user) {
+            return user;
+        }
+
+        const admin = await this.adminModel.findById(id).exec();
+
+        if (admin) {
+            return admin;
+        }
+
+        return null;
     }
 }
