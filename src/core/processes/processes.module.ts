@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProcessDoc, ProcessSchema } from 'src/schemas/process.schema';
 import { ProcessTemplateDoc, ProcessTemplateSchema } from 'src/schemas/processTemplate.schema';
+import { StepDoc, StepSchema } from 'src/schemas/step.schema';
 
 import { EventModule } from '../event/event.module';
 import { MetadataModule } from '../metadata/metadata.module';
@@ -18,7 +19,11 @@ import { ProcessesService } from './processes.service';
     },
     {
       name: ProcessTemplateDoc.name, schema: ProcessTemplateSchema, collection: 'processTemplates'
-    }]),
+    },
+    {
+      name: StepDoc.name, schema: StepSchema
+    }
+    ]),
     ProcessTemplatesModule,
     OrdersModule,
     EventModule,

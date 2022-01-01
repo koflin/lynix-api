@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    NotFoundException,
+    Param,
+    ParseIntPipe,
+    Post,
+    Put,
+    Query,
+    UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Account } from 'src/core/auth/account.decorator';
 import { PermissionsGuard } from 'src/core/auth/permissions.guard';
@@ -22,6 +34,12 @@ import { ProcessTemplatesService } from './process-templates.service';
 @Controller('templates/process')
 export class ProcessTemplatesController {
     constructor(private processService: ProcessTemplatesService) {
+    }
+
+    @Permissions(Permission.TEMPLATE_VIEW)
+    @Get('search')
+    search(@Account() user: User, @Query('limit', ParseIntPipe) limit: number, @Query('name') name: string) {
+        return this.processService.search({ companyId: user.companyId, name, limit });
     }
 
     @ApiOkResponse({ type: [ProcessTemplate] })

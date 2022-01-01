@@ -12,12 +12,13 @@ import {
     Min,
     ValidateNested,
 } from 'class-validator';
+import { OrderStatus } from 'src/models/enums/orderStatus.enum';
 
 export class EditOrderDto {
     @ApiProperty()
     @IsOptional()
-    @IsIn(['in_preparation', 'released', 'in_progress', 'completed'])
-    status: 'in_preparation' | 'released' | 'in_progress' | 'completed';
+    @IsIn(Object.values(OrderStatus))
+    status: OrderStatus;
     @ApiProperty()
     @IsOptional()
     @IsString()

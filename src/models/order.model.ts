@@ -3,6 +3,7 @@ import { OrderDoc } from 'src/schemas/order.schema';
 
 import { Metadata } from './base/metadata.interface';
 import { MetadataEntity } from './base/metadata.model';
+import { OrderStatus } from './enums/orderStatus.enum';
 import { ProductTemplate } from './productTemplate.model';
 
 export class Order extends MetadataEntity {
@@ -55,5 +56,3 @@ export class Order extends MetadataEntity {
         });
     }
 }
-
-export type OrderStatus = 'in_preparation' | 'released' | 'in_progress' | 'completed';
