@@ -8,6 +8,7 @@ export default () => {
   }
 
   return {
+    prod: new Boolean(parseInt(env.PROD)),
     api: {
       port: parseInt(env.API_PORT, 10),
       url: env.API_HOST + '/' + env.VERSION_PREFIX,

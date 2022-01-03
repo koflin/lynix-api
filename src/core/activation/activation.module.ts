@@ -1,4 +1,5 @@
-import { HttpModule, Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ActivationDoc, ActivationSchema } from 'src/schemas/activation.schema';
 import { UserDoc, UserSchema } from 'src/schemas/user.schema';

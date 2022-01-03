@@ -1,4 +1,3 @@
-import * as Joi from '@hapi/joi';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -26,6 +25,8 @@ import { ProcessTemplatesModule } from './core/templates/process-templates/proce
 import { ProductTemplatesModule } from './core/templates/product-templates/product-templates.module';
 import { ToolsModule } from './core/tools/tools.module';
 import { UsersModule } from './core/users/users.module';
+
+const Joi = require('joi');
 
 @Module({
   imports: [
@@ -65,10 +66,17 @@ import { UsersModule } from './core/users/users.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         uri: `mongodb://${config.get('database.user')}:${config.get('database.password')}@${config.get('database.host')}:${config.get('database.port')}/${config.get('database.db')}?authSource=${config.get('database.authDb')}`,
-        useFindAndModify: false,
-        ignoreUndefined: true
+        ignoreUndefined: true,
       }),
     }),
+    /*GraphQLModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        debug: !config.get<boolean>('prod'),
+        playground: !config.get<boolean>('prod'),
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      })
+    }),*/
     ScheduleModule.forRoot(),
     MetadataModule,
     CompaniesModule,

@@ -52,7 +52,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
   }));
-
+  
   app.useWebSocketAdapter(new SocketIoAdapter(app, [config.get('client.host')], apiPort != gatewayPort ? gatewayPort : 0));
 
   await app.get(MigrationService).migrate();
