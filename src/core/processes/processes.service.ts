@@ -158,29 +158,31 @@ export class ProcessesService {
     }
 
     async updateOccupied(): Promise<void> {
-        await this.processModel.find({ occupiedBy: { $ne: null }}, (err, doc) => {
-            doc.forEach(async (doc) => {
-                this.usersService.getActivity(doc.occupiedBy).then((activity) => {
+        const processes = await this.processModel.find({ occupiedBy: { $ne: null }});
+        
+        for (let doc of processes) {
 
-                    if (activity.status == 'online' && activity.activity == 'guide') {
-                        // Running
-                        if (doc.isRunning && doc.currentStepIndex != null) {
-                            doc.timeTaken += 1;
-                            doc.steps[doc.currentStepIndex].timeTaken += 1;
-                            this.events.trigger(Event.PROCESS_GUIDE_TICK, doc.occupiedBy, { processId: doc.id, timeTaken: doc.timeTaken, stepIndex: doc.currentStepIndex, stepTime: doc.steps[doc.currentStepIndex].timeTaken });
-                        }
-                    } else {
-                        // Force terminate
-                        doc.isRunning = false;
-                        doc.occupiedBy = null;
+            this.usersService.getActivity(doc.occupiedBy).then((activity) => {
 
-                        this.events.trigger(Event.PROCESS_GUIDE_EXIT, doc.occupiedBy);
+                if (activity.status == 'online' && activity.activity == 'guide') {
+                    // Running
+                    if (doc.isRunning && doc.currentStepIndex != null) {
+                        doc.timeTaken += 1;
+                        doc.steps[doc.currentStepIndex].timeTaken += 1;
+                        this.events.trigger(Event.PROCESS_GUIDE_TICK, doc.occupiedBy, { processId: doc.id, timeTaken: doc.timeTaken, stepIndex: doc.currentStepIndex, stepTime: doc.steps[doc.currentStepIndex].timeTaken });
                     }
+                } else {
+                    // Force terminate
+                    doc.isRunning = false;
+                    doc.occupiedBy = null;
 
-                    doc.save();
-                });
+                    this.events.trigger(Event.PROCESS_GUIDE_EXIT, doc.occupiedBy);
+                }
+
+                doc.save();
             });
-        });
+        }
+
         return;
     }
 }
