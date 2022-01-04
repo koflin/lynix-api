@@ -4,6 +4,7 @@ import { RoleDoc, RoleSchema } from 'src/schemas/role.schema';
 
 import { MetadataModule } from '../metadata/metadata.module';
 import { RolesController } from './roles.controller';
+import { RolesResolver } from './roles.resolver';
 import { RolesService } from './roles.service';
 
 @Module({
@@ -14,7 +15,7 @@ import { RolesService } from './roles.service';
     MetadataModule
   ],
   controllers: [RolesController],
-  providers: [RolesService],
+  providers: [RolesService, RolesResolver],
   exports: [RolesService]
 })
 export class RolesModule {}

@@ -1,0 +1,32 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+enum Permission {
+  MANUAL_VIEW
+  ORDER_EDIT
+  ORDER_VIEW
+  PROCESS_ASSIGN
+  PROCESS_EXECUTE
+  PROCESS_VIEW
+  ROLE_EDIT
+  ROLE_VIEW
+  STATISTIC_VIEW
+  TEMPLATE_EDIT
+  TEMPLATE_VIEW
+  TESTING_VIEW
+  TOOL_EDIT
+  USER_EDIT
+  USER_VIEW
+}
+
+type Query {
+  role(id: ID!): Role!
+}
+
+type Role {
+  companyId: String!
+  id: ID!
+  name: String!
+  permissions: [Permission!]!
+}

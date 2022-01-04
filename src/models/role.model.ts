@@ -1,18 +1,24 @@
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { RoleDoc } from 'src/schemas/role.schema';
 
 import { Metadata } from './base/metadata.interface';
 import { MetadataEntity } from './base/metadata.model';
 
+@ObjectType()
 export class Role extends MetadataEntity {
     @ApiProperty()
+    @Field(type => ID)
     id: string;
     @ApiProperty()
+    @Field()
     companyId: string;
     
     @ApiProperty()
+    @Field()
     name: string;
     @ApiProperty()
+    @Field(type => [Permission])
     permissions: Permission[];
 
     constructor(metadata: Metadata, doc: RoleDoc) {
@@ -60,3 +66,7 @@ export enum Permission {
     
     TESTING_VIEW = 'testing_view'
 }
+
+registerEnumType(Permission, {
+    name: 'Permission'
+});

@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
+import * as Joi from 'joi';
+import { join } from 'path';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -26,14 +29,13 @@ import { ProductTemplatesModule } from './core/templates/product-templates/produ
 import { ToolsModule } from './core/tools/tools.module';
 import { UsersModule } from './core/users/users.module';
 
-const Joi = require('joi');
-
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
       validationSchema: Joi.object({
+        PROD: Joi.boolean().required(),
         API_PORT: Joi.number().required(),
 
         GATEWAY_PORT: Joi.number().required(),
@@ -69,14 +71,17 @@ const Joi = require('joi');
         ignoreUndefined: true,
       }),
     }),
-    /*GraphQLModule.forRootAsync({
+    GraphQLModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        debug: !config.get<boolean>('prod'),
-        playground: !config.get<boolean>('prod'),
-        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      })
-    }),*/
+      useFactory: (config: ConfigService) => {
+        return {
+          debug: !config.get<boolean>('version.prod').valueOf(),
+          playground: !config.get<boolean>('version.prod').valueOf(),
+          autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+          sortSchema: true
+        };
+      }
+    }),
     ScheduleModule.forRoot(),
     MetadataModule,
     CompaniesModule,
