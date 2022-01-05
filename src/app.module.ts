@@ -28,6 +28,7 @@ import { ProcessTemplatesModule } from './core/templates/process-templates/proce
 import { ProductTemplatesModule } from './core/templates/product-templates/product-templates.module';
 import { ToolsModule } from './core/tools/tools.module';
 import { UsersModule } from './core/users/users.module';
+import { ObjectScalar } from './scalars/object.scalar';
 
 @Module({
   imports: [
@@ -78,7 +79,10 @@ import { UsersModule } from './core/users/users.module';
           debug: !config.get<boolean>('version.prod').valueOf(),
           playground: !config.get<boolean>('version.prod').valueOf(),
           autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-          sortSchema: true
+          sortSchema: true,
+          buildSchemaOptions: {
+            numberScalarMode: 'integer'
+          }
         };
       }
     }),
@@ -104,7 +108,7 @@ import { UsersModule } from './core/users/users.module';
     MigrationModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ObjectScalar],
 })
 export class AppModule {
 }

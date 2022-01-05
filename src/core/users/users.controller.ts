@@ -13,8 +13,8 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { filter } from 'rxjs/operators';
-import { CreateUserDto } from 'src/dto/user/createUserDto';
-import { EditUserDto } from 'src/dto/user/editUserDto';
+import { CreateUserDto } from 'src/dto/user/createUser.dto';
+import { EditUserDto } from 'src/dto/user/editUser.dto';
 import { ApplyDocumentMetadata } from 'src/interceptors/document-metadata/apply-document-metadata.decorator';
 import { DocumentMetadataType } from 'src/interceptors/document-metadata/document-metadata';
 import { DocumentMetadata } from 'src/interceptors/document-metadata/document-metadata.decorator';

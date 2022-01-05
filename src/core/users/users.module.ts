@@ -9,6 +9,7 @@ import { CompaniesModule } from './../companies/companies.module';
 import { RolesModule } from './../roles/roles.module';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { UsersResolver } from './users.resolver';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { UsersService } from './users.service';
     MetadataModule
   ],
   exports: [UsersService],
-  providers: [UsersService],
+  providers: [UsersService, UsersResolver],
   controllers: [UsersController]
 })
 export class UsersModule {}

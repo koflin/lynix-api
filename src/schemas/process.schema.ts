@@ -38,7 +38,7 @@ export class ProcessDoc extends MetadataDocument {
     @Prop({ type: String, enum: Object.values(ProcessStatus) })
     status: ProcessStatus;
     @Prop()
-    occupiedBy: string;
+    occupiedById: string;
     @Prop()
     isRunning: boolean;
 

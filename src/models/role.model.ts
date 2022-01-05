@@ -11,14 +11,11 @@ export class Role extends MetadataEntity {
     @Field(type => ID)
     id: string;
     @ApiProperty()
-    @Field()
     companyId: string;
     
     @ApiProperty()
-    @Field()
     name: string;
     @ApiProperty()
-    @Field(type => [Permission])
     permissions: Permission[];
 
     constructor(metadata: Metadata, doc: RoleDoc) {

@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { ProcessTemplateDoc } from 'src/schemas/processTemplate.schema';
 
@@ -5,8 +6,10 @@ import { Metadata } from './base/metadata.interface';
 import { MetadataEntity } from './base/metadata.model';
 import { StepTemplate } from './stepTemplate.model';
 
+@ObjectType()
 export class ProcessTemplate extends MetadataEntity {
     @ApiProperty()
+    @Field(type => ID)
     id: string;
     @ApiProperty()
     companyId: string;

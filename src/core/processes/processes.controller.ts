@@ -13,7 +13,7 @@ import {
     UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { CreateProcessDto } from 'src/dto/process/createProcessDto';
+import { CreateProcessDto } from 'src/dto/process/createProcess.dto';
 import { ApplyDocumentMetadata } from 'src/interceptors/document-metadata/apply-document-metadata.decorator';
 import { DocumentMetadataType } from 'src/interceptors/document-metadata/document-metadata';
 import { DocumentMetadata } from 'src/interceptors/document-metadata/document-metadata.decorator';
@@ -22,13 +22,13 @@ import { Permission } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 import { ParseIdPipe } from 'src/pipes/parse-id.pipe';
 
+import { EditProcessDto } from '../../dto/process/editProcess.dto';
 import { Account } from '../auth/account.decorator';
 import { Permissions } from '../auth/permissions.decorator';
 import { PermissionsGuard } from '../auth/permissions.guard';
 import { UserAuthGuard } from '../auth/user-auth.guard';
 import { EventGateway } from '../event/event.gateway';
 import { Event } from '../event/event.model';
-import { EditProcessDto } from './../../dto/process/editProcessDto';
 import { ProcessesService } from './processes.service';
 
 @ApiTags('processes')
@@ -49,7 +49,12 @@ export class ProcessesController {
     @Permissions(Permission.PROCESS_VIEW)
     @Get()
     getAll(@Account() user: User, @Query() filter: { assignedUserId: string, orderId: string }) {
-        return this.processesService.getAll(user.companyId, filter.assignedUserId, filter.orderId);
+        return this.processesService.getAll({
+            assignedUserId: filter.assignedUserId,
+            orderId: filter.orderId,
+            offset: 0,
+            limit: 0
+        }, user.companyId);
     }
 
     @ApiOkResponse({ type: Process })
@@ -139,7 +144,7 @@ export class ProcessesController {
     async assign(@Account() user: User, @Param('processId', new ParseIdPipe()) processId: string, @Body('assigneeId') assigneeId: string) {
         let process = await this.processesService.getById(processId);
         if (!process) throw new NotFoundException('Process not found!');
-        if (process.occupiedBy) throw new ForbiddenException('Process occupied!');
+        if (process.occupiedById) throw new ForbiddenException('Process occupied!');
 
         process = await this.processesService.assign(processId, assigneeId);
         this.event.triggerOther(Event.PROCESS_UPDATE, user, process);

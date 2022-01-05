@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MetadataService } from 'src/core/metadata/metadata.service';
-import { EditProductTemplateDto } from 'src/dto/productTemplate/editProductTemplateDto';
+import { EditProductTemplateDto } from 'src/dto/productTemplate/editProductTemplate.dto';
 import { ProductTemplate } from 'src/models/productTemplate.model';
 import { User } from 'src/models/user.model';
 import { ProductTemplateDoc } from 'src/schemas/productTemplate.schema';

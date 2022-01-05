@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { CreateProcessDto } from 'src/dto/process/createProcessDto';
+import { CreateProcessDto } from 'src/dto/process/createProcess.dto';
 import { ProcessStatus } from 'src/models/enums/processStatus.enum';
 import { Process } from 'src/models/process.model';
 import { User } from 'src/models/user.model';
@@ -9,12 +9,13 @@ import { ProcessDoc } from 'src/schemas/process.schema';
 import { ProcessTemplateDoc } from 'src/schemas/processTemplate.schema';
 import { StepDoc } from 'src/schemas/step.schema';
 
+import { EditProcessDto } from '../../dto/process/editProcess.dto';
 import { EventGateway } from '../event/event.gateway';
 import { Event } from '../event/event.model';
 import { MetadataService } from '../metadata/metadata.service';
 import { OrdersService } from '../orders/orders.service';
 import { UsersService } from '../users/users.service';
-import { EditProcessDto } from './../../dto/process/editProcessDto';
+import { GetProcessesDto } from './../../dto/process/getProcesses.dto';
 
 @Injectable()
 export class ProcessesService {
@@ -49,7 +50,7 @@ export class ProcessesService {
         const processDoc = await this.processModel.findById(id).exec();
 
         processDoc.status = ProcessStatus.IN_PROGRESS;
-        processDoc.occupiedBy = user.id;
+        processDoc.occupiedById = user.id;
         processDoc.isRunning = false;
         await processDoc.save();
         return this.getById(processDoc.id);
@@ -58,7 +59,7 @@ export class ProcessesService {
     async exit(id: string) {
         const processDoc = await this.processModel.findById(id).exec();
 
-        processDoc.occupiedBy = null;
+        processDoc.occupiedById = null;
         processDoc.isRunning = false;
         await processDoc.save();
         return this.getById(processDoc.id);
@@ -76,7 +77,7 @@ export class ProcessesService {
         const processDoc = await this.processModel.findById(id).exec();
 
         processDoc.status = ProcessStatus.COMPLETED;
-        processDoc.occupiedBy = null;
+        processDoc.occupiedById = null;
         processDoc.isRunning = false;
         await processDoc.save();
         return this.getById(processDoc.id);
@@ -90,8 +91,10 @@ export class ProcessesService {
         return this.getById(processDoc.id);
     }
 
-    async getAll(companyId?: string, assignedUserId?: string, orderId?: string): Promise<Process[]> {
-        const processIds = await this.processModel.find({ companyId, assignedUserId, orderId, deletedAt: { $exists: false } }, '_id').exec();
+    async getAll(options: GetProcessesDto, companyId?: string): Promise<Process[]> {
+        const { assignedUserId, orderId, offset, limit} = options;
+
+        const processIds = await this.processModel.find({ companyId, assignedUserId, orderId, deletedAt: { $exists: false } }, '_id').skip(offset).limit(limit).exec();
         return Promise.all(processIds.map( async (doc) => {
             return this.getById(doc._id);
         }));
@@ -133,7 +136,7 @@ export class ProcessesService {
         processDoc.timeTaken = 0;
         processDoc.currentStepIndex = null;
         processDoc.assignedUserId = null;
-        processDoc.occupiedBy = null;
+        processDoc.occupiedById = null;
         processDoc.isRunning = false;
 
         await processDoc.save();
@@ -158,25 +161,25 @@ export class ProcessesService {
     }
 
     async updateOccupied(): Promise<void> {
-        const processes = await this.processModel.find({ occupiedBy: { $ne: null }});
+        const processes = await this.processModel.find({ occupiedById: { $ne: null }});
         
         for (let doc of processes) {
 
-            this.usersService.getActivity(doc.occupiedBy).then((activity) => {
+            this.usersService.getActivity(doc.occupiedById).then((activity) => {
 
                 if (activity.status == 'online' && activity.activity == 'guide') {
                     // Running
                     if (doc.isRunning && doc.currentStepIndex != null) {
                         doc.timeTaken += 1;
                         doc.steps[doc.currentStepIndex].timeTaken += 1;
-                        this.events.trigger(Event.PROCESS_GUIDE_TICK, doc.occupiedBy, { processId: doc.id, timeTaken: doc.timeTaken, stepIndex: doc.currentStepIndex, stepTime: doc.steps[doc.currentStepIndex].timeTaken });
+                        this.events.trigger(Event.PROCESS_GUIDE_TICK, doc.occupiedById, { processId: doc.id, timeTaken: doc.timeTaken, stepIndex: doc.currentStepIndex, stepTime: doc.steps[doc.currentStepIndex].timeTaken });
                     }
                 } else {
                     // Force terminate
                     doc.isRunning = false;
-                    doc.occupiedBy = null;
+                    doc.occupiedById = null;
 
-                    this.events.trigger(Event.PROCESS_GUIDE_EXIT, doc.occupiedBy);
+                    this.events.trigger(Event.PROCESS_GUIDE_EXIT, doc.occupiedById);
                 }
 
                 doc.save();

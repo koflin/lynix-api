@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { OrderDoc } from 'src/schemas/order.schema';
 
@@ -6,8 +7,10 @@ import { MetadataEntity } from './base/metadata.model';
 import { OrderStatus } from './enums/orderStatus.enum';
 import { ProductTemplate } from './productTemplate.model';
 
+@ObjectType()
 export class Order extends MetadataEntity {
     @ApiProperty()
+    @Field(type => ID)
     id: string;
     @ApiProperty()
     companyId: string;
@@ -17,7 +20,7 @@ export class Order extends MetadataEntity {
     @ApiProperty()
     name: string;
     @ApiProperty()
-    description: any;
+    description: Object;
     @ApiProperty()
     deliveryDate: Date;
 
@@ -29,10 +32,7 @@ export class Order extends MetadataEntity {
     completedAt: Date;
 
     @ApiProperty()
-    products: {
-        template: ProductTemplate;
-        quantity: number;
-    }[];
+    products: ProductQuantityPair[];
 
     constructor(metadata: Metadata, order: OrderDoc, productTemplates: ProductTemplate[]) {
         super(metadata);
@@ -55,4 +55,10 @@ export class Order extends MetadataEntity {
             }
         });
     }
+}
+
+@ObjectType()
+export class ProductQuantityPair {
+    template: ProductTemplate;
+    quantity: number;
 }

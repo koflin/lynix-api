@@ -7,7 +7,7 @@ import { ProcessTemplatePreview } from 'src/models/previews/processTemplate-prev
 import { ProcessTemplate } from 'src/models/processTemplate';
 import { ProcessTemplateDoc } from 'src/schemas/processTemplate.schema';
 
-import { EditProcessTemplateDto } from './../../../dto/processTemplate/editProcessTemplateDto';
+import { EditProcessTemplateDto } from '../../../dto/processTemplate/editProcessTemplate.dto';
 import { User } from './../../../models/user.model';
 
 @Injectable()

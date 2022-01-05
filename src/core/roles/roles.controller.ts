@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { EditRoleDto } from 'src/dto/role/editRoleDto';
+import { EditRoleDto } from 'src/dto/role/editRole.dto';
 import { ApplyDocumentMetadata } from 'src/interceptors/document-metadata/apply-document-metadata.decorator';
 import { DocumentMetadataType } from 'src/interceptors/document-metadata/document-metadata';
 import { DocumentMetadata } from 'src/interceptors/document-metadata/document-metadata.decorator';

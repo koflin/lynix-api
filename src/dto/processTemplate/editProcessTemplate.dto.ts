@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsOptional, IsString, ValidateNested } from 'class-validator';
 
-import { EditStepTemplateDto } from '../stepTemplate/editStepTemplateDto';
+import { EditStepTemplateDto } from '../stepTemplate/editStepTemplate.dto';
 
 export class EditProcessTemplateDto {
     @ApiProperty()

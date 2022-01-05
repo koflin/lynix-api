@@ -16,7 +16,7 @@ import { Account } from 'src/core/auth/account.decorator';
 import { Permissions } from 'src/core/auth/permissions.decorator';
 import { PermissionsGuard } from 'src/core/auth/permissions.guard';
 import { UserAuthGuard } from 'src/core/auth/user-auth.guard';
-import { EditProcessTemplateDto } from 'src/dto/processTemplate/editProcessTemplateDto';
+import { EditProcessTemplateDto } from 'src/dto/processTemplate/editProcessTemplate.dto';
 import { ApplyDocumentMetadata } from 'src/interceptors/document-metadata/apply-document-metadata.decorator';
 import { DocumentMetadataType } from 'src/interceptors/document-metadata/document-metadata';
 import { DocumentMetadata } from 'src/interceptors/document-metadata/document-metadata.decorator';

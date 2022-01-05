@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { filter } from 'rxjs/operators';
-import { EditOrderDto } from 'src/dto/order/editOrderDto';
+import { EditOrderDto } from 'src/dto/order/editOrder.dto';
 import { ApplyDocumentMetadata } from 'src/interceptors/document-metadata/apply-document-metadata.decorator';
 import { DocumentMetadataType } from 'src/interceptors/document-metadata/document-metadata';
 import { DocumentMetadata } from 'src/interceptors/document-metadata/document-metadata.decorator';

@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { UrlDoc } from 'src/schemas/url.schema';
 import { UserDoc } from 'src/schemas/user.schema';
@@ -7,8 +8,10 @@ import { MetadataEntity } from './base/metadata.model';
 import { Company } from './company.model';
 import { Role } from './role.model';
 
+@ObjectType()
 export class User extends MetadataEntity {
     @ApiProperty()
+    @Field(type => ID)
     id: string;
     @ApiProperty()
     companyId: string;

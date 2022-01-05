@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { CreateCompanyDto } from 'src/dto/company/createCompanyDto';
-import { EditCompanyDto } from 'src/dto/company/editCompanyDto';
+import { CreateCompanyDto } from 'src/dto/company/createCompany.dto';
+import { EditCompanyDto } from 'src/dto/company/editCompany.dto';
 import { ApplyDocumentMetadata } from 'src/interceptors/document-metadata/apply-document-metadata.decorator';
 import { DocumentMetadataType } from 'src/interceptors/document-metadata/document-metadata';
 import { DocumentMetadata } from 'src/interceptors/document-metadata/document-metadata.decorator';

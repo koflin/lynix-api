@@ -2,6 +2,40 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""Custom object scalar"""
+scalar Object
+
+type Order {
+  companyId: String!
+  completedAt: DateTime!
+  createdAt: DateTime
+  createdBy: User
+  deletedAt: DateTime
+  deletedBy: User
+  deliveryDate: DateTime!
+  description: Object!
+  editedAt: DateTime
+  editedBy: User
+  id: ID!
+  name: String!
+  products: [ProductQuantityPair!]!
+  releasedAt: DateTime!
+  startedAt: DateTime!
+  status: OrderStatus!
+}
+
+enum OrderStatus {
+  COMPLETED
+  IN_PREPARATION
+  IN_PROGRESS
+  RELEASED
+}
+
 enum Permission {
   MANUAL_VIEW
   ORDER_EDIT
@@ -20,13 +54,123 @@ enum Permission {
   USER_VIEW
 }
 
+type Process {
+  assignedUser: User
+  assignedUserId: String
+  companyId: String!
+  completedAt: DateTime!
+  createdAt: DateTime
+  createdBy: User
+  currentStepIndex: Int!
+  deletedAt: DateTime
+  deletedBy: User
+  deliveryDate: DateTime!
+  editedAt: DateTime
+  editedBy: User
+  estimatedTime: Int!
+  id: ID!
+  isRunning: Boolean!
+  mainTasks: [String!]!
+  name: String!
+  occupiedBy: User
+  occupiedById: String
+  order: Order!
+  previousComments: [String!]!
+  releasedAt: DateTime!
+  startedAt: DateTime!
+  status: ProcessStatus!
+  steps: [Step!]!
+  templateId: String!
+  timeTaken: Int!
+}
+
+type ProcessQuantityPair {
+  quantity: Int!
+  template: ProcessTemplate!
+}
+
+enum ProcessStatus {
+  ASSISTANCE_REQUIRED
+  COMPLETED
+  IN_PREPARATION
+  IN_PROGRESS
+  RELEASED
+}
+
+type ProcessTemplate {
+  createdAt: DateTime
+  createdBy: User
+  deletedAt: DateTime
+  deletedBy: User
+  editedAt: DateTime
+  editedBy: User
+  id: ID!
+}
+
+type ProductQuantityPair {
+  quantity: Int!
+  template: ProductTemplate!
+}
+
+type ProductTemplate {
+  companyId: String!
+  createdAt: DateTime
+  createdBy: User
+  deletedAt: DateTime
+  deletedBy: User
+  description: Object!
+  editedAt: DateTime
+  editedBy: User
+  id: ID!
+  name: String!
+  processes: [ProcessQuantityPair!]!
+}
+
 type Query {
-  role(id: ID!): Role!
+  processes(assignedUserId: String, companyId: String!, limit: Int!, offset: Int!, orderId: String): [Process!]!
+  withPermission(companyId: String!, permissions: [Permission!]!): [User!]!
 }
 
 type Role {
   companyId: String!
+  createdAt: DateTime
+  createdBy: User
+  deletedAt: DateTime
+  deletedBy: User
+  editedAt: DateTime
+  editedBy: User
   id: ID!
   name: String!
   permissions: [Permission!]!
+}
+
+type Step {
+  estimatedTime: Int!
+  keyMessage: Object!
+  materials: [String!]!
+  pictureUris: [String!]!
+  tasks: Object!
+  timeTaken: Int!
+  title: String!
+  toolIds: [String!]!
+  videoUris: [String!]!
+}
+
+type User {
+  activatedAt: DateTime!
+  avatar: String
+  companyId: String!
+  companyLogo: String
+  createdAt: DateTime
+  createdBy: User
+  deletedAt: DateTime
+  deletedBy: User
+  displayName: String
+  editedAt: DateTime
+  editedBy: User
+  email: String!
+  firstName: String
+  id: ID!
+  lastName: String
+  role: Role
 }

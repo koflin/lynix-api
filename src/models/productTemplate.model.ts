@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { ProductTemplateDoc } from './../schemas/productTemplate.schema';
@@ -8,9 +9,11 @@ import { ProcessTemplate } from './processTemplate';
 
 /**
  * Represents a Product Template object
- */
+*/
+@ObjectType()
 export class ProductTemplate extends MetadataEntity {
     @ApiProperty()
+    @Field(type => ID)
     id: string;
     @ApiProperty()
     companyId: string;
@@ -18,12 +21,9 @@ export class ProductTemplate extends MetadataEntity {
     @ApiProperty()
     name: string;
     @ApiProperty()
-    description: any;
+    description: Object;
     @ApiProperty()
-    processes: {
-        template: ProcessTemplate;
-        quantity: number;
-    }[];
+    processes: ProcessQuantityPair[];
 
     constructor(metadata: Metadata, product: ProductTemplateDoc, processes: ProcessTemplate[]) {
         super(metadata);
@@ -35,8 +35,14 @@ export class ProductTemplate extends MetadataEntity {
         this.processes = product.processes.map((process, index) => {
             return {
                 template: processes[index],
-                quantity: process.quantity
+                quantity: process.quantity,
             };
         });
     }
+}
+
+@ObjectType()
+export class ProcessQuantityPair {
+    template: ProcessTemplate;
+    quantity: number;
 }

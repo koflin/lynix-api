@@ -156,6 +156,11 @@ export class MigrationService {
     private async migrate0_1_2() {
         await this.processTemplateModel.updateMany({ stepTemplates: { $exists: true } }, { $rename: { 'stepTemplates': 'steps' } }, { strict: false }).exec();
     }
+
+    private async migrate0_1_9() {
+        // Rename process.occupiedBy to process.occupiedById
+        await this.processModel.updateMany({ occupiedBy: { $exists: true } }, { $rename: { 'occupiedBy': 'occupiedById' }}, { strict: false }).exec();
+    }
 }
 
 class Version {

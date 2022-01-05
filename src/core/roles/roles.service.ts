@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { EditRoleDto } from 'src/dto/role/editRoleDto';
+import { EditRoleDto } from 'src/dto/role/editRole.dto';
 import { Permission, Role } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 import { RoleDoc } from 'src/schemas/role.schema';
@@ -18,7 +18,7 @@ export class RolesService {
     }
 
     async getAll(companyId?: string, permissions?: Permission[]) {
-        const roleIds = await this.roleModel.find({ companyId, permissions }, '_id').exec();
+        const roleIds = await this.roleModel.find({ companyId, permissions: { $all: permissions } }, '_id').exec();
         return Promise.all(roleIds.map( async (doc) => {
             return this.getById(doc.id);
         }));

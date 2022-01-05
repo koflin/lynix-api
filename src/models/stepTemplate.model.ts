@@ -1,7 +1,9 @@
+import { ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { StepTemplateDoc } from 'src/schemas/stepTemplate.schema';
 import { UrlDoc } from 'src/schemas/url.schema';
 
+@ObjectType()
 export class StepTemplate {
     @ApiProperty()
     title: string;
@@ -10,9 +12,9 @@ export class StepTemplate {
     @ApiProperty()
     toolIds: string[];
     @ApiProperty()
-    keyMessage: any;
+    keyMessage: Object;
     @ApiProperty()
-    tasks: any;
+    tasks: Object;
     @ApiProperty()
     pictureUris?: string[];
     @ApiProperty()

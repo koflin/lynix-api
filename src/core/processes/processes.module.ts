@@ -11,6 +11,7 @@ import { UsersModule } from '../users/users.module';
 import { OrdersModule } from './../orders/orders.module';
 import { ProcessesController } from './processes.controller';
 import { ProcessesService } from './processes.service';
+import { ProcessesResolver } from './processes.resolver';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { ProcessesService } from './processes.service';
     UsersModule,
     MetadataModule
   ],
-  providers: [ProcessesService],
+  providers: [ProcessesService, ProcessesResolver],
   controllers: [ProcessesController],
   exports: [ProcessesService]
 })

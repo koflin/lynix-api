@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { doc } from 'prettier';
-import { CreateCompanyDto } from 'src/dto/company/createCompanyDto';
-import { EditCompanyDto } from 'src/dto/company/editCompanyDto';
+import { CreateCompanyDto } from 'src/dto/company/createCompany.dto';
+import { EditCompanyDto } from 'src/dto/company/editCompany.dto';
 import { Company } from 'src/models/company.model';
 import { CompanyDoc } from 'src/schemas/company.schema';
 

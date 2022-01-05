@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { ProcessDoc } from 'src/schemas/process.schema';
 
@@ -7,8 +8,10 @@ import { ProcessStatus } from './enums/processStatus.enum';
 import { Order } from './order.model';
 import { Step } from './step.model';
 
-export class Process extends MetadataEntity{
+@ObjectType()
+export class Process extends MetadataEntity {
     @ApiProperty()
+    @Field(type => ID)
     id: string;
     @ApiProperty()
     companyId: string;
@@ -43,12 +46,12 @@ export class Process extends MetadataEntity{
     @ApiProperty()
     status: ProcessStatus;
     @ApiProperty()
-    occupiedBy: string;
+    occupiedById?: string;
     @ApiProperty()
     isRunning: boolean;
 
     @ApiProperty()
-    assignedUserId: string;
+    assignedUserId?: string;
 
     @ApiProperty()
     steps: Step[];
@@ -74,7 +77,7 @@ export class Process extends MetadataEntity{
         this.timeTaken = process.timeTaken;
         this.currentStepIndex = process.currentStepIndex;
         this.status = process.status;
-        this.occupiedBy = process.occupiedBy;
+        this.occupiedById = process.occupiedById;
         this.isRunning = process.isRunning;
 
         this.assignedUserId = process.assignedUserId;
