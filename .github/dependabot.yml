@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    target-branch: "master"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    # Disable version updates
+    open-pull-requests-limit: 0
+
+  - package-ecosystem: "npm"
+    target-branch: "testing"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    # Disable version updates
+    open-pull-requests-limit: 0
+
+  - package-ecosystem: "npm"
+    target-branch: "development"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    # Disable version updates
+    open-pull-requests-limit: 0
