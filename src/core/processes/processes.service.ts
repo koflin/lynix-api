@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { CreateProcessDto } from 'src/dto/process/createProcessDto';
+import { ProcessStatus } from 'src/models/enums/processStatus.enum';
 import { Process } from 'src/models/process.model';
 import { User } from 'src/models/user.model';
 import { ProcessDoc } from 'src/schemas/process.schema';
 import { ProcessTemplateDoc } from 'src/schemas/processTemplate.schema';
+import { StepDoc } from 'src/schemas/step.schema';
 
 import { EventGateway } from '../event/event.gateway';
 import { Event } from '../event/event.model';
@@ -19,6 +21,7 @@ export class ProcessesService {
     constructor(
         @InjectModel(ProcessDoc.name) private processModel: Model<ProcessDoc>,
         @InjectModel(ProcessTemplateDoc.name) private processTemplateModel: Model<ProcessTemplateDoc>,
+        @InjectModel(StepDoc.name) private stepModel: Model<StepDoc>,
         private orderService: OrdersService,
         private usersService: UsersService,
         private events: EventGateway,
@@ -45,7 +48,7 @@ export class ProcessesService {
     async enter(id: string, user: User) {
         const processDoc = await this.processModel.findById(id).exec();
 
-        processDoc.status = 'in_progress';
+        processDoc.status = ProcessStatus.IN_PROGRESS;
         processDoc.occupiedBy = user.id;
         processDoc.isRunning = false;
         await processDoc.save();
@@ -72,7 +75,7 @@ export class ProcessesService {
     async finish(id: string, assignedId: string) {
         const processDoc = await this.processModel.findById(id).exec();
 
-        processDoc.status = 'completed';
+        processDoc.status = ProcessStatus.COMPLETED;
         processDoc.occupiedBy = null;
         processDoc.isRunning = false;
         await processDoc.save();
@@ -116,19 +119,16 @@ export class ProcessesService {
 
         processDoc.companyId = user.companyId;
 
-        processDoc.status = 'released';
+        processDoc.status = ProcessStatus.RELEASED;
         processDoc.estimatedTime = templateDoc.steps.reduce((total, step) => total + (step.estimatedTime ? step.estimatedTime : 0), 0);
         processDoc.deliveryDate = order.deliveryDate;
         processDoc.mainTasks = templateDoc.mainTasks;
         processDoc.name = templateDoc.name;
         processDoc.previousComments = templateDoc.previousComments;
-        processDoc.steps = templateDoc.steps.map((stepTemplate) => {
-            return {
-                ...stepTemplate,
-                timeTaken: 0
-            };
-        });
 
+        processDoc.steps = templateDoc.steps.map((stepTemplate) => {
+            return new this.stepModel({ ...stepTemplate.toObject(), timeTaken: 0 });
+        });
 
         processDoc.timeTaken = 0;
         processDoc.currentStepIndex = null;

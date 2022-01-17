@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { OrderStatus } from 'src/models/enums/orderStatus.enum';
 
 import { MetadataDocument } from './base';
 
@@ -10,8 +11,8 @@ export class OrderDoc extends MetadataDocument {
     @Prop()
     companyId: string;
 
-    @Prop()
-    status: 'in_preparation' | 'released' | 'in_progress' | 'completed';
+    @Prop({ type: String, enum: Object.values(OrderStatus) })
+    status: OrderStatus;
     @Prop()
     name: string;
     @Prop()

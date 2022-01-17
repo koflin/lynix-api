@@ -1,12 +1,13 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 import { UrlDoc } from './url.schema';
 
 /**
  * Represents a step template subdocument
  */
-@Schema()
-export class StepTemplateDoc {
+@Schema({ _id: false })
+export class StepTemplateDoc extends Document {
     @Prop()
     title: string;
     @Prop()
@@ -24,3 +25,5 @@ export class StepTemplateDoc {
     @Prop()
     estimatedTime: number;
 }
+
+export const StepTemplateSchema = SchemaFactory.createForClass(StepTemplateDoc);
