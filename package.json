@@ -1,6 +1,6 @@
 {
   "name": "lynix-api",
-  "version": "0.1.3",
+  "version": "0.1.8",
   "description": "",
   "author": "Colin Pfingstl",
   "private": true,
@@ -31,7 +31,7 @@
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/platform-socket.io": "^7.6.13",
     "@nestjs/platform-ws": "^7.6.13",
-    "@nestjs/schedule": "^0.4.2",
+    "@nestjs/schedule": "^1.0.2",
     "@nestjs/swagger": "^4.7.13",
     "@nestjs/websockets": "^7.6.13",
     "bcryptjs": "^2.4.3",
