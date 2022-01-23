@@ -29,7 +29,8 @@ import { MediaService } from './media.service';
           destination: './' + config.get('media.path')
         }),
         limits: {
-        }
+          // 20mb for pictures, 200mb for gifs
+        },
       })
     }),
   ]

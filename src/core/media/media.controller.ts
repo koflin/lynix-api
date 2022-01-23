@@ -1,6 +1,8 @@
 import {
+    BadRequestException,
     Controller,
     Get,
+    InternalServerErrorException,
     NotFoundException,
     Param,
     Post,
@@ -39,13 +41,17 @@ export class MediaController {
             const ext = path.extname(file.originalname).toLowerCase();
 
             if (!allowedFileTypes.includes(ext)) {
-                return callback(new Error('Media type "' + ext + '" not allowed. Try one of' + allowedFileTypes.join(', ')), false);
+                return callback(new BadRequestException(`Media type '${ext}' not allowed. Try one of ${allowedFileTypes.join(', ')}`), false);
             }
 
             callback(null, true);
         }
     }))
     async upload(@Account() user: User, @UploadedFile() file: Express.Multer.File) {
+        if (!file) {
+            throw new InternalServerErrorException('Storing file failed');
+        }
+
         return this.mediaService.create(user.companyId, user.id, file.filename);
     }
 

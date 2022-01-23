@@ -56,6 +56,11 @@ export class JwtAuthGuard implements CanActivate {
         }
 
         const decodedToken = this.jwtService.decode(token);
+
+        if (!decodedToken) {
+            return null;
+        }
+
         const type = decodedToken['type'];
         const account = decodedToken['account'];
         
