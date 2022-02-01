@@ -82,6 +82,11 @@ import { ObjectScalar } from './scalars/object.scalar';
           sortSchema: true,
           buildSchemaOptions: {
             numberScalarMode: 'integer'
+          },
+          useGlobalPrefix: true,
+          cors: {
+            credentials: true,
+            origin: config.get('client.host') 
           }
         };
       }

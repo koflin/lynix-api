@@ -160,6 +160,9 @@ export class MigrationService {
     private async migrate0_1_9() {
         // Rename process.occupiedBy to process.occupiedById
         await this.processModel.updateMany({ occupiedBy: { $exists: true } }, { $rename: { 'occupiedBy': 'occupiedById' }}, { strict: false }).exec();
+    
+        // Capitalize all string enums
+        await this.companyModel.find({});
     }
 }
 

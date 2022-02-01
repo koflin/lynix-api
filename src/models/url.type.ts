@@ -1,10 +1,10 @@
 import configuration from 'src/config/configuration';
 
 export enum UrlType {
-    MEDIA = "media",
-    CLIENT = "client",
-    API = "api",
-    EXTERNAL = "external",
+    MEDIA = "MEDIA",
+    CLIENT = "CLIENT",
+    API = "API",
+    EXTERNAL = "EXTERNAL",
 }
 
 const mediaSubUrl = '/media/';

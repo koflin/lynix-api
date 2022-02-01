@@ -58,5 +58,9 @@ async function bootstrap() {
   await app.get(MigrationService).migrate();
 
   await app.listen(apiPort);
+
+  if (!config.get('version.prod')) {
+    console.log('Warning: Server started in dev mode!');
+  }
 }
 bootstrap();

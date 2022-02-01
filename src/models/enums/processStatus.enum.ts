@@ -1,11 +1,11 @@
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum ProcessStatus {
-    IN_PREPARATION = 'in_preparation',
-    RELEASED = 'released',
-    IN_PROGRESS = 'in_progress',
-    COMPLETED = 'completed',
-    ASSISTANCE_REQUIRED = 'assistance_required'
+    IN_PREPARATION = 'IN_PREPARATION',
+    RELEASED = 'RELEASED',
+    IN_PROGRESS = 'IN_PROGRESS',
+    COMPLETED = 'COMPLETED',
+    ASSISTANCE_REQUIRED = 'ASSISTANCE_REQUIRED'
 };
 
 registerEnumType(ProcessStatus, {

@@ -127,7 +127,7 @@ type ProductTemplate {
 }
 
 type Query {
-  processes(assignedUserId: String, companyId: String!, limit: Int!, offset: Int!, orderId: String): [Process!]!
+  processes(assignedUserId: String, limit: Int!, offset: Int!, orderId: String, status: ProcessStatus): [Process!]!
   withPermission(companyId: String!, permissions: [Permission!]!): [User!]!
 }
 

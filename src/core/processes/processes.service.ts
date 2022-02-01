@@ -92,9 +92,9 @@ export class ProcessesService {
     }
 
     async getAll(options: GetProcessesDto, companyId?: string): Promise<Process[]> {
-        const { assignedUserId, orderId, offset, limit} = options;
+        const { assignedUserId, orderId, offset, limit, status } = options;
 
-        const processIds = await this.processModel.find({ companyId, assignedUserId, orderId, deletedAt: { $exists: false } }, '_id').skip(offset).limit(limit).exec();
+        const processIds = await this.processModel.find({ companyId, assignedUserId, orderId, status, deletedAt: { $exists: false } }, '_id').skip(offset).limit(limit).exec();
         return Promise.all(processIds.map( async (doc) => {
             return this.getById(doc._id);
         }));

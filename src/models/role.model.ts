@@ -39,17 +39,17 @@ export class Role extends MetadataEntity {
 }
 
 export enum Permission {
-    ORDER_VIEW = 'order_view',
-    ORDER_EDIT = 'order_edit',
+    ORDER_VIEW = 'ORDER_VIEW',
+    ORDER_EDIT = 'ORDER_EDIT',
 
-    PROCESS_VIEW = 'process_view',
-    PROCESS_EXECUTE = 'process_execute',
-    PROCESS_ASSIGN = 'process_assign',
+    PROCESS_VIEW = 'PROCESS_VIEW',
+    PROCESS_EXECUTE = 'PROCESS_EXECUTE',
+    PROCESS_ASSIGN = 'PROCESS_ASSIGN',
 
-    MANUAL_VIEW = 'manual_view',
+    MANUAL_VIEW = 'MANUAL_VIEW',
 
-    TEMPLATE_VIEW = 'template_view',
-    TEMPLATE_EDIT = 'template_edit',
+    TEMPLATE_VIEW = 'TEMPLATE_VIEW',
+    TEMPLATE_EDIT = 'TEMPLATE_EDIT',
 
     USER_VIEW = 'user_view',
     USER_EDIT = 'user_edit',

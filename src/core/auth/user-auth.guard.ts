@@ -1,5 +1,6 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
@@ -15,16 +16,19 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 export class UserAuthGuard extends JwtAuthGuard {
     constructor(    
         jwtService: JwtService,
-        private usersService: UsersService,
-        private reflector: Reflector,
+        usersService: UsersService,
+        config: ConfigService,
         @InjectConnection() private connection: Connection,
     ) {
-        super(jwtService);
+        super(jwtService, usersService, config);
     }
  
-    async authenticate(context: ExecutionContext, client?: Socket) {
+    async authenticate(context: GqlExecutionContext, client?: Socket) {
         const auth = await super.authenticate(context, client);
-        auth.account = await this.usersService.getById(auth.account.id);
+
+        if (auth) {
+            auth.account = await this.usersService.getById(auth?.account?.id);
+        }
         return auth;
     }
 

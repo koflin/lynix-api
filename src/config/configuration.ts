@@ -21,7 +21,7 @@ export default () => {
     version: {
       prefix: env.VERSION_PREFIX,
       full: env.VERSION_FULL,
-      prod: new Boolean(parseInt(env.PROD)),
+      prod: new Boolean(parseInt(env.PROD)).valueOf(),
     },
     database: {
       host: env.DATABASE_HOST,
@@ -39,7 +39,7 @@ export default () => {
     },
     cookies: {
       domain: env.COOKIES_DOMAIN,
-      secure: new Boolean(parseInt(env.COOKIES_SECURE)),
+      secure: new Boolean(parseInt(env.COOKIES_SECURE)).valueOf(),
       sameSite: env.COOKIES_SAME_SITE,
     },
     media: {
