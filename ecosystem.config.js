@@ -1,6 +1,6 @@
 module.exports = {
   apps : [{
-    name   : "lynix-api",
+    name   : "lynix-testing-api",
     script : "./dist/main.js"
   }]
 }

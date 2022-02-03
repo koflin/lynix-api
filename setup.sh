@@ -3,9 +3,9 @@
 # This script is for production only. It sets up the production environment
 
 echo "Copy .env file into dist"
-cp ../../../.env .
+cp ../../../../.env .
 
-MEDIA_DIR="../../../media"
+MEDIA_DIR="../../../../media"
 if [ ! -d "$MEDIA_DIR" ]; then
 	echo "Create media folder"
 	mkdir $MEDIA_DIR
