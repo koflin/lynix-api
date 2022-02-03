@@ -26,9 +26,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: systemctl stop lynix-api-sandbox
+    - run: pm2 stop ./ecosystem.config.js
     - run: npm ci
     - run: npm run build
     - run: bash ./setup.sh
       shell: bash
-    - run: systemctl start lynix-api-sandbox
+    - run: pm2 start ./ecosystem.config.js
