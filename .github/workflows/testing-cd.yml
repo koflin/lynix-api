@@ -27,3 +27,4 @@ jobs:
     - run: bash ./setup.sh
       shell: bash
     - run: pm2 start ./ecosystem.config.js --only "lynix-testing-api"
+    - run: pm2 save
