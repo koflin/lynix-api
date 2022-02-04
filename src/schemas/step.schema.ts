@@ -14,9 +14,9 @@ export class StepDoc extends Document {
     materials: string[];
     @Prop()
     toolIds: string[];
-    @Prop()
+    @Prop({ type: Object})
     keyMessage: any;
-    @Prop()
+    @Prop({ type: Object})
     tasks: any;
     @Prop()
     pictureUris?: UrlDoc[];

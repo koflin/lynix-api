@@ -13,7 +13,7 @@ export class ProductTemplateDoc extends MetadataDocument {
     @Prop()
     name: string;
 
-    @Prop()
+    @Prop({ type: Object})
     description?: any;
 
     @Prop()

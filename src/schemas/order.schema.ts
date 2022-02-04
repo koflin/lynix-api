@@ -15,7 +15,7 @@ export class OrderDoc extends MetadataDocument {
     status: OrderStatus;
     @Prop()
     name: string;
-    @Prop()
+    @Prop({ type: Object})
     description?: any;
     @Prop()
     deliveryDate: Date;
