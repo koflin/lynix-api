@@ -24,6 +24,11 @@ export class UserAuthGuard extends JwtAuthGuard {
  
     async authenticate(context: ExecutionContext, client?: Socket) {
         const auth = await super.authenticate(context, client);
+
+        if (!auth || !auth.account) {
+            return null;
+        }
+
         auth.account = await this.usersService.getById(auth.account.id);
         return auth;
     }
