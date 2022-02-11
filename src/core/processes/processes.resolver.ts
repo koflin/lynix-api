@@ -20,7 +20,6 @@ export class ProcessesResolver {
 
     @Query(returns => [Process], { name: 'processes' })
     async getProcesses(@Args() args: GetProcessesDto, @Account() user: User) {
-        console.log(args);
         return this.processesService.getAll(args, user.companyId);
     }
 
